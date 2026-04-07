@@ -48,6 +48,20 @@ These outputs use rules, scorecards, or transformations built from public ABS/RB
   - `inventory_days_benchmark_source`
   - `debt_to_ebitda_benchmark`
   - `icr_benchmark`
+- `industry_working_capital_risk_metrics.csv`
+  - `cash_conversion_cycle_benchmark_days`
+  - `cash_conversion_cycle_stress_days`
+  - `cash_conversion_cycle_uplift_days`
+  - `ar_collection_score`
+  - `receivables_realisation_score`
+  - `ap_supplier_stretch_score`
+  - `inventory_liquidity_score`
+  - `inventory_stock_build_score`
+  - `cash_conversion_cycle_score`
+  - `working_capital_scorecard_overlay_score`
+  - `working_capital_pd_overlay_score`
+  - `working_capital_lgd_overlay_score`
+  - driver columns and overlay bands
 - `industry_public_benchmarks.csv`
   - `inventory_days_est`
   - `inventory_days_yoy_change`
@@ -87,6 +101,19 @@ The following outputs rely on generated data because no borrower-specific public
   - `inventory_days`
   - all borrower-level score columns
   - `bottom_up_risk_score`
+- `borrower_working_capital_risk_metrics.csv`
+  - all borrower rows
+  - `cash_conversion_cycle_days`
+  - `cash_conversion_cycle_benchmark_days`
+  - `cash_conversion_cycle_gap_days`
+  - `cash_conversion_cycle_score`
+  - `receivables_headroom_to_stress_days`
+  - `payables_headroom_to_stress_days`
+  - `receivables_realisation_score`
+  - `supplier_stretch_score`
+  - `working_capital_scorecard_metric_score`
+  - `working_capital_pd_metric_score`
+  - `working_capital_lgd_metric_score`
 - `borrower_industry_risk_scorecard.csv`
   - all borrower rows
   - `bottom_up_risk_score`
@@ -118,6 +145,7 @@ The remaining generated fields are not missing because of absent downloads. They
 - true bank portfolio exposure by sector
 - bank pricing grids
 - bank policy overlays
+- direct public sector PD, LGD, or recovery datasets aligned to this sector set
 
 ## Public PTRS proxy layer after official source reconstruction
 
@@ -135,3 +163,6 @@ When the official PTRS publications are downloaded and reconstructed into `data/
   - `ptrs_cycle8_paid_on_time_pct`
   - `ptrs_cycle9_paid_on_time_pct`
   - `ptrs_latest_cycle_used`
+- `industry_working_capital_risk_metrics.csv`
+  - `ptrs_paid_on_time_pct_latest`
+  - AR and AP stress / severe uplifts, because they are derived directly from the PTRS benchmark and stress points

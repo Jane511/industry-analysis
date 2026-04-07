@@ -38,21 +38,22 @@ Based on the latest generated outputs:
 
 If you are reviewing this repository as an interviewer, the most useful reading order is:
 
-1. [Executive Summary](docs/deliverables/executive_summary.md)
-2. [Formal PDF Report](docs/deliverables/industry_risk_formal_report.pdf)
-3. [Methodology](docs/reference/methodology.md)
-4. [Output Data Provenance](docs/reference/output_data_provenance.md)
-5. [Australian Bank Practice Review](docs/research/australian_bank_industry_risk_practice_review.md)
+1. [Executive Summary](output/executive_summary.md)
+2. [Formal PDF Report](output/industry_risk_formal_report.pdf)
+3. [Methodology](docs/methodology.md)
+4. [Output Data Provenance](docs/output_data_provenance.md)
+5. [Australian Bank Practice Review](docs/australian_bank_industry_risk_practice_review.md)
 
 ## Repository Structure
 
 ```text
 industry-risk-analysis-australia/
 ├── docs/
-│   ├── deliverables/          # Portfolio-facing outputs
-│   ├── reference/             # Methodology, data sources, provenance
-│   ├── research/              # Supporting research notes
-│   └── README.md              # Docs index
+│   ├── methodology.md
+│   ├── data_sources.md
+│   ├── output_data_provenance.md
+│   ├── australian_bank_industry_risk_practice_review.md
+│   └── README.md
 ├── scripts/
 │   └── run_pipeline.py        # Main entrypoint
 ├── src/                       # Implementation modules
@@ -60,6 +61,9 @@ industry-risk-analysis-australia/
 │   ├── raw/public/            # Downloaded ABS / RBA input files
 │   └── processed/             # Intermediate pipeline outputs
 ├── output/
+│   ├── executive_summary.md   # Portfolio-facing outputs
+│   ├── chart_explanations.md
+│   ├── industry_risk_formal_report.pdf
 │   ├── charts/                # Temporary chart workspace
 │   └── tables/                # Generated CSV output tables
 ├── tests/
@@ -71,21 +75,23 @@ industry-risk-analysis-australia/
 ## Main Deliverables
 
 ### Portfolio-facing documents
-- [Executive Summary](docs/deliverables/executive_summary.md)
-- [Chart Explanations](docs/deliverables/chart_explanations.md)
-- [Formal Report PDF](docs/deliverables/industry_risk_formal_report.pdf)
+- [Executive Summary](output/executive_summary.md)
+- [Chart Explanations](output/chart_explanations.md)
+- [Formal Report PDF](output/industry_risk_formal_report.pdf)
 
 ### Reference documents
 - [Docs Index](docs/README.md)
-- [Methodology](docs/reference/methodology.md)
-- [Data Sources](docs/reference/data_sources.md)
-- [Output Data Provenance](docs/reference/output_data_provenance.md)
-- [Australian Bank Practice Review](docs/research/australian_bank_industry_risk_practice_review.md)
+- [Methodology](docs/methodology.md)
+- [Data Sources](docs/data_sources.md)
+- [Output Data Provenance](docs/output_data_provenance.md)
+- [Australian Bank Practice Review](docs/australian_bank_industry_risk_practice_review.md)
 
 ### Core generated outputs
 - `output/tables/industry_base_risk_scorecard.csv`
 - `output/tables/industry_public_benchmarks.csv`
 - `output/tables/industry_generated_benchmarks.csv`
+- `output/tables/industry_working_capital_risk_metrics.csv`
+- `output/tables/borrower_working_capital_risk_metrics.csv`
 - `output/tables/borrower_industry_risk_scorecard.csv`
 - `output/tables/pricing_grid.csv`
 - `output/tables/policy_overlay.csv`
@@ -93,9 +99,43 @@ industry-risk-analysis-australia/
 - `output/tables/watchlist_triggers.csv`
 - `output/tables/chart_table.csv`
 
+## Script and Output Numbering
+
+To make the workflow easier to follow, the repo uses this numbered script-to-output map:
+
+1. `Script 1`: `scripts/download_ptrs_public_data.py`
+   `Output 1.1`: Cycle 8 PTRS PDF
+   `Output 1.2`: Cycle 9 PTRS PDF
+   `Output 1.3`: PTRS guidance PDF
+   `Workbook 1.4`: `data/raw/public/ptrs/PTRS_MultiCycle_AR_Days_Model_Official.xlsx`
+
+2. `Script 2`: `scripts/rebuild_ptrs_workbook.py`
+   `Workbook 2.1`: `data/raw/public/ptrs/PTRS_MultiCycle_AR_Days_Model_Official.xlsx`
+
+3. `Script 3`: `scripts/run_pipeline.py`
+   `Table 3.1`: `output/tables/industry_base_risk_scorecard.csv`
+   `Table 3.2`: `output/tables/industry_public_benchmarks.csv`
+   `Table 3.3`: `output/tables/industry_generated_benchmarks.csv`
+   `Table 3.4`: `output/tables/industry_working_capital_risk_metrics.csv`
+   `Table 3.5`: `output/tables/borrower_working_capital_risk_metrics.csv`
+   `Table 3.6`: `output/tables/borrower_industry_risk_scorecard.csv`
+   `Table 3.7`: `output/tables/pricing_grid.csv`
+   `Table 3.8`: `output/tables/policy_overlay.csv`
+   `Table 3.9`: `output/tables/concentration_limits.csv`
+   `Table 3.10`: `output/tables/watchlist_triggers.csv`
+   `Table 3.11`: `output/tables/industry_credit_appetite_strategy.csv`
+   `Table 3.12`: `output/tables/industry_stress_test_matrix.csv`
+   `Table 3.13`: `output/tables/industry_esg_sensitivity_overlay.csv`
+   `Table 3.14`: `output/tables/industry_portfolio_proxy.csv`
+   `Table 3.15`: `output/tables/chart_table.csv`
+   `Workbook 3.16`: `data/processed/industry_risk_reporting_workbook.xlsx`
+   `Report 3.17`: `output/executive_summary.md`
+   `Report 3.18`: `output/chart_explanations.md`
+   `Report 3.19`: `output/industry_risk_formal_report.pdf`
+
 ## Project Logic
 
-The pipeline follows eight layers:
+The pipeline follows nine layers:
 
 1. `Foundation`
 Maps target sectors to ANZSIC-aligned industry views and produces structural classification scores.
@@ -106,20 +146,23 @@ Adds employment, profitability, inventory, demand, and cash-rate signals from AB
 3. `Benchmarks`
 Builds industry benchmark proxies. Public EBITDA margin is used directly; inventory days are estimated from ABS quarterly inventories/sales ratios where available; leverage, coverage, and the remaining working-capital metrics are generated from deterministic rules where public datasets do not publish them directly.
 
-4. `Bottom-Up`
+4. `Working Capital`
+Builds separate AR, AP, inventory, cash-conversion-cycle, and PD / scorecard / LGD overlay metrics so working-capital signals can be reviewed independently from the core borrower scorecard.
+
+5. `Bottom-Up`
 Generates one synthetic borrower archetype per sector and scores it against the sector benchmark set.
 
-5. `Scorecard`
+6. `Scorecard`
 Combines classification, macro, and bottom-up views into a final borrower industry risk score.
 
-6. `Credit Application`
+7. `Credit Application`
 Maps risk results into illustrative pricing, policy, and concentration outputs.
 
-7. `Bank Practice Overlay`
+8. `Bank Practice Overlay`
 Adds industry appetite strategy, stress testing, and ESG sensitivity outputs aligned to APRA themes and observed Australian bank disclosure practice.
 
-8. `Reporting`
-Generates a workbook-backed chart pack and consolidated PDF report.
+9. `Reporting`
+Generates a workbook-backed chart pack, generated executive summary, and consolidated PDF report.
 
 ## Public Data Used
 
@@ -134,7 +177,7 @@ The live pipeline currently uses six raw public files:
 The pipeline can also use:
 - PTRS multi-cycle AR/AP benchmark workbook reconstructed automatically from official Payment Times Reporting Scheme publications
 
-See [Data Sources](docs/reference/data_sources.md) for the full list with local file names, source URLs, and usage.
+See [Data Sources](docs/data_sources.md) for the full list with local file names, source URLs, and usage.
 
 ## Important Limitation
 
@@ -169,9 +212,9 @@ python scripts/rebuild_ptrs_workbook.py
 The same limitation applies to internal borrower grades, true portfolio concentrations, exception tracking, covenant compliance, and workout data. Those are not replicated here.
 
 The repository documents those assumptions in:
-- [Methodology](docs/reference/methodology.md)
-- [Output Data Provenance](docs/reference/output_data_provenance.md)
-- [Executive Summary](docs/deliverables/executive_summary.md)
+- [Methodology](docs/methodology.md)
+- [Output Data Provenance](docs/output_data_provenance.md)
+- [Executive Summary](output/executive_summary.md)
 
 ## Run The Project
 
@@ -183,7 +226,7 @@ python scripts/run_pipeline.py
 Outputs are generated to:
 - `data/processed/`
 - `output/tables/`
-- `docs/deliverables/`
+- `output/`
 
 ## Run Tests
 

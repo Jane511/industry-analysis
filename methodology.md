@@ -34,15 +34,17 @@ RBA Cash Rate ────────────┘
                                │
                                ├─► Stage 3: Benchmarks (generated financial benchmarks)
                                │
-                               ├─► Stage 4: Bottom-Up (archetype borrower vs benchmark)
+                               ├─► Stage 4: Working Capital (AR/AP/inventory and PD-scorecard-LGD overlays)
                                │
-                               ├─► Stage 5: Scorecard (final weighted risk score)
+                               ├─► Stage 5: Bottom-Up (archetype borrower vs benchmark)
                                │
-                               ├─► Stage 6: Credit Application (pricing, policy, concentration)
+                               ├─► Stage 6: Scorecard (final weighted risk score)
                                │
-                               ├─► Stage 7: Bank Practice (appetite, stress test, ESG)
+                               ├─► Stage 7: Credit Application (pricing, policy, concentration)
                                │
-                               └─► Stage 8: Portfolio Monitoring (watchlist triggers)
+                               ├─► Stage 8: Bank Practice (appetite, stress test, ESG)
+                               │
+                               └─► Stage 9: Portfolio Monitoring and Reporting
 ```
 
 ---
@@ -211,6 +213,99 @@ This table combines the direct public macro fields from Stage 2 with the derived
 | `icr_benchmark` | Derived | 5.3 - (debt_to_ebitda x 0.75) + (profit_margin x 0.04) - (classification_risk_score - 3) x 0.10. Higher leverage means lower coverage; higher margins provide more earnings buffer. Clipped to 1.5-4.5x. |
 
 **Design rationale:** PTRS provides a cleaner public proxy for both AR and AP timing than the generic benchmark formulas because it directly measures payment timing by ANZSIC division. It is more direct for AP, because it measures how reporting entities pay suppliers, and is still useful for AR as a supplier-side collection proxy. Inventory days are also no longer treated as a simplistic annualised placeholder: the repo estimates them from the ABS quarterly inventories/sales ratio using a quarter-length conversion and a margin-based COGS proxy. The remaining benchmarks use publicly observable industry characteristics (margins, inventory intensity, risk scores) as inputs to deterministic rules that approximate the type of sector benchmarking logic a bank credit team might use. They are not statistical estimates, observed bank benchmarks, or validated internal policy settings.
+
+---
+
+## Output Table 5A: `industry_working_capital_risk_metrics.csv`
+
+**Purpose:** Separate AR, AP, inventory, and cash-conversion-cycle metrics into a dedicated working-capital pack that can later support borrower scorecards and provide indicative PD and LGD overlays.
+
+**Sources:** Output Table 5 (`industry_generated_benchmarks.csv`), PTRS, ABS-BI-23, ABS-BI-22, ABS-AI
+
+### Why this table exists
+
+The benchmark table already contains the base AR, AP, and inventory fields. This extension table exists so those fields can be interpreted as distinct risk dimensions rather than staying embedded inside the general benchmark pack.
+
+- `AR metrics` are used as a proxy for receivables collection pressure and receivables realisation quality.
+- `AP metrics` are used as a proxy for supplier stretch and short-term funding pressure.
+- `Inventory metrics` are used as a proxy for inventory liquidity and stock-build risk.
+- `Cash conversion cycle` combines AR, AP, and inventory into one measure of working-capital lock-up.
+
+The table does not claim to be a bank PD model or LGD model. It provides transparent, rule-based overlays showing how public-data-derived working-capital signals could feed those later credit dimensions.
+
+### Metric derivations
+
+| Column | Primary Source | Derivation |
+|--------|---------------|------------|
+| `ar_days_benchmark` | PTRS or fallback formula from Table 5 | Carried from Table 5. |
+| `ar_days_stress_benchmark` | PTRS or fallback | Carried from Table 5. |
+| `ar_days_severe_benchmark` | PTRS or fallback | Carried from Table 5. |
+| `ar_stress_uplift_days` | Derived | `ar_days_stress_benchmark - ar_days_benchmark` |
+| `ar_severe_uplift_days` | Derived | `ar_days_severe_benchmark - ar_days_benchmark` |
+| `ap_days_benchmark` | PTRS or fallback formula from Table 5 | Carried from Table 5. |
+| `ap_days_stress_benchmark` | PTRS or fallback | Carried from Table 5. |
+| `ap_days_severe_benchmark` | PTRS or fallback | Carried from Table 5. |
+| `ap_stress_uplift_days` | Derived | `ap_days_stress_benchmark - ap_days_benchmark` |
+| `ap_severe_uplift_days` | Derived | `ap_days_severe_benchmark - ap_days_benchmark` |
+| `ptrs_paid_on_time_pct_latest` | PTRS | Latest available paid-on-time percentage, using Cycle 9 when available otherwise Cycle 8. |
+| `inventory_days_benchmark` | ABS-BI-23, ABS-BI-22, ABS-AI | Carried from Table 5. Estimated inventory days from the ABS inventories/sales ratio or fallback public-signal logic. |
+| `inventory_days_yoy_change` | ABS-BI-23, ABS-BI-22, ABS-AI | Carried from Table 5. |
+| `inventory_stock_build_risk` | Derived | Carried from Table 5. Flag based on inventory-days level, YoY change, ratio change, and weak demand / margin conditions. |
+| `cash_conversion_cycle_benchmark_days` | Derived | `ar_days_benchmark + inventory_days_benchmark - ap_days_benchmark` |
+| `cash_conversion_cycle_stress_days` | Derived | `ar_days_stress_benchmark + inventory_days_benchmark - ap_days_benchmark` |
+| `cash_conversion_cycle_uplift_days` | Derived | `cash_conversion_cycle_stress_days - cash_conversion_cycle_benchmark_days` |
+| `ar_collection_score` | Derived | Mean of three 1-5 scores: AR benchmark-days score, AR stress-uplift score, and PTRS paid-on-time score. Longer AR days, larger uplift, and weaker paid-on-time performance score worse. |
+| `receivables_realisation_score` | Derived | Mean of AR stress-uplift score, AR severe-uplift score, and PTRS paid-on-time score. Intended as a receivables realisation / recoverability overlay for later LGD thinking. |
+| `ap_supplier_stretch_score` | Derived | Mean of AP benchmark-days score, AP stress-uplift score, and PTRS paid-on-time score. Longer payable cycles and larger stress extension score worse because they can indicate supplier stretch. |
+| `inventory_liquidity_score` | Derived | 1-5 score from inventory days: `<=10 = 1`, `<=20 = 2`, `<=35 = 3`, `<=50 = 4`, `>50 = 5`. |
+| `inventory_stock_build_score` | Derived | `Low = 1`, `Moderate = 3`, `Elevated = 4`, `High = 5`. |
+| `cash_conversion_cycle_score` | Derived | 1-5 score from CCC days: `<=5 = 1`, `<=15 = 2`, `<=30 = 3`, `<=45 = 4`, `>45 = 5`. |
+| `working_capital_scorecard_overlay_score` | Derived | Mean of `ar_collection_score`, `ap_supplier_stretch_score`, `inventory_liquidity_score`, and `cash_conversion_cycle_score`. Intended as a scorecard-use overlay. |
+| `working_capital_pd_overlay_score` | Derived | Mean of `working_capital_scorecard_overlay_score`, `inventory_stock_build_score`, and `receivables_realisation_score`. Intended as a PD-oriented overlay. |
+| `working_capital_lgd_overlay_score` | Derived | Mean of `receivables_realisation_score`, `inventory_liquidity_score`, and `inventory_stock_build_score`. Intended as an LGD-oriented overlay. |
+| `scorecard_primary_driver` | Derived | Highest individual working-capital driver among AR collection pressure, AP supplier stretch, inventory liquidity, and CCC score. |
+| `pd_primary_driver` | Derived | Highest driver among receivables realisation, inventory stock build, and CCC score. |
+| `lgd_primary_driver` | Derived | Highest driver among receivables realisation, inventory liquidity, and inventory stock build. |
+
+### Interpretation
+
+- `Scorecard overlay` is the cleanest view for ongoing borrower risk scoring because it focuses on recurring operating working-capital pressure.
+- `PD overlay` places more emphasis on deterioration dynamics such as stock build and collection slippage.
+- `LGD overlay` places more emphasis on receivables realisation and inventory liquidity because those metrics matter more to recoverability under stress.
+
+---
+
+## Output Table 5B: `borrower_working_capital_risk_metrics.csv`
+
+**Purpose:** Compare each synthetic borrower archetype to its sector working-capital benchmarks and overlay logic.
+
+**Sources:** Output Table 6 (`borrower_benchmark_comparison.csv`) plus Output Table 5A (`industry_working_capital_risk_metrics.csv`)
+
+### Metric derivations
+
+| Column | Primary Source | Derivation |
+|--------|---------------|------------|
+| `ar_days`, `ap_days`, `inventory_days` | Synthetic borrower from Table 6 | Carried from the borrower archetype. |
+| `ar_days_benchmark`, `ap_days_benchmark`, `inventory_days_benchmark` | Table 5 / Table 5A | Sector benchmark comparators. |
+| `receivables_headroom_to_stress_days` | Derived | `ar_days_stress_benchmark - ar_days` |
+| `payables_headroom_to_stress_days` | Derived | `ap_days_stress_benchmark - ap_days` |
+| `cash_conversion_cycle_days` | Derived | `ar_days + inventory_days - ap_days` |
+| `cash_conversion_cycle_benchmark_days` | Derived | `ar_days_benchmark + inventory_days_benchmark - ap_days_benchmark` |
+| `cash_conversion_cycle_gap_days` | Derived | `cash_conversion_cycle_days - cash_conversion_cycle_benchmark_days` |
+| `cash_conversion_cycle_score` | Derived | Gap score using the same "higher is worse" logic used elsewhere in the bottom-up table. |
+| `receivables_realisation_score` | Derived | Headroom-to-stress score: `>=15 days = 1`, `>=10 = 2`, `>=5 = 3`, `>=0 = 4`, `<0 = 5`. |
+| `supplier_stretch_score` | Derived | Same headroom-to-stress scoring logic applied to AP. |
+| `working_capital_scorecard_metric_score` | Derived | Mean of borrower `ar_days_score`, `ap_days_score`, `inventory_days_score`, and `cash_conversion_cycle_score`. |
+| `working_capital_pd_metric_score` | Derived | Mean of borrower scorecard metric score, industry PD overlay score, receivables realisation score, and inventory stock-build score. |
+| `working_capital_lgd_metric_score` | Derived | Mean of receivables realisation score, borrower inventory-days score, and industry LGD overlay score. |
+
+### Interpretation
+
+This table is still synthetic because the borrower archetypes themselves are synthetic. Its purpose is not to estimate real borrower PD or LGD. Its purpose is to show how a later borrower scorecard, PD view, or LGD view could pull separately from:
+
+- borrower-specific AR/AP/inventory gaps
+- borrower cash-conversion-cycle gaps
+- industry-level collection and stock-build overlays
 
 ---
 
@@ -471,7 +566,7 @@ Each trigger includes a `recommended_action` (e.g., "Review sector exposure", "R
                         │              │                │
                         ▼              ▼                ▼
                  ┌────────────┐ ┌────────────┐  ┌──────────────┐
-                 │  Stage 3   │ │  Stage 8   │  │   Stage 7    │
+                 │  Stage 3   │ │  Stage 9   │  │   Stage 8    │
                  │ Benchmarks │ │ Monitoring │  │Bank Practice │
                  │ (D/E, ICR, │ │ (watchlist)│  │(appetite,    │
                  │ AR/AP/Inv) │ │            │  │ stress, ESG) │
@@ -480,6 +575,15 @@ Each trigger includes a `recommended_action` (e.g., "Review sector exposure", "R
                        ▼
                  ┌────────────┐
                  │  Stage 4   │
+                 │ Working    │
+                 │ Capital    │
+                 │(AR/AP/Inv, │
+                 │ PD/LGD ovl)│
+                 └─────┬──────┘
+                       │
+                       ▼
+                 ┌────────────┐
+                 │  Stage 5   │
                  │ Bottom-Up  │
                  │(archetypes │
                  │ vs bench.) │
@@ -487,14 +591,14 @@ Each trigger includes a `recommended_action` (e.g., "Review sector exposure", "R
                        │
                        ▼
                  ┌────────────┐
-                 │  Stage 5   │
+                 │  Stage 6   │
                  │ Scorecard  │
                  │ (35/30/35) │
                  └─────┬──────┘
                        │
                        ▼
                  ┌──────────────┐
-                 │   Stage 6    │
+                 │   Stage 7    │
                  │Credit Appln. │
                  │(pricing,     │
                  │ policy,      │
@@ -510,8 +614,10 @@ Each trigger includes a `recommended_action` (e.g., "Review sector exposure", "R
 
 2. **Benchmark estimation is deterministic, not statistical.** Where public data does not provide a banking metric directly (e.g., Debt/EBITDA or ICR), the pipeline uses transparent rule-based formulas that combine available public signals into plausible industry benchmark proxies. Inventory days are estimated from the ABS quarterly inventories/sales ratio rather than from a directly published official inventory-turnover-days series, and AR/AP days are anchored to official PTRS payment-times data when those source files have been downloaded. These rules are documented in `src/build_benchmarks.py`.
 
-3. **Archetype borrowers are synthetic.** The bottom-up borrower profiles are generated from industry data, not from real company financials. They represent illustrative mid-market borrower archetypes in each sector, stressed slightly below the benchmark proxy to simulate a credit assessment scenario.
+3. **Working-capital overlays are interpretive layers, not real PD/LGD models.** The AR, AP, inventory, and cash-conversion-cycle overlays are deterministic interpretations of the benchmark pack. They are included so the report can show how working-capital stress might feed later scorecard, PD, or LGD thinking. They are not calibrated default models or recovery models.
 
-4. **Scoring thresholds are fixed policy rules.** The 1-5 scoring bands for each metric (e.g., employment growth, margin level) are defined as deterministic threshold tables in `src/utils.py`. They do not change with the data. They are illustrative policy settings used for consistency, not observed internal bank thresholds.
+4. **Archetype borrowers are synthetic.** The bottom-up borrower profiles are generated from industry data, not from real company financials. They represent illustrative mid-market borrower archetypes in each sector, stressed slightly below the benchmark proxy to simulate a credit assessment scenario.
 
-5. **All weights are explicit.** Classification vs Macro = 55/45. Final score = 35% Classification + 30% Macro + 35% Bottom-Up. These weights are hardcoded and documented.
+5. **Scoring thresholds are fixed policy rules.** The 1-5 scoring bands for each metric (e.g., employment growth, margin level) are defined as deterministic threshold tables in `src/utils.py`. They do not change with the data. They are illustrative policy settings used for consistency, not observed internal bank thresholds.
+
+6. **All weights are explicit.** Classification vs Macro = 55/45. Final score = 35% Classification + 30% Macro + 35% Bottom-Up. These weights are hardcoded and documented.
