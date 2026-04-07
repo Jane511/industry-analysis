@@ -5,10 +5,11 @@ RAW_PUBLIC_DIR = REPO_ROOT / "data" / "raw" / "public"
 RAW_PUBLIC_DIR_ABS = RAW_PUBLIC_DIR / "abs"
 RAW_PUBLIC_DIR_PTRS = RAW_PUBLIC_DIR / "ptrs"
 PROCESSED_DIR = REPO_ROOT / "data" / "processed"
+OUTPUT_DIR = REPO_ROOT / "output"
 OUTPUT_TABLES_DIR = REPO_ROOT / "output" / "tables"
 OUTPUT_CHARTS_DIR = REPO_ROOT / "output" / "charts"
 DOCS_DIR = REPO_ROOT / "docs"
-DELIVERABLES_DIR = DOCS_DIR / "deliverables"
+DELIVERABLES_DIR = OUTPUT_DIR
 PTRS_AR_WORKBOOK_FILENAME = "PTRS_MultiCycle_AR_Days_Model_Official.xlsx"
 
 PUBLIC_SOURCE_URLS = {

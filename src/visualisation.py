@@ -423,3 +423,224 @@ def plot_stress_test_impact(stress_df: pd.DataFrame, output_path: Path) -> None:
     fig.tight_layout()
     fig.savefig(output_path, dpi=FIG_DPI, bbox_inches='tight')
     plt.close(fig)
+
+
+# ---------------------------------------------------------------------------
+# 11. Working-capital AR view
+# ---------------------------------------------------------------------------
+def plot_working_capital_ar(working_capital_df: pd.DataFrame, output_path: Path) -> None:
+    _apply_style()
+
+    df = working_capital_df.sort_values('ar_days_benchmark', ascending=True).copy()
+    uplift = (
+        df['ar_days_stress_benchmark'].fillna(df['ar_days_benchmark']) - df['ar_days_benchmark']
+    ).clip(lower=0)
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    bars_base = ax.barh(
+        df['industry'],
+        df['ar_days_benchmark'],
+        color='#90a4ae',
+        edgecolor='white',
+        height=0.6,
+        label='Base AR days',
+    )
+    ax.barh(
+        df['industry'],
+        uplift,
+        left=df['ar_days_benchmark'],
+        color='#ef6c00',
+        edgecolor='white',
+        height=0.6,
+        label='Stress uplift',
+    )
+
+    for bar, base_value, stress_value, paid_on_time in zip(
+        bars_base,
+        df['ar_days_benchmark'],
+        df['ar_days_stress_benchmark'],
+        df['ptrs_paid_on_time_pct_latest'],
+    ):
+        paid_on_time_pct = float(paid_on_time) * 100 if pd.notna(paid_on_time) and float(paid_on_time) <= 1 else paid_on_time
+        label = f'{base_value:.1f} -> {stress_value:.1f} d'
+        if pd.notna(paid_on_time_pct):
+            label += f' | {paid_on_time_pct:.1f}% on time'
+        ax.text(
+            float(stress_value) + 0.5,
+            bar.get_y() + bar.get_height() / 2,
+            label,
+            va='center',
+            fontsize=FONT_ANNOT,
+            fontweight='bold',
+        )
+
+    ax.set_xlabel('Days', fontsize=FONT_LABEL)
+    ax.set_title('AR Days Benchmark and Stress by Industry', fontsize=FONT_TITLE, fontweight='bold', pad=12)
+    ax.tick_params(axis='y', labelsize=FONT_TICK)
+    ax.legend(fontsize=FONT_TICK, loc='lower right')
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=FIG_DPI, bbox_inches='tight')
+    plt.close(fig)
+
+
+# ---------------------------------------------------------------------------
+# 12. Working-capital AP view
+# ---------------------------------------------------------------------------
+def plot_working_capital_ap(working_capital_df: pd.DataFrame, output_path: Path) -> None:
+    _apply_style()
+
+    df = working_capital_df.sort_values('ap_days_benchmark', ascending=True).copy()
+    uplift = (
+        df['ap_days_stress_benchmark'].fillna(df['ap_days_benchmark']) - df['ap_days_benchmark']
+    ).clip(lower=0)
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    bars_base = ax.barh(
+        df['industry'],
+        df['ap_days_benchmark'],
+        color='#b0bec5',
+        edgecolor='white',
+        height=0.6,
+        label='Base AP days',
+    )
+    ax.barh(
+        df['industry'],
+        uplift,
+        left=df['ap_days_benchmark'],
+        color='#c62828',
+        edgecolor='white',
+        height=0.6,
+        label='Stress uplift',
+    )
+
+    for bar, base_value, stress_value, stretch_score in zip(
+        bars_base,
+        df['ap_days_benchmark'],
+        df['ap_days_stress_benchmark'],
+        df['ap_supplier_stretch_score'],
+    ):
+        ax.text(
+            float(stress_value) + 0.5,
+            bar.get_y() + bar.get_height() / 2,
+            f'{base_value:.1f} -> {stress_value:.1f} d | stretch {stretch_score:.2f}',
+            va='center',
+            fontsize=FONT_ANNOT,
+            fontweight='bold',
+        )
+
+    ax.set_xlabel('Days', fontsize=FONT_LABEL)
+    ax.set_title('AP Days Benchmark and Stress by Industry', fontsize=FONT_TITLE, fontweight='bold', pad=12)
+    ax.tick_params(axis='y', labelsize=FONT_TICK)
+    ax.legend(fontsize=FONT_TICK, loc='lower right')
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=FIG_DPI, bbox_inches='tight')
+    plt.close(fig)
+
+
+# ---------------------------------------------------------------------------
+# 13. Working-capital inventory view
+# ---------------------------------------------------------------------------
+def plot_working_capital_inventory(working_capital_df: pd.DataFrame, output_path: Path) -> None:
+    _apply_style()
+
+    df = working_capital_df.sort_values('inventory_days_benchmark', ascending=True).copy()
+    colours = [RISK_COLOURS.get(flag, '#f9a825') for flag in df['inventory_stock_build_risk']]
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    bars = ax.barh(
+        df['industry'],
+        df['inventory_days_benchmark'],
+        color=colours,
+        edgecolor='white',
+        height=0.6,
+    )
+
+    for bar, days_value, yoy_change, stock_flag, ccc_value in zip(
+        bars,
+        df['inventory_days_benchmark'],
+        df['inventory_days_yoy_change'],
+        df['inventory_stock_build_risk'],
+        df['cash_conversion_cycle_benchmark_days'],
+    ):
+        yoy_text = 'n/a' if pd.isna(yoy_change) else f'{float(yoy_change):+.1f}'
+        ax.text(
+            float(days_value) + 0.5,
+            bar.get_y() + bar.get_height() / 2,
+            f'{days_value:.1f} d | YoY {yoy_text} | {stock_flag} | CCC {ccc_value:.1f}',
+            va='center',
+            fontsize=FONT_ANNOT,
+            fontweight='bold',
+        )
+
+    ax.set_xlabel('Estimated Inventory Days', fontsize=FONT_LABEL)
+    ax.set_title('Inventory Days and Stock-Build Risk by Industry', fontsize=FONT_TITLE, fontweight='bold', pad=12)
+    ax.tick_params(axis='y', labelsize=FONT_TICK)
+
+    from matplotlib.patches import Patch
+    legend_elements = [
+        Patch(facecolor=RISK_COLOURS['Low'], label='Low stock build'),
+        Patch(facecolor=RISK_COLOURS['Medium'], label='Moderate stock build'),
+        Patch(facecolor=RISK_COLOURS['Elevated'], label='Elevated stock build'),
+        Patch(facecolor=RISK_COLOURS['High'], label='High stock build'),
+    ]
+    ax.legend(handles=legend_elements, fontsize=FONT_TICK, loc='lower right')
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=FIG_DPI, bbox_inches='tight')
+    plt.close(fig)
+
+
+# ---------------------------------------------------------------------------
+# 14. Working-capital overlay view
+# ---------------------------------------------------------------------------
+def plot_working_capital_overlay(working_capital_df: pd.DataFrame, output_path: Path) -> None:
+    _apply_style()
+
+    df = working_capital_df.sort_values('working_capital_pd_overlay_score', ascending=True).copy()
+    y = np.arange(len(df))
+    width = 0.24
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.barh(
+        y - width,
+        df['working_capital_scorecard_overlay_score'],
+        height=width,
+        color='#1565c0',
+        edgecolor='white',
+        label='Scorecard overlay',
+    )
+    ax.barh(
+        y,
+        df['working_capital_pd_overlay_score'],
+        height=width,
+        color='#00838f',
+        edgecolor='white',
+        label='PD overlay',
+    )
+    ax.barh(
+        y + width,
+        df['working_capital_lgd_overlay_score'],
+        height=width,
+        color='#6a1b9a',
+        edgecolor='white',
+        label='LGD overlay',
+    )
+
+    for idx, row in enumerate(df.itertuples(index=False)):
+        ax.text(
+            row.working_capital_lgd_overlay_score + 0.04,
+            idx + width,
+            f'{row.working_capital_lgd_overlay_score:.2f}',
+            va='center',
+            fontsize=FONT_ANNOT,
+            fontweight='bold',
+        )
+
+    ax.set_yticks(y)
+    ax.set_yticklabels(df['industry'], fontsize=FONT_TICK)
+    ax.set_xlim(0, 5.2)
+    ax.set_xlabel('Overlay Score (1=Low, 5=High)', fontsize=FONT_LABEL)
+    ax.set_title('Working-Capital Overlay Scores for PD, Scorecard, and LGD', fontsize=FONT_TITLE, fontweight='bold', pad=12)
+    ax.legend(fontsize=FONT_TICK, loc='lower right')
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=FIG_DPI, bbox_inches='tight')
+    plt.close(fig)

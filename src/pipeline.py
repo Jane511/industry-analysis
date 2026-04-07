@@ -5,6 +5,7 @@ from src.build_benchmarks import build_industry_benchmarks
 from src.build_portfolio import build_portfolio_proxy
 from src.build_bottom_up import build_bottom_up
 from src.build_scorecard import build_scorecard
+from src.build_working_capital import build_working_capital_metrics
 from src.bank_practice import (
     build_industry_credit_appetite_strategy,
     build_industry_stress_test_matrix,
@@ -28,6 +29,13 @@ def run_pipeline() -> None:
     benchmarks = build_industry_benchmarks(macro, PROCESSED_DIR)
     save_csv(benchmarks, OUTPUT_TABLES_DIR / 'industry_generated_benchmarks.csv')
     borrower_compare = build_bottom_up(macro, benchmarks, PROCESSED_DIR)
+    industry_working_capital, borrower_working_capital = build_working_capital_metrics(
+        benchmarks,
+        borrower_compare,
+        PROCESSED_DIR,
+    )
+    save_csv(industry_working_capital, OUTPUT_TABLES_DIR / 'industry_working_capital_risk_metrics.csv')
+    save_csv(borrower_working_capital, OUTPUT_TABLES_DIR / 'borrower_working_capital_risk_metrics.csv')
     scorecard = build_scorecard(borrower_compare, PROCESSED_DIR, OUTPUT_TABLES_DIR)
 
     # --- Summary tables ---
@@ -86,6 +94,8 @@ def run_pipeline() -> None:
         macro,
         benchmarks,
         borrower_compare,
+        industry_working_capital,
+        borrower_working_capital,
         scorecard,
         pricing,
         policy,
@@ -94,6 +104,7 @@ def run_pipeline() -> None:
         stress,
         PROCESSED_DIR / 'industry_risk_reporting_workbook.xlsx',
         OUTPUT_TABLES_DIR / 'chart_table.csv',
+        DELIVERABLES_DIR / 'executive_summary.md',
     )
 
     build_formal_chart_report(
