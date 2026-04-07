@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment
+.env
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.pytest_cache/
+.pytest_tmp/
+tests/.tmp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated artifacts
+output/charts/*.png
+tmp*/
+pytest-cache-files-*/
+
+# Project data files
+data/

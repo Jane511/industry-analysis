@@ -1,0 +1,10 @@
+industry,classification_risk_score,macro_risk_score,industry_base_risk_score,industry_base_risk_level,employment_yoy_growth_pct,ebitda_margin_pct_latest,gross_operating_profit_to_sales_ratio_latest,inventories_to_sales_ratio_latest,demand_proxy_building_type,demand_yoy_growth_pct,cash_rate_latest_pct,cash_rate_change_1y_pctpts
+Health Care and Social Assistance,3.75,2.8,3.32,Elevated,3.7362582470246597,16.650818523131594,,,Health buildings,355.0349495312872,3.85,-0.24999999999999956
+"Professional, Scientific And Technical Services",3.0,3.2,3.09,Elevated,5.499757701056085,12.992998039904375,0.13,,Offices,-35.71613994612167,3.85,-0.24999999999999956
+Manufacturing,2.75,3.4,3.04,Elevated,-0.9267832441852364,9.154432427912152,0.1,0.52,Industrial Buildings - Total,55.53198132831347,3.85,-0.24999999999999956
+"Agriculture, Forestry And Fishing",2.75,3.4,3.04,Elevated,-5.114110005950289,14.583542063253516,,,Agricultural and aquacultural buildings,58.37037037037036,3.85,-0.24999999999999956
+Retail Trade,2.5,3.4,2.9,Medium,-0.45528819056106506,7.800646854858638,0.07,0.31,Retail and wholesale trade buildings,68.4682526776571,3.85,-0.24999999999999956
+Wholesale Trade,2.25,3.2,2.68,Medium,-8.735576475741723,6.120776168493568,0.07,0.47,Warehouses,69.31762782941249,3.85,-0.24999999999999956
+Accommodation And Food Services,2.5,2.6,2.54,Medium,0.7248089949966952,11.379727388618312,0.1,0.06,Short term accommodation buildings,113.70446184881926,3.85,-0.24999999999999956
+Construction,2.0,2.8,2.36,Medium,1.4730323170025317,10.152580092540706,0.08,,Total Non-residential,71.4623487039674,3.85,-0.24999999999999956
+"Transport, Postal And Warehousing",1.75,2.2,1.95,Low,2.793166377826317,17.718589272593682,0.21,,Warehouses,69.31762782941249,3.85,-0.24999999999999956

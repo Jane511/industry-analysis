@@ -1,0 +1,10 @@
+borrower_name,industry,risk_level,final_industry_risk_score,cash_rate_pct,base_margin_pct,industry_loading_pct,indicative_rate_pct,all_in_rate_pct
+Health Care & Social Assistance Archetype,Health Care and Social Assistance,Medium,2.97,3.85,2.5,0.25,2.75,6.6
+"Professional, Scientific And Technical Services Archetype","Professional, Scientific And Technical Services",Medium,2.83,3.85,2.5,0.25,2.75,6.6
+"Agriculture, Forestry And Fishing Archetype","Agriculture, Forestry And Fishing",Medium,2.8,3.85,2.5,0.25,2.75,6.6
+Manufacturing Archetype,Manufacturing,Medium,2.8,3.85,2.5,0.25,2.75,6.6
+Retail Trade Archetype,Retail Trade,Medium,2.71,3.85,2.5,0.25,2.75,6.6
+Wholesale Trade Archetype,Wholesale Trade,Medium,2.56,3.85,2.5,0.25,2.75,6.6
+Accommodation And Food Services Archetype,Accommodation And Food Services,Medium,2.47,3.85,2.5,0.25,2.75,6.6
+Construction Archetype,Construction,Medium,2.36,3.85,2.5,0.25,2.75,6.6
+"Transport, Postal And Warehousing Archetype","Transport, Postal And Warehousing",Medium,2.09,3.85,2.5,0.25,2.75,6.6

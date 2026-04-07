@@ -1,0 +1,9 @@
+chart_id,chart_title,chart_file,source_sheet,metric_basis
+C01,Industry Risk Dimensions Heatmap,industry_risk_heatmap.png,chart_data_heatmap,Public ABS/RBA metrics plus public-data-derived classification scores
+C02,Industry Base Risk Score by Sector,industry_base_risk_score.png,chart_data_industry_s,Public ABS/RBA metrics plus public-data-derived classification scores
+C03,Employment Growth by Industry,industry_employment_growth.png,chart_data_industry_s,Public ABS labour-force series
+C04,Borrower Industry Risk Scorecard,borrower_industry_risk_scorecard.png,chart_data_borrower,Workbook hard-coded borrower archetype financials combined with public sector metrics
+C05,Indicative Pricing by Borrower,pricing_grid.png,chart_data_pricing,Workbook hard-coded pricing settings combined with workbook borrower score outputs
+C06,Sector Concentration: Current Exposure vs Limit,concentration_dashboard.png,chart_data_concentrat,Workbook hard-coded bank sector exposure plus hard-coded limit settings
+C07,Industry Watchlist Trigger Count,watchlist_summary.png,chart_data_watchlist,Public ABS/RBA signals converted into watchlist rules
+C08,Industry Stress Test Impact,stress_test_impact.png,chart_data_stress,Public ABS/RBA metrics with bank-style stress assumptions
