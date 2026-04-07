@@ -46,21 +46,21 @@ CHART_DEFINITIONS = [
         "chart_title": "Borrower Industry Risk Scorecard",
         "chart_file": "borrower_industry_risk_scorecard.png",
         "source_sheet": "chart_data_borrower",
-        "metric_basis": "Workbook hard-coded borrower archetype financials combined with public sector metrics",
+        "metric_basis": "Synthetic borrower archetype financials combined with public sector metrics",
     },
     {
         "chart_id": "C05",
         "chart_title": "Indicative Pricing by Borrower",
         "chart_file": "pricing_grid.png",
         "source_sheet": "chart_data_pricing",
-        "metric_basis": "Workbook hard-coded pricing settings combined with workbook borrower score outputs",
+        "metric_basis": "Illustrative pricing assumptions combined with borrower score outputs",
     },
     {
         "chart_id": "C06",
         "chart_title": "Sector Concentration: Current Exposure vs Limit",
         "chart_file": "concentration_dashboard.png",
         "source_sheet": "chart_data_concentrat",
-        "metric_basis": "Workbook hard-coded bank sector exposure plus hard-coded limit settings",
+        "metric_basis": "Portfolio exposure proxy plus illustrative concentration limit settings",
     },
     {
         "chart_id": "C07",
@@ -74,7 +74,7 @@ CHART_DEFINITIONS = [
         "chart_title": "Industry Stress Test Impact",
         "chart_file": "stress_test_impact.png",
         "source_sheet": "chart_data_stress",
-        "metric_basis": "Public ABS/RBA metrics with bank-style stress assumptions",
+        "metric_basis": "Public ABS/RBA metrics with simplified APRA-informed stress assumptions",
     },
 ]
 
@@ -102,8 +102,8 @@ def build_reporting_workbook(
     workbook_path.parent.mkdir(parents=True, exist_ok=True)
     chart_table_path.parent.mkdir(parents=True, exist_ok=True)
 
-    public_metrics = macro_df[
-        [
+    public_metrics = macro_df.reindex(
+        columns=[
             "sector_key",
             "industry",
             "classification_risk_score",
@@ -117,27 +117,37 @@ def build_reporting_workbook(
             "ebitda_margin_pct_latest",
             "gross_operating_profit_to_sales_ratio_latest",
             "inventories_to_sales_ratio_latest",
+            "inventory_days_est",
+            "inventory_days_yoy_change",
+            "inventory_stock_build_risk",
+            "inventory_days_est_source",
             "demand_proxy_building_type",
             "demand_yoy_growth_pct",
             "cash_rate_latest_pct",
             "cash_rate_change_1y_pctpts",
         ]
-    ].copy()
+    ).copy()
     public_metrics["metric_origin"] = "ABS/RBA public datasets"
 
-    hardcoded_sector_benchmarks = benchmark_df[
-        [
+    hardcoded_sector_benchmarks = benchmark_df.reindex(
+        columns=[
             "sector_key",
             "industry",
             "debt_to_ebitda_benchmark",
             "icr_benchmark",
             "ar_days_benchmark",
             "ap_days_benchmark",
+            "inventory_days_benchmark",
+            "inventory_days_yoy_change",
+            "inventory_stock_build_risk",
+            "inventory_days_benchmark_source",
+            "ar_days_benchmark_source",
+            "ap_days_benchmark_source",
         ]
-    ].copy()
-    hardcoded_sector_benchmarks["hardcoded_input_flag"] = "Y"
+    ).copy()
+    hardcoded_sector_benchmarks["hardcoded_input_flag"] = "Mixed"
     hardcoded_sector_benchmarks["hardcoded_reason"] = (
-        "Public ABS/RBA datasets do not publish sector leverage, ICR, or AR/AP day banking benchmarks directly"
+        "Debt/EBITDA and ICR remain deterministic proxy benchmarks; AR/AP timing uses reconstructed official PTRS tables when available, otherwise fallback proxy formulas"
     )
 
     hardcoded_borrowers = borrower_compare_df[
@@ -230,11 +240,11 @@ def build_reporting_workbook(
                 },
                 {
                     "section": "Public metrics",
-                    "detail": "All public metrics in this workbook are sourced from downloaded ABS/RBA datasets already held in the repository",
+                    "detail": "Public metrics in this workbook are sourced from downloaded ABS/RBA datasets, including estimated inventory days derived from ABS quarterly inventory ratios and, for AR/AP timing when available, reconstructed official PTRS tables",
                 },
                 {
                     "section": "Hard-coded inputs retained",
-                    "detail": "Sector debt/EBITDA, ICR, AR/AP benchmarks, borrower financials, bank portfolio exposure, pricing and policy settings",
+                    "detail": "Sector debt/EBITDA and ICR proxies, borrower financials, bank portfolio exposure, pricing settings, policy settings, and concentration limits",
                 },
                 {
                     "section": "Chart generation rule",
@@ -322,9 +332,9 @@ def _chart_explanations(
     )
 
     breach_text = (
-        f"{len(breaches)} sector breach(es) are shown, led by {breaches.iloc[0]['industry']}."
+        f"{len(breaches)} sector breaches are shown, led by {breaches.iloc[0]['industry']}."
         if not breaches.empty
-        else "No sector currently breaches the hard-coded concentration limits."
+        else "No sector currently breaches the illustrative concentration limits."
     )
     pricing_text = (
         f"The highest all-in rate is {highest_rate['all_in_rate_pct']:.2f}% for {highest_rate['borrower_name']}, "
@@ -336,13 +346,13 @@ def _chart_explanations(
     return {
         "C01": (
             f"The heatmap shows how public-data-derived classification dimensions accumulate into the industry view. "
-            f"Across the portfolio, {dominant_dimension} is the most severe average dimension, while "
+            f"In the current proxy framework, {dominant_dimension} is the most severe average dimension, while "
             f"{highest_sector['industry']} carries the highest base score at {highest_sector['industry_base_risk_score']:.2f}."
         ),
         "C02": (
             f"This ranking is the core sector risk view for credit analysis. {highest_sector['industry']} is currently the highest-risk sector "
             f"at {highest_sector['industry_base_risk_score']:.2f}, while {lowest_sector['industry']} is lowest at "
-            f"{lowest_sector['industry_base_risk_score']:.2f}. These scores combine public ABS/RBA signals with public-data-derived classification scores."
+            f"{lowest_sector['industry_base_risk_score']:.2f}. These scores combine public ABS/RBA signals with public-data-derived classification proxies."
         ),
         "C03": (
             f"Employment growth is one of the cleanest public signals for near-term sector momentum. "
@@ -350,16 +360,16 @@ def _chart_explanations(
             f"while {worst_employment['industry']} is weakest at {worst_employment['employment_yoy_growth_pct']:+.1f}%."
         ),
         "C04": (
-            f"This scorecard uses workbook hard-coded borrower archetype financial statements because borrower-level accounts are not public. "
+            f"This scorecard uses synthetic borrower archetype financial statements because borrower-level accounts are not public. "
             f"{highest_borrower['borrower_name']} is the highest-risk archetype at {highest_borrower['final_industry_risk_score']:.2f}, "
             f"while {lowest_borrower['borrower_name']} is lowest at {lowest_borrower['final_industry_risk_score']:.2f}."
         ),
         "C05": (
-            f"Indicative pricing is driven by the workbook hard-coded pricing settings layered onto borrower risk scores. "
+            f"Indicative pricing is driven by illustrative pricing settings layered onto borrower risk scores. "
             f"{pricing_text}"
         ),
         "C06": (
-            f"This chart compares workbook hard-coded bank sector exposure against workbook hard-coded concentration limits. "
+            f"This chart compares the portfolio exposure proxy against illustrative concentration limits. "
             f"The highest utilisation is {top_util['industry']} at {top_util['utilisation_pct']:.1f}% of limit. {breach_text}"
         ),
         "C07": (
@@ -367,7 +377,7 @@ def _chart_explanations(
             f"{top_watchlist} has the highest number of triggers at {top_watchlist_count}, which should drive intensified sector review and obligor screening."
         ),
         "C08": (
-            f"The stress matrix applies bank-style scenario shocks to the public-data sector view. "
+            f"The stress matrix applies simplified APRA-informed scenario shocks to the public-data sector view. "
             f"{biggest_scenario['scenario_name']} produces the largest average uplift at {biggest_scenario['stress_delta']:.2f} score points, "
             f"and {worst_stress['industry']} reaches the highest stressed score at {worst_stress['stressed_industry_risk_score']:.2f}."
         ),
@@ -399,8 +409,9 @@ def _render_pdf_report(
             0.80,
             textwrap.fill(
                 "This report consolidates the chart pack for industry risk analysis. Public ABS/RBA metrics are used wherever available. "
-                "The only hard-coded workbook inputs retained are sector debt/EBITDA, ICR, AR/AP benchmarks, borrower archetype financials, "
-                "bank portfolio exposure by sector, and bank pricing/policy settings.",
+                "The report also uses estimated inventory days derived from ABS quarterly inventories/sales ratios rather than a direct official inventory-turnover-days series. "
+                "The remaining explicit proxy or synthetic inputs are sector debt/EBITDA and ICR benchmarks, borrower archetype financials, "
+                "bank portfolio exposure by sector, and bank pricing/policy settings. AR/AP timing can instead be anchored to reconstructed official PTRS publications when available.",
                 width=90,
             ),
             fontsize=11,

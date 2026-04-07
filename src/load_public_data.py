@@ -1,5 +1,10 @@
 from pathlib import Path
+
 import pandas as pd
+from openpyxl import load_workbook
+
+from src.ptrs_reconstruction import PTRS_MODEL_NOTE
+from src.utils import normalise_text
 
 def load_rba_cash_rate(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path, skiprows=[0,2,3,4,5,6,7,8,9,10], encoding='utf-8-sig')
@@ -83,3 +88,122 @@ def parse_australian_industry_totals(path: Path) -> pd.DataFrame:
     out['op_profit_margin_pct'] = out['op_profit_before_tax_m'] / out['sales_m'] * 100
     out['wages_to_sales_pct'] = out['wages_m'] / out['sales_m'] * 100
     return out
+
+
+def _parse_ptrs_model_sheet(ws) -> pd.DataFrame:
+    records = []
+    for row in ws.iter_rows(min_row=2, max_col=19, values_only=True):
+        industry_code = row[0]
+        industry_name = row[1]
+        if not industry_code or not industry_name:
+            continue
+
+        records.append(
+            {
+                "anzsic_division_code": str(industry_code).strip(),
+                "ptrs_industry": str(industry_name).strip(),
+                "ptrs_sector_key": normalise_text(industry_name),
+                "ptrs_cycle8_avg_payment_days": pd.to_numeric(row[2], errors="coerce"),
+                "ptrs_cycle9_avg_payment_days": pd.to_numeric(row[3], errors="coerce"),
+                "ptrs_cycle8_80th_days": pd.to_numeric(row[4], errors="coerce"),
+                "ptrs_cycle9_80th_days": pd.to_numeric(row[5], errors="coerce"),
+                "ptrs_cycle8_95th_days": pd.to_numeric(row[6], errors="coerce"),
+                "ptrs_cycle9_95th_days": pd.to_numeric(row[7], errors="coerce"),
+                "ptrs_base_ar_days": pd.to_numeric(row[8], errors="coerce"),
+                "ptrs_stress_ar_days": pd.to_numeric(row[9], errors="coerce"),
+                "ptrs_severe_ar_days": pd.to_numeric(row[10], errors="coerce"),
+                "ptrs_conservative_multiplier": pd.to_numeric(row[11], errors="coerce"),
+                "ptrs_adjusted_base_ar_days": pd.to_numeric(row[12], errors="coerce"),
+                "ptrs_adjusted_stress_ar_days": pd.to_numeric(row[13], errors="coerce"),
+                "ptrs_adjusted_severe_ar_days": pd.to_numeric(row[14], errors="coerce"),
+                "ptrs_cycle8_paid_on_time_pct": pd.to_numeric(row[15], errors="coerce"),
+                "ptrs_cycle9_paid_on_time_pct": pd.to_numeric(row[16], errors="coerce"),
+                "ptrs_latest_cycle_used": row[17],
+                "ptrs_model_note": row[18],
+            }
+        )
+    return pd.DataFrame(records)
+
+
+def _parse_ptrs_source_sheet(ws, cycle_number: int) -> pd.DataFrame:
+    records = []
+    for row in ws.iter_rows(min_row=2, max_col=9, values_only=True):
+        industry_code = row[0]
+        industry_name = row[1]
+        if not industry_code or not industry_name:
+            continue
+
+        records.append(
+            {
+                "anzsic_division_code": str(industry_code).strip(),
+                "ptrs_industry": str(industry_name).strip(),
+                f"ptrs_cycle{cycle_number}_avg_common_payment_days": pd.to_numeric(row[2], errors="coerce"),
+                f"ptrs_cycle{cycle_number}_avg_payment_days": pd.to_numeric(row[3], errors="coerce"),
+                f"ptrs_cycle{cycle_number}_80th_days": pd.to_numeric(row[4], errors="coerce"),
+                f"ptrs_cycle{cycle_number}_95th_days": pd.to_numeric(row[5], errors="coerce"),
+                f"ptrs_cycle{cycle_number}_paid_on_time_pct": pd.to_numeric(row[6], errors="coerce"),
+            }
+        )
+    return pd.DataFrame(records)
+
+
+def _parse_ptrs_multiplier(ws) -> float:
+    for row in ws.iter_rows(min_row=1, max_col=2, values_only=True):
+        label = row[0]
+        if normalise_text(label) == "conservative multiplier":
+            value = pd.to_numeric(row[1], errors="coerce")
+            return float(value) if pd.notna(value) else 1.0
+    return 1.0
+
+
+def _build_ptrs_model_from_sources(cycle8_df: pd.DataFrame, cycle9_df: pd.DataFrame, multiplier: float) -> pd.DataFrame:
+    base = cycle8_df.merge(cycle9_df, on=["anzsic_division_code", "ptrs_industry"], how="outer")
+    base["ptrs_sector_key"] = base["ptrs_industry"].map(normalise_text)
+    base["ptrs_conservative_multiplier"] = multiplier
+    base["ptrs_base_ar_days"] = base[["ptrs_cycle8_avg_payment_days", "ptrs_cycle9_avg_payment_days"]].max(axis=1, skipna=True)
+    base["ptrs_stress_ar_days"] = base[["ptrs_cycle8_80th_days", "ptrs_cycle9_80th_days"]].max(axis=1, skipna=True)
+    base["ptrs_severe_ar_days"] = base[["ptrs_cycle8_95th_days", "ptrs_cycle9_95th_days"]].max(axis=1, skipna=True)
+    base["ptrs_adjusted_base_ar_days"] = base["ptrs_base_ar_days"] * multiplier
+    base["ptrs_adjusted_stress_ar_days"] = base["ptrs_stress_ar_days"] * multiplier
+    base["ptrs_adjusted_severe_ar_days"] = base["ptrs_severe_ar_days"] * multiplier
+    base["ptrs_latest_cycle_used"] = base["ptrs_cycle9_avg_payment_days"].apply(lambda value: "Cycle 9" if pd.notna(value) else "Cycle 8")
+    base["ptrs_model_note"] = PTRS_MODEL_NOTE
+    return base[
+        [
+            "anzsic_division_code",
+            "ptrs_industry",
+            "ptrs_sector_key",
+            "ptrs_cycle8_avg_payment_days",
+            "ptrs_cycle9_avg_payment_days",
+            "ptrs_cycle8_80th_days",
+            "ptrs_cycle9_80th_days",
+            "ptrs_cycle8_95th_days",
+            "ptrs_cycle9_95th_days",
+            "ptrs_base_ar_days",
+            "ptrs_stress_ar_days",
+            "ptrs_severe_ar_days",
+            "ptrs_conservative_multiplier",
+            "ptrs_adjusted_base_ar_days",
+            "ptrs_adjusted_stress_ar_days",
+            "ptrs_adjusted_severe_ar_days",
+            "ptrs_cycle8_paid_on_time_pct",
+            "ptrs_cycle9_paid_on_time_pct",
+            "ptrs_latest_cycle_used",
+            "ptrs_model_note",
+        ]
+    ].copy()
+
+
+def parse_ptrs_ar_workbook(path: Path) -> pd.DataFrame:
+    wb = load_workbook(path, data_only=True, read_only=True)
+    try:
+        model_df = _parse_ptrs_model_sheet(wb["Model_AR_Days"])
+        if not model_df.empty and model_df["ptrs_base_ar_days"].notna().any():
+            return model_df
+
+        cycle8_df = _parse_ptrs_source_sheet(wb["PTRS_Cycle8_Official"], 8)
+        cycle9_df = _parse_ptrs_source_sheet(wb["PTRS_Cycle9_Official"], 9)
+        multiplier = _parse_ptrs_multiplier(wb["Assumptions"])
+        return _build_ptrs_model_from_sources(cycle8_df, cycle9_df, multiplier)
+    finally:
+        wb.close()

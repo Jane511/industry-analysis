@@ -15,5 +15,12 @@ This repo uses official Australian public data for the public-data layer.
 - https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/87310051.xlsx
 - https://www.rba.gov.au/statistics/tables/csv/f1-data.csv
 
+## Optional public AR benchmark source
+- https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2025-07/reg-update-july-2025.pdf
+- https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2026-01/regulators-update-202601.pdf
+- https://paymenttimes.gov.au/sites/ptrs.gov.au/files/regulatory-resource/ptrs-guidance-materials-march2025.pdf
+
+The repo can download those official PTRS publications and automatically rebuild `data/raw/public/ptrs/PTRS_MultiCycle_AR_Days_Model_Official.xlsx` from the published cycle tables.
+
 ## Generated non-public layers
-Where the public datasets do not expose a direct banking metric, the repo generates deterministic, APRA-informed proxy metrics from the public ABS/RBA signals instead of loading manual workbook inputs.
+Where the public datasets do not expose a direct banking metric, the repo generates deterministic, APRA-informed proxy metrics from the public ABS/RBA signals instead of relying on user-entered bank-only workbook inputs.
