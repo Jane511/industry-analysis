@@ -16,8 +16,9 @@ The methodology is designed for portfolio demonstration. It is APRA-informed and
 | **ABS-LF** | Labour Force, Australia, Detailed | `6291004_feb2026_labour_force_industry.xlsx` (Data1) | ABS | Monthly time series to Feb 2026 |
 | **ABS-BA** | Building Approvals — Non-Residential | `87310051_feb2026_building_approvals_nonres.xlsx` (Data1) | ABS | Monthly time series to Feb 2026 |
 | **RBA-F1** | Interest Rates and Yields — Money Market | `rba_f1_data.csv` | Reserve Bank of Australia | Daily to current |
+| **PTRS** | Payment Times Reporting Scheme multi-cycle AR/AP workbook reconstructed from official PDFs | `PTRS_MultiCycle_AR_Days_Model_Official.xlsx` | Payment Times Reporting Regulator | Cycle 8 and Cycle 9 official publications |
 
-All files are downloaded from publicly available ABS and RBA data portals. URLs are documented in `src/config.py`.
+ABS, RBA, and PTRS source URLs are documented in `src/config.py`. The PTRS workbook is rebuilt automatically from the downloaded official publications rather than being maintained as a manual input file.
 
 ---
 
@@ -67,11 +68,11 @@ The parser (`load_public_data.parse_australian_industry_totals`) reads Table_1, 
 
 | `cyclical_score` | ABS-AI | Based on **sales growth %** (FY23-24 vs FY22-23). Negative growth = 5, 0-2% = 4, 2-6% = 3, 6-12% = 2, >12% = 1. Captures how volatile the sector's revenue is across business cycles. |
 
-| `rate_sensitivity_score` | ABS-AI | Based on **wage pressure vs margin** = wages_to_sales_pct - ebitda_margin_pct. High wage costs relative to margins mean the sector has less buffer against rate rises. Pressure >25pp = 5, 15-25 = 4, 8-15 = 3, 2-8 = 2, <2 = 1. |
+| `rate_sensitivity_score` | ABS-AI + sector anchor | Starts from EBITDA margin as a public proxy for earnings buffer against higher rates or tighter lending conditions. Lower margins score worse. That raw score is then blended with a sector structural anchor so defensive service sectors are not overstated as high risk simply because they are labour-intensive. |
 
-| `demand_dependency_score` | ABS-AI | Signal = wages_to_sales_pct / 8 - sales_growth_pct / 4. High labour intensity combined with weak growth signals dependence on consumer/business demand. >4.5 = 5, 3.5-4.5 = 4, 2.5-3.5 = 3, 1.5-2.5 = 2, <1.5 = 1. |
+| `demand_dependency_score` | ABS-AI + sector anchor | Starts from recent sales growth as a public proxy for demand resilience. Weak or negative growth scores worse. That raw score is then blended with a sector structural anchor so cyclical sectors such as Construction, Retail, Accommodation, Agriculture, and Manufacturing retain higher demand sensitivity than defensive sectors such as Health Care and Professional Services. |
 
-| `external_shock_score` | ABS-AI | Signal = max(0, 14 - margin) + wages/6 + min(employment/700, 2.5). Combines thin margins (less buffer), high labour costs (workforce disruption risk), and large workforce (scale of impact). >10.5 = 5, 8.5-10.5 = 4, 6.5-8.5 = 3, 4.5-6.5 = 2, <4.5 = 1. |
+| `external_shock_score` | ABS-AI + sector anchor | Uses a simple resilience signal based on thin margins and weak recent growth. This avoids treating absolute sector size or labour share as automatic risk drivers. The raw score is blended with a sector structural anchor to keep externally exposed and cyclical sectors higher than defensive service sectors. |
 
 | `classification_risk_score` | Derived | **Mean** of the four component scores above. |
 
@@ -115,11 +116,17 @@ The parser (`load_public_data.parse_australian_industry_totals`) reads Table_1, 
 
 | `inventories_to_sales_ratio_yoy_change` | ABS-BI-23 | Latest value minus value from 12 months prior. |
 
+| `inventory_days_est` | ABS-BI-23 + ABS-BI-22 / ABS-AI | Estimated inventory days derived from the ABS quarterly inventories/sales ratio. The repo treats the ABS ratio as a quarterly ratio, so the conversion uses approximately one quarter of days rather than a full year: `inventory_days_est = inventories_to_sales_ratio x 91.25 / estimated_cogs_to_sales_ratio`, where `estimated_cogs_to_sales_ratio = clip(1 - margin_ratio, 0.45, 0.95)`. Margin ratio comes from gross operating profit/sales where available, otherwise EBITDA margin. |
+
+| `inventory_days_yoy_change` | ABS-BI-23 + ABS-BI-22 / ABS-AI | Latest estimated inventory days minus estimated inventory days from the same quarter a year earlier, using the current-quarter ratio less the ABS YoY ratio change and the equivalent prior margin proxy. |
+
+| `inventory_stock_build_risk` | Derived from ABS-AI, ABS-BI-22, ABS-BI-23, ABS-BA | Rule-based flag that identifies whether inventory looks to be building against weaker trading conditions. It considers the inventory-days level, YoY change in estimated days, YoY change in the inventory ratio, and whether those increases coincide with weak sales growth, weak demand, or weaker margins. |
+
 | `employment_yoy_growth_pct` | ABS-LF | The parser reads monthly Trend series by industry division. For each industry: (latest month's employment / employment 12 months earlier - 1) x 100. |
 
-| `demand_proxy_building_type` | ABS-BA | Each industry is mapped to a non-residential building type (e.g., Construction → "Total Non-residential", Retail → "Retail and wholesale trade buildings", Health Care → "Health buildings"). This mapping is defined in `build_macro_view.py`. |
+| `demand_proxy_building_type` | ABS-BA | Each industry is mapped to a non-residential building type where a building-approvals series is considered directionally relevant (e.g., Construction → "Total Non-residential", Retail → "Retail and wholesale trade buildings"). This mapping is defined in `build_macro_view.py`. |
 
-| `demand_yoy_growth_pct` | ABS-BA | For the mapped building type: (latest month's approval value / value 12 months earlier - 1) x 100. Acts as a forward-looking demand proxy. |
+| `demand_yoy_growth_pct` | ABS-BA | For sectors where the proxy is considered usable: (latest month's approval value / value 12 months earlier - 1) x 100. Acts as a forward-looking demand proxy. For low-reliability mappings such as Health Care and Professional Services, the pipeline leaves the proxy score neutral rather than allowing a noisy capex series to dominate sector risk. |
 
 | `cash_rate_latest_pct` | RBA-F1 | The "Cash Rate Target" column from the most recent row in the RBA CSV. |
 
@@ -132,8 +139,8 @@ The parser (`load_public_data.parse_australian_industry_totals`) reads Table_1, 
 | `employment_score` | `employment_yoy_growth_pct` | <0% = 5, 0-1% = 4, 1-2.5% = 3, 2.5-4% = 2, >4% = 1. Missing = 3. |
 | `margin_level_score` | `gross_operating_profit_to_sales_ratio_latest` (fallback: `ebitda_margin_pct_latest`) | <8% = 5, 8-12% = 4, 12-18% = 3, 18-25% = 2, >25% = 1. Handles both ratio (0-1) and percentage (0-100) scales. Missing = 3. |
 | `margin_trend_score` | `gross_operating_profit_to_sales_ratio_yoy_change` (fallback: `ebitda_margin_change_pctpts`) | Large decline = 5, decline = 4, flat = 3, improvement = 2, strong improvement = 1. Handles both ratio and percentage scales. Missing = 3. |
-| `inventory_score` | `inventories_to_sales_ratio_latest` | >0.70 = 5, 0.50-0.70 = 4, 0.30-0.50 = 3, 0.15-0.30 = 2, <0.15 = 1. Missing = 3. |
-| `demand_score` | `demand_yoy_growth_pct` | <-20% = 5, -20% to -5% = 4, -5% to +5% = 3, 5-20% = 2, >20% = 1. Missing = 3. |
+| `inventory_score` | `inventory_days_est` plus `inventory_stock_build_risk` | Inventory risk is no longer scored directly from the raw ABS ratio. The level score is based on estimated inventory days (<10 = 1, 10-25 = 2, 25-40 = 3, 40-60 = 4, >60 = 5), then blended with the stock-build flag (`Low`, `Moderate`, `Elevated`, `High`) to capture whether inventories are rising into weaker conditions. Missing data defaults to a neutral 3. |
+| `demand_score` | `demand_yoy_growth_pct` | <-20% = 5, -20% to -5% = 4, -5% to +5% = 3, 5-20% = 2, >20% = 1. Missing or intentionally suppressed low-reliability proxy = 3. |
 
 ### Composite scores
 
@@ -162,6 +169,9 @@ This is a filtered view of `industry_macro_view_public_signals.csv` sorted by `i
 | `ebitda_margin_pct_latest` | Stage 2 from ABS-AI |
 | `gross_operating_profit_to_sales_ratio_latest` | Stage 2 from ABS-BI-22 |
 | `inventories_to_sales_ratio_latest` | Stage 2 from ABS-BI-23 |
+| `inventory_days_est` | Stage 2 estimated from ABS-BI-23 and margin proxy |
+| `inventory_days_yoy_change` | Stage 2 estimated from ABS-BI-23 and prior-period margin proxy |
+| `inventory_stock_build_risk` | Stage 2 rule-based inventory build flag |
 | `demand_proxy_building_type` | Stage 2 mapping to ABS-BA building type |
 | `demand_yoy_growth_pct` | Stage 2 from ABS-BA |
 | `cash_rate_latest_pct` | Stage 2 from RBA-F1 |
@@ -173,28 +183,34 @@ This is a filtered view of `industry_macro_view_public_signals.csv` sorted by `i
 
 **Purpose:** Public macro metrics for each sector without risk scores — useful as a standalone reference table.
 
-All columns are direct extracts from Stage 2 (see Table 2 above for sources). No additional derivation.
+This table combines the direct public macro fields from Stage 2 with the derived inventory context fields (`inventory_days_est`, `inventory_days_yoy_change`, `inventory_stock_build_risk`) so the public benchmark pack shows both raw ABS ratios and the estimated turnover-days interpretation of those ratios.
 
 ---
 
 ## Output Table 5: `industry_generated_benchmarks.csv`
 
-**Purpose:** Generate financial benchmark proxies (leverage, coverage, working capital) for each industry using public data and deterministic bank-style estimation rules, since public data does not directly provide banking ratios like Debt/EBITDA or ICR.
+**Purpose:** Generate financial benchmark proxies (leverage, coverage, working capital) for each industry using public data and deterministic bank-style estimation rules, since public data does not directly provide all banking ratios directly.
 
-**Source:** Stage 2 macro view (which itself comes from ABS-AI, ABS-BI-22, ABS-BI-23)
+**Source:** Stage 2 macro view plus PTRS when official source files have been downloaded and reconstructed
 
 ### Metric derivations
 
 | Column | Primary Source | Derivation |
 |--------|---------------|------------|
 | `ebitda_margin_pct_latest` | ABS-AI or ABS-BI-22 | Direct from Stage 2. Priority: gross operating profit/sales ratio, then EBITDA margin. Converted to percentage if provided as ratio. |
-| `inventory_days_benchmark` | ABS-BI-23 | **If inventory ratio available:** inventory_to_sales_ratio x 365 / COGS_ratio, where COGS_ratio = clip(1 - margin, 0.45, 0.95). **If not available:** estimated from wages ratio and demand growth — base 20 days, minus wage intensity effect, plus demand-decline adjustment. Clipped to 5-90 days. |
-| `ar_days_benchmark` | Derived | 18 + (inventory_days x 0.22) + (classification_risk_score x 3.2) - (profit_margin x 0.35). For low-receivable sectors (Retail, Accommodation), result is multiplied by 0.35 (cash/card-based businesses collect faster). Clipped to 5-75 days. |
-| `ap_days_benchmark` | Derived | 24 + (inventory_days x 0.18) + (macro_risk_score x 2.5) - (profit_margin x 0.20). Clipped to 20-70 days. |
+| `inventory_days_benchmark` | ABS-BI-23, ABS-BI-22, ABS-AI | Uses `inventory_days_est` from Stage 2. Where the ABS quarterly inventories/sales ratio is available, the benchmark is derived from `inventories_to_sales_ratio x 91.25 / estimated_cogs_to_sales_ratio`, with `estimated_cogs_to_sales_ratio = clip(1 - margin_ratio, 0.45, 0.95)`. Where the ABS ratio is unavailable, the benchmark falls back to a transparent public-signal estimate based on sector inventory relevance, margins, sales growth, and demand conditions. |
+| `inventory_days_yoy_change` | ABS-BI-23, ABS-BI-22, ABS-AI | Carries forward the Stage 2 YoY change in estimated inventory days so the benchmark pack shows not just the current days estimate but also whether inventory is building or unwinding. |
+| `inventory_stock_build_risk` | Derived | Carries forward the Stage 2 stock-build flag (`Low`, `Moderate`, `Elevated`, `High`) so inventory risk can be interpreted in context rather than only by the current days estimate. |
+| `ar_days_benchmark` | PTRS if available, otherwise derived | If the official PTRS source files have been downloaded and reconstructed, uses `Adjusted Base AR Days`, which is `MAX(Cycle 8 Avg Payment Time, Cycle 9 Avg Payment Time)` after any workbook conservative multiplier. If PTRS is unavailable, falls back to the proxy formula: `18 + inventory_days x 0.22 + classification_risk_score x 3.2 - profit_margin x 0.35`, with a lower-receivable adjustment for Retail and Accommodation. |
+| `ar_days_stress_benchmark` | PTRS if available | `MAX(Cycle 8 80th pct, Cycle 9 80th pct)` after any workbook conservative multiplier. |
+| `ar_days_severe_benchmark` | PTRS if available | `MAX(Cycle 8 95th pct, Cycle 9 95th pct)` after any workbook conservative multiplier. |
+| `ap_days_benchmark` | PTRS if available, otherwise derived | If the official PTRS source files have been downloaded and reconstructed, uses the same official payment-time base series as the direct payer-side AP benchmark. If PTRS is unavailable, falls back to the proxy formula: `24 + inventory_days x 0.18 + macro_risk_score x 2.5 - profit_margin x 0.20`, clipped to 20-70 days. |
+| `ap_days_stress_benchmark` | PTRS if available | `MAX(Cycle 8 80th pct, Cycle 9 80th pct)` after any workbook conservative multiplier. |
+| `ap_days_severe_benchmark` | PTRS if available | `MAX(Cycle 8 95th pct, Cycle 9 95th pct)` after any workbook conservative multiplier. |
 | `debt_to_ebitda_benchmark` | Derived | 1.2 + max(0, 18 - profit_margin) x 0.07 + classification_risk_score x 0.22 + macro_risk_score x 0.12 + inventory_days / 120. Lower-margin, higher-risk, inventory-heavy sectors carry more debt relative to earnings. Clipped to 1.5-4.5x. |
 | `icr_benchmark` | Derived | 5.3 - (debt_to_ebitda x 0.75) + (profit_margin x 0.04) - (classification_risk_score - 3) x 0.10. Higher leverage means lower coverage; higher margins provide more earnings buffer. Clipped to 1.5-4.5x. |
 
-**Design rationale:** These benchmarks use publicly observable industry characteristics (margins, inventory intensity, risk scores) as inputs to deterministic rules that approximate the type of sector benchmarking logic a bank credit team might use. They are not statistical estimates, observed bank benchmarks, or validated internal policy settings.
+**Design rationale:** PTRS provides a cleaner public proxy for both AR and AP timing than the generic benchmark formulas because it directly measures payment timing by ANZSIC division. It is more direct for AP, because it measures how reporting entities pay suppliers, and is still useful for AR as a supplier-side collection proxy. Inventory days are also no longer treated as a simplistic annualised placeholder: the repo estimates them from the ABS quarterly inventories/sales ratio using a quarter-length conversion and a margin-based COGS proxy. The remaining benchmarks use publicly observable industry characteristics (margins, inventory intensity, risk scores) as inputs to deterministic rules that approximate the type of sector benchmarking logic a bank credit team might use. They are not statistical estimates, observed bank benchmarks, or validated internal policy settings.
 
 ---
 
@@ -490,9 +506,9 @@ Each trigger includes a `recommended_action` (e.g., "Review sector exposure", "R
 
 ## Transparency Notes
 
-1. **No manual input folder is required.** The live pipeline runs from downloaded public ABS/RBA files plus explicit workbook-held banking assumptions documented in the reporting pack.
+1. **No manual input folder is required.** The live pipeline runs from downloaded public ABS/RBA files, downloaded PTRS publications reconstructed automatically into the repo workbook, and explicit proxy assumptions documented in the reporting pack.
 
-2. **Benchmark estimation is deterministic, not statistical.** Where public data does not provide a banking metric directly (e.g., Debt/EBITDA, ICR, AR/AP/Inventory days), the pipeline uses transparent rule-based formulas that combine available public signals (margins, risk scores, inventory ratios) into plausible industry benchmark proxies. These rules are documented in `src/build_benchmarks.py`.
+2. **Benchmark estimation is deterministic, not statistical.** Where public data does not provide a banking metric directly (e.g., Debt/EBITDA or ICR), the pipeline uses transparent rule-based formulas that combine available public signals into plausible industry benchmark proxies. Inventory days are estimated from the ABS quarterly inventories/sales ratio rather than from a directly published official inventory-turnover-days series, and AR/AP days are anchored to official PTRS payment-times data when those source files have been downloaded. These rules are documented in `src/build_benchmarks.py`.
 
 3. **Archetype borrowers are synthetic.** The bottom-up borrower profiles are generated from industry data, not from real company financials. They represent illustrative mid-market borrower archetypes in each sector, stressed slightly below the benchmark proxy to simulate a credit assessment scenario.
 

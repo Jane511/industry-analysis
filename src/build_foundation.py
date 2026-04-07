@@ -20,6 +20,60 @@ TARGET_SECTOR_CONFIG = {
 }
 
 
+STRUCTURAL_SCORE_ANCHORS = {
+    "agriculture forestry and fishing": {
+        "rate_sensitivity": 3,
+        "demand_dependency": 4,
+        "external_shock": 4,
+    },
+    "manufacturing": {
+        "rate_sensitivity": 3,
+        "demand_dependency": 4,
+        "external_shock": 4,
+    },
+    "construction": {
+        "rate_sensitivity": 4,
+        "demand_dependency": 5,
+        "external_shock": 4,
+    },
+    "wholesale trade": {
+        "rate_sensitivity": 3,
+        "demand_dependency": 3,
+        "external_shock": 3,
+    },
+    "retail trade": {
+        "rate_sensitivity": 4,
+        "demand_dependency": 4,
+        "external_shock": 4,
+    },
+    "accommodation and food services": {
+        "rate_sensitivity": 4,
+        "demand_dependency": 5,
+        "external_shock": 4,
+    },
+    "transport postal and warehousing": {
+        "rate_sensitivity": 3,
+        "demand_dependency": 3,
+        "external_shock": 3,
+    },
+    "professional scientific and technical services": {
+        "rate_sensitivity": 2,
+        "demand_dependency": 2,
+        "external_shock": 2,
+    },
+    "health care and social assistance": {
+        "rate_sensitivity": 2,
+        "demand_dependency": 1,
+        "external_shock": 2,
+    },
+    "health care and social assistance private": {
+        "rate_sensitivity": 2,
+        "demand_dependency": 1,
+        "external_shock": 2,
+    },
+}
+
+
 def _score_cyclicality(sales_growth_pct: float) -> int:
     if pd.isna(sales_growth_pct):
         return 3
@@ -34,52 +88,59 @@ def _score_cyclicality(sales_growth_pct: float) -> int:
     return 1
 
 
-def _score_rate_sensitivity(margin_pct: float, wages_pct: float) -> int:
-    if pd.isna(margin_pct) and pd.isna(wages_pct):
-        return 3
-    margin_pct = 10 if pd.isna(margin_pct) else margin_pct
-    wages_pct = 20 if pd.isna(wages_pct) else wages_pct
-    pressure = wages_pct - margin_pct
-    if pressure > 25:
-        return 5
-    if pressure > 15:
-        return 4
-    if pressure > 8:
-        return 3
-    if pressure > 2:
-        return 2
-    return 1
+def _blend_with_anchor(raw_score: int, sector_key: str, metric: str) -> int:
+    anchor = STRUCTURAL_SCORE_ANCHORS.get(sector_key, {}).get(metric)
+    if anchor is None:
+        return raw_score
+    return int(round((raw_score + anchor) / 2))
 
 
-def _score_demand_dependency(sales_growth_pct: float, wages_pct: float) -> int:
+def _score_rate_sensitivity(margin_pct: float, sector_key: str) -> int:
+    if pd.isna(margin_pct):
+        return 3
+    if margin_pct < 6:
+        raw_score = 5
+    elif margin_pct < 9:
+        raw_score = 4
+    elif margin_pct < 12:
+        raw_score = 3
+    elif margin_pct < 16:
+        raw_score = 2
+    else:
+        raw_score = 1
+    return _blend_with_anchor(raw_score, sector_key, "rate_sensitivity")
+
+
+def _score_demand_dependency(sales_growth_pct: float, sector_key: str) -> int:
     growth = 3 if pd.isna(sales_growth_pct) else sales_growth_pct
-    wages = 20 if pd.isna(wages_pct) else wages_pct
-    signal = wages / 8 - growth / 4
-    if signal > 4.5:
-        return 5
-    if signal > 3.5:
-        return 4
-    if signal > 2.5:
-        return 3
-    if signal > 1.5:
-        return 2
-    return 1
+    if growth < -8:
+        raw_score = 5
+    elif growth < -2:
+        raw_score = 4
+    elif growth < 2:
+        raw_score = 3
+    elif growth < 6:
+        raw_score = 2
+    else:
+        raw_score = 1
+    return _blend_with_anchor(raw_score, sector_key, "demand_dependency")
 
 
-def _score_external_shock(margin_pct: float, wages_pct: float, employment_000: float) -> int:
+def _score_external_shock(margin_pct: float, sales_growth_pct: float, sector_key: str) -> int:
     margin = 10 if pd.isna(margin_pct) else margin_pct
-    wages = 20 if pd.isna(wages_pct) else wages_pct
-    employment_000 = 500 if pd.isna(employment_000) else employment_000
-    signal = max(0, 14 - margin) + wages / 6 + min(employment_000 / 700, 2.5)
-    if signal > 10.5:
-        return 5
-    if signal > 8.5:
-        return 4
-    if signal > 6.5:
-        return 3
+    growth = 3 if pd.isna(sales_growth_pct) else sales_growth_pct
+    signal = max(0, 10 - margin) / 2 + max(0, 2 - growth / 4)
     if signal > 4.5:
-        return 2
-    return 1
+        raw_score = 5
+    elif signal > 3.0:
+        raw_score = 4
+    elif signal > 2.0:
+        raw_score = 3
+    elif signal > 1.0:
+        raw_score = 2
+    else:
+        raw_score = 1
+    return _blend_with_anchor(raw_score, sector_key, "external_shock")
 
 
 def build_foundation(public_dir: Path, processed_dir: Path) -> pd.DataFrame:
@@ -104,9 +165,9 @@ def build_foundation(public_dir: Path, processed_dir: Path) -> pd.DataFrame:
             sector_key = "health care and social assistance"
 
         cyclical_score = _score_cyclicality(row["sales_growth_pct"])
-        rate_sensitivity_score = _score_rate_sensitivity(row["ebitda_margin_pct"], row["wages_to_sales_pct"])
-        demand_dependency_score = _score_demand_dependency(row["sales_growth_pct"], row["wages_to_sales_pct"])
-        external_shock_score = _score_external_shock(row["ebitda_margin_pct"], row["wages_to_sales_pct"], row["employment_000"])
+        rate_sensitivity_score = _score_rate_sensitivity(row["ebitda_margin_pct"], sector_key)
+        demand_dependency_score = _score_demand_dependency(row["sales_growth_pct"], sector_key)
+        external_shock_score = _score_external_shock(row["ebitda_margin_pct"], row["sales_growth_pct"], sector_key)
 
         rows.append(
             {
@@ -132,7 +193,7 @@ def build_foundation(public_dir: Path, processed_dir: Path) -> pd.DataFrame:
         .round(2)
     )
     df["foundation_source"] = (
-        "generated from ABS Australian Industry public data using deterministic bank-style classification rules"
+        "generated from ABS Australian Industry public data using deterministic APRA-informed proxy classification rules"
     )
     save_csv(df, processed_dir / "industry_classification_foundation.csv")
     return df

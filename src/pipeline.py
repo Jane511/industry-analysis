@@ -36,6 +36,7 @@ def run_pipeline() -> None:
                        'employment_yoy_growth_pct', 'ebitda_margin_pct_latest',
                        'gross_operating_profit_to_sales_ratio_latest',
                        'inventories_to_sales_ratio_latest',
+                       'inventory_days_est', 'inventory_days_yoy_change', 'inventory_stock_build_risk',
                        'demand_proxy_building_type', 'demand_yoy_growth_pct',
                        'cash_rate_latest_pct', 'cash_rate_change_1y_pctpts']
                       ].sort_values('industry_base_risk_score', ascending=False)
@@ -46,6 +47,10 @@ def run_pipeline() -> None:
                               'gross_operating_profit_to_sales_ratio_yoy_change',
                               'inventories_to_sales_ratio_latest',
                               'inventories_to_sales_ratio_yoy_change',
+                              'inventory_days_est',
+                              'inventory_days_yoy_change',
+                              'inventory_stock_build_risk',
+                              'inventory_days_est_source',
                               'employment_yoy_growth_pct',
                               'demand_proxy_building_type', 'demand_yoy_growth_pct']]
     save_csv(public_benchmark, OUTPUT_TABLES_DIR / 'industry_public_benchmarks.csv')

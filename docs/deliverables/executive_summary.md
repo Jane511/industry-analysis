@@ -1,13 +1,16 @@
 # Executive Summary
 
-This reporting pack now uses a workbook-backed flow for charts and formal reporting. Public ABS and RBA datasets remain the source for industry metrics, while the following items are intentionally retained as hard-coded workbook inputs because they are not published directly in public sector datasets:
+This reporting pack now uses a workbook-backed flow for charts and formal reporting. Public ABS and RBA datasets remain the source for industry metrics, while the following items remain explicit proxy or synthetic inputs because they are not published directly in the public sector datasets used here:
 
 - sector debt / EBITDA benchmarks
 - sector ICR benchmarks
-- sector AR / AP day benchmarks
 - borrower-level financial statements
 - bank portfolio exposure by sector
 - bank pricing and policy settings
+
+Sector AR and AP days now follow a cleaner public-data path. The repo can download the official PTRS publications, reconstruct `PTRS_MultiCycle_AR_Days_Model_Official.xlsx` automatically, and use those official payment-times tables as the primary AR/AP benchmark source. The fallback proxy formulas are only used when PTRS source files are unavailable.
+
+Inventory risk now follows a stronger public-data method as well. Instead of treating inventory days as a simple annualised placeholder, the pipeline estimates inventory days from ABS quarterly inventories/sales ratios, derives a YoY change in those estimated days, and flags stock-build risk where inventories appear to be rising into weaker trading conditions.
 
 This is an APRA-informed portfolio demonstration rather than a replica of an Australian bank's internal industry risk methodology. The sector overlays, appetite framing, monitoring triggers, stress themes, and ESG treatment are bank-inspired, while borrower metrics, benchmark ratios, concentration exposure, and pricing remain transparent proxies or synthetic assumptions.
 
@@ -20,23 +23,24 @@ This is an APRA-informed portfolio demonstration rather than a replica of an Aus
 
 ## Current Sector View
 
-- Highest current industry base risk score: **Health Care and Social Assistance** at **3.32**
-- Next highest: **Professional, Scientific and Technical Services** at **3.09**
-- Lowest current industry base risk score: **Transport, Postal and Warehousing** at **1.95**
+- Highest current industry base risk score: **Agriculture, Forestry and Fishing** at **3.50**
+- Joint highest: **Manufacturing** at **3.50**
+- Lowest current industry base risk score: **Transport, Postal and Warehousing** at **2.14**
 - Strongest employment growth: **Professional, Scientific and Technical Services** at **+5.5% YoY**
 - Weakest employment growth: **Wholesale Trade** at **-8.7% YoY**
 
 ## Borrower and Portfolio View
 
-- Highest borrower archetype score: **Health Care & Social Assistance Archetype** at **2.97**
-- Lowest borrower archetype score: **Transport, Postal and Warehousing Archetype** at **2.09**
-- Highest concentration utilisation: **Retail Trade** at **85.0%** of limit
-- No sector currently breaches the concentration limits in the latest workbook-backed report
+- Highest borrower archetype score: **Agriculture, Forestry and Fishing Archetype** at **3.09**
+- Joint highest borrower archetype score: **Manufacturing Archetype** at **3.09**
+- Lowest borrower archetype score: **Transport, Postal and Warehousing Archetype** at **2.20**
+- Highest concentration utilisation: **Retail Trade** at **113.3%** of limit
+- Current concentration breaches: **Retail Trade** and **Wholesale Trade**
 
 ## Monitoring View
 
-- Most watchlist triggers: **Agriculture, Forestry and Fishing** with **4**
-- Other sectors with multiple triggers: **Wholesale Trade** and **Retail Trade**
+- Most watchlist triggers: **Agriculture, Forestry and Fishing** with **5**
+- Other sectors with multiple triggers: **Manufacturing**, **Wholesale Trade**, and **Retail Trade**
 
 ## Report Use
 

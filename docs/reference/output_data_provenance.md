@@ -38,12 +38,21 @@ These outputs use rules, scorecards, or transformations built from public ABS/RB
   - `macro_risk_score`
   - `industry_base_risk_score`
   - `industry_base_risk_level`
+  - `inventory_days_est`
+  - `inventory_days_yoy_change`
+  - `inventory_stock_build_risk`
 - `industry_generated_benchmarks.csv`
+  - `inventory_days_benchmark`
+  - `inventory_days_yoy_change`
+  - `inventory_stock_build_risk`
+  - `inventory_days_benchmark_source`
   - `debt_to_ebitda_benchmark`
   - `icr_benchmark`
-  - `ar_days_benchmark`
-  - `ap_days_benchmark`
-  - `inventory_days_benchmark`
+- `industry_public_benchmarks.csv`
+  - `inventory_days_est`
+  - `inventory_days_yoy_change`
+  - `inventory_stock_build_risk`
+  - `inventory_days_est_source`
 - `industry_portfolio_proxy.csv`
   - `current_exposure_pct`
 - `concentration_limits.csv`
@@ -105,7 +114,24 @@ The remaining generated fields are not missing because of absent downloads. They
 - borrower-level financial statements by sector sample
 - sector debt / EBITDA benchmarks
 - sector interest coverage benchmarks
-- sector AR/AP day benchmarks
+- sector AP day benchmarks when PTRS is unavailable
 - true bank portfolio exposure by sector
 - bank pricing grids
 - bank policy overlays
+
+## Public PTRS proxy layer after official source reconstruction
+
+When the official PTRS publications are downloaded and reconstructed into `data/raw/public/ptrs/PTRS_MultiCycle_AR_Days_Model_Official.xlsx`, the following fields are sourced from official Payment Times Reporting Scheme publications rather than from the generic benchmark formula:
+
+- `industry_generated_benchmarks.csv`
+  - `ar_days_benchmark`
+  - `ar_days_stress_benchmark`
+  - `ar_days_severe_benchmark`
+  - `ap_days_benchmark`
+  - `ap_days_stress_benchmark`
+  - `ap_days_severe_benchmark`
+  - `ptrs_cycle8_avg_payment_days`
+  - `ptrs_cycle9_avg_payment_days`
+  - `ptrs_cycle8_paid_on_time_pct`
+  - `ptrs_cycle9_paid_on_time_pct`
+  - `ptrs_latest_cycle_used`

@@ -25,11 +25,12 @@ The repository does not claim to reproduce any bank's internal risk model, inter
 ## Current Headline Findings
 
 Based on the latest generated outputs:
-- Highest current industry base risk score: `Health Care and Social Assistance` at `3.32`
-- Lowest current industry base risk score: `Transport, Postal and Warehousing` at `1.95`
-- Highest current borrower archetype score: `Health Care & Social Assistance Archetype` at `2.97`
-- No current sector breaches concentration limits
-- Highest concentration utilisation: `Retail Trade` at `85.0%` of limit
+- Highest current industry base risk score: `Agriculture, Forestry And Fishing` at `3.50`
+- Joint highest current industry base risk score: `Manufacturing` at `3.50`
+- Lowest current industry base risk score: `Transport, Postal and Warehousing` at `2.14`
+- Highest current borrower archetype score: `Agriculture, Forestry And Fishing Archetype` at `3.09`
+- 2 current sector concentration breaches: `Retail Trade` and `Wholesale Trade`
+- Highest concentration utilisation: `Retail Trade` at `113.3%` of limit
 - Weakest employment trend: `Wholesale Trade` at `-8.7%` YoY
 - Largest average stress scenario uplift: `Demand shock`
 
@@ -103,7 +104,7 @@ Maps target sectors to ANZSIC-aligned industry views and produces structural cla
 Adds employment, profitability, inventory, demand, and cash-rate signals from ABS and RBA.
 
 3. `Benchmarks`
-Builds industry benchmark proxies. Public EBITDA margin is used directly; leverage, coverage, and working-capital metrics are generated from deterministic rules because public datasets do not publish them directly.
+Builds industry benchmark proxies. Public EBITDA margin is used directly; inventory days are estimated from ABS quarterly inventories/sales ratios where available; leverage, coverage, and the remaining working-capital metrics are generated from deterministic rules where public datasets do not publish them directly.
 
 4. `Bottom-Up`
 Generates one synthetic borrower archetype per sector and scores it against the sector benchmark set.
@@ -130,6 +131,9 @@ The live pipeline currently uses six raw public files:
 - ABS Building Approvals non-residential
 - RBA cash rate table F1
 
+The pipeline can also use:
+- PTRS multi-cycle AR/AP benchmark workbook reconstructed automatically from official Payment Times Reporting Scheme publications
+
 See [Data Sources](docs/reference/data_sources.md) for the full list with local file names, source URLs, and usage.
 
 ## Important Limitation
@@ -139,10 +143,28 @@ This project is intentionally transparent about what is public and what is not.
 The following banking fields are not published directly in the ABS/RBA public data used here, so they remain explicit non-public assumptions inside the workflow:
 - sector debt / EBITDA benchmarks
 - sector ICR benchmarks
-- sector AR / AP day benchmarks
+- sector AP day benchmarks when PTRS is not supplied
+- direct official industry inventory-turnover-days series
 - borrower-level financial statements
 - bank portfolio exposure by sector
 - bank pricing and policy settings
+
+AR and AP days are no longer treated as purely generic proxy formulas when PTRS source files are available: the pipeline downloads the official publications, reconstructs the workbook automatically, and then uses those public payment-times tables as the primary AR/AP benchmark source.
+Inventory days are also no longer handled as a simple annualised placeholder. The pipeline now estimates inventory days from ABS quarterly inventories/sales ratios using a quarter-length conversion and a margin-based COGS proxy, with a separate stock-build risk flag and a transparent fallback for sectors where the ABS ratio is unavailable.
+
+To stage the latest official PTRS source files into the repo, run:
+
+```bash
+python scripts/download_ptrs_public_data.py
+```
+
+That script downloads the official Cycle 8 and Cycle 9 PTRS PDFs and automatically reconstructs `data/raw/public/ptrs/PTRS_MultiCycle_AR_Days_Model_Official.xlsx` for pipeline use.
+
+If the PDFs are already staged locally and you only want to rebuild the workbook, run:
+
+```bash
+python scripts/rebuild_ptrs_workbook.py
+```
 
 The same limitation applies to internal borrower grades, true portfolio concentrations, exception tracking, covenant compliance, and workout data. Those are not replicated here.
 
