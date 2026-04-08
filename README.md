@@ -1,14 +1,93 @@
-# Australian Industry Risk Analysis for Credit Assessment
+# Australian Property & Industry Risk Reference Layer
 
-This repository demonstrates how Australian public data can be converted into an APRA-informed industry risk framework for credit analysis.
+## Purpose
 
-The project uses downloaded ABS and RBA datasets to build:
-- industry classification risk views
-- macro and sector trend overlays
-- deterministic benchmark ratios where public data does not publish internal credit metrics directly
-- sector archetype borrower scorecards
-- pricing, policy, concentration, stress testing, ESG, and watchlist outputs
-- a formal chart report for portfolio presentation
+This repository now acts as a reusable reference layer for downstream:
+
+- property-backed PD overlays
+- LGD overlays
+- EL scenario engines
+- broader property and industry portfolio monitoring
+
+The repo is not positioned as a final PD, LGD, or EL model. Its job is to stage public Australian inputs, convert them into reusable reference tables, and expose those outputs cleanly to downstream projects.
+
+## Current Reference-Layer Outputs
+
+The live build now generates four property-reference outputs:
+
+- `data/output/region_risk/region_risk_table.csv`
+- `data/output/property_cycle/property_cycle_table.csv`
+- `data/output/arrears_environment/base_arrears_environment.csv`
+- `data/output/downturn_overlays/property_downturn_overlays.csv`
+
+It also retains the original industry-analysis workflow and report pack under `output/` as a legacy layer.
+
+## Current Staged Source Coverage
+
+The property-reference layer currently uses these staged local files:
+
+- `ABS Building Approvals (Non-residential)` through `February 2026`
+- `RBA F1 cash-rate table` snapshot published `2 April 2026`, latest staged observation dated `16 March 2026`
+
+The repo does not yet include staged local files for:
+
+- `ABS Building Activity`
+- `ABS Lending Indicators`
+- `APRA` property or arrears context
+
+Because those inputs are not yet staged, the current build is intentionally transparent about its fallbacks:
+
+- the region table is currently a national segment-level reference table rather than a state/regional geography table
+- building-activity fields fall back to approvals-trend proxies when no staged activity extract exists
+- housing-finance and arrears context fall back to the RBA cash-rate backdrop plus the local transformation-instruction baseline
+
+Those fallbacks are labelled explicitly in the output `source_note` fields.
+
+## Build Workflow
+
+Run the full repo build:
+
+```bash
+python scripts/run_pipeline.py
+```
+
+Run only the reference-layer outputs:
+
+```bash
+python scripts/run_reference_layer.py
+```
+
+Run tests:
+
+```bash
+pytest tests/
+```
+
+## Reference-Layer Build Logic
+
+1. Load staged ABS approvals, the RBA cash-rate series, and any optional ABS/APRA/RBA property extracts.
+2. Build processed property-reference summaries under `data/processed/property/`.
+3. Convert those summaries into region risk bands and property-cycle bands.
+4. Publish one macro arrears environment table and one illustrative downturn-overlay table.
+5. Leave final loan-level PD, LGD, and EL calculations to downstream repos.
+
+## Legacy Industry Workflow
+
+The remaining sections of this README describe the original industry-analysis workflow that is still included in the repo for continuity and reviewer context.
+
+### Sample Outputs / Charts / Screenshots
+
+| Industry | Base Risk Score | Risk Level | Employment YoY | Demand YoY |
+| --- | --- | --- | --- | --- |
+| Agriculture, Forestry And Fishing | 3.50 | Elevated | -5.1% | 58.4% |
+| Manufacturing | 3.50 | Elevated | -0.9% | 55.5% |
+| Wholesale Trade | 3.23 | Elevated | -8.7% | 69.3% |
+| Retail Trade | 3.23 | Elevated | -0.5% | 68.5% |
+| Accommodation And Food Services | 2.68 | Medium | 0.7% | 113.7% |
+
+- Quick-review deliverables: `output/executive_summary.md`, `output/chart_explanations.md`, and `industry_risk_formal_report.pdf`
+
+![Highest current industry base risk scores](output/charts/readme_industry_base_risk_scores.png)
 
 ## What This Project Demonstrates
 
@@ -22,7 +101,7 @@ This repository is designed to show that the project can:
 
 The repository does not claim to reproduce any institution's internal risk model, internal rating methodology, pricing engine, or portfolio MIS. Where public data does not provide an internal credit field directly, the project uses transparent proxy logic and synthetic examples.
 
-## Current Headline Findings
+## Legacy Industry Headline Findings
 
 Based on the latest generated outputs:
 - Highest current industry base risk score: `Agriculture, Forestry And Fishing` at `3.50`
@@ -36,7 +115,16 @@ Based on the latest generated outputs:
 
 ## How To Read The Repository
 
-If you are reviewing this repository, the most useful reading order is:
+If you want the current reference-layer workflow, read in this order:
+
+1. [Docs Index](docs/README.md)
+2. [Project Overview](docs/project_overview.md)
+3. [Region Risk Methodology](docs/methodology_region_risk.md)
+4. [Property Cycle Methodology](docs/methodology_property_cycle.md)
+5. [Arrears Environment Methodology](docs/methodology_arrears_environment.md)
+6. [Downturn Overlay Methodology](docs/methodology_downturn_overlays.md)
+
+If you want the retained legacy industry workflow and report pack, read in this order:
 
 1. [Executive Summary](output/executive_summary.md)
 2. [Formal PDF Report](industry_risk_formal_report.pdf)
@@ -44,7 +132,7 @@ If you are reviewing this repository, the most useful reading order is:
 4. [Output Data Provenance](docs/output_data_provenance.md)
 5. [APRA Practice Alignment Review](docs/australian_bank_industry_risk_practice_review.md)
 
-## How It Works
+## How The Legacy Industry Layer Works
 
 - Uses public ABS, RBA, and PTRS data as the starting point for all sector analysis.
 - Builds structural industry scores first, then overlays current macro, margin, inventory, employment, demand, and rate signals.
@@ -58,24 +146,54 @@ If you are reviewing this repository, the most useful reading order is:
 ## Repository Structure
 
 ```text
-industry-risk-analysis-australia/
+industry-risk-reference-layer/
+├── README.md
+├── requirements.txt
+├── .gitignore
 ├── METHODOLOGY.md
 ├── data/
-│   ├── methodology.md         # Technical appendix
-│   ├── raw/public/            # Downloaded ABS / RBA / PTRS input files
-│   └── processed/             # Intermediate pipeline outputs
-├── notebooks/
-│   ├── 01_results_and_report_walkthrough.ipynb
-│   ├── 02_methodology_and_output_map.ipynb
-│   └── README.md
+│   ├── raw/
+│   │   ├── abs/
+│   │   ├── apra/
+│   │   ├── rba/
+│   │   ├── manual/
+│   │   └── public/
+│   ├── processed/
+│   │   ├── property/          # Current reference-layer processed tables
+│   │   └── industry/          # Current legacy industry processed tables
+│   └── output/
+│       ├── region_risk/
+│       ├── property_cycle/
+│       ├── arrears_environment/
+│       └── downturn_overlays/
+├── notebooks/                 # Reference-layer scaffolds plus legacy walkthroughs
+│   ├── README.md
+│   └── ...
 ├── docs/
+│   ├── project_overview.md
+│   ├── methodology_region_risk.md
+│   ├── methodology_property_cycle.md
+│   ├── methodology_arrears_environment.md
+│   ├── methodology_downturn_overlays.md
+│   ├── methodology_arrears.md            # Compatibility copy
+│   ├── methodology_downturn.md           # Compatibility copy
+│   ├── limitations_and_assumptions.md
 │   ├── data_sources.md
 │   ├── output_data_provenance.md
 │   ├── australian_bank_industry_risk_practice_review.md
 │   └── README.md
 ├── scripts/
-│   └── run_pipeline.py        # Main entrypoint
-├── src/                       # Implementation modules
+│   ├── run_reference_layer.py
+│   └── run_pipeline.py
+├── src/
+│   ├── reference_layer.py
+│   ├── data_loader_abs.py
+│   ├── data_loader_apra.py
+│   ├── data_loader_rba.py
+│   ├── region_risk.py
+│   ├── property_cycle.py
+│   ├── arrears_environment.py
+│   ├── downturn_overlay.py
 │   ├── foundation.py
 │   ├── macro.py
 │   ├── benchmarks.py
@@ -83,37 +201,43 @@ industry-risk-analysis-australia/
 │   ├── working_capital.py
 │   ├── portfolio.py
 │   ├── credit.py
-│   ├── pipeline.py
+│   ├── reporting.py
 │   └── ...
-├── output/
-│   ├── executive_summary.md   # Portfolio-facing outputs
-│   ├── chart_explanations.md
-│   ├── charts/                # Temporary chart workspace
-│   └── tables/                # Generated CSV output tables
+├── output/                    # Legacy industry-analysis report pack
 ├── industry_risk_formal_report.pdf
 ├── tests/
 ├── pyproject.toml
-├── requirements.txt
-└── README.md
+└── transform.pdf
 ```
 
 ## Main Deliverables
 
-### Portfolio-facing documents
+### Current reference-layer documents
+- [Docs Index](docs/README.md)
+- [Project Overview](docs/project_overview.md)
+- [Region Risk Methodology](docs/methodology_region_risk.md)
+- [Property Cycle Methodology](docs/methodology_property_cycle.md)
+- [Arrears Environment Methodology](docs/methodology_arrears_environment.md)
+- [Downturn Overlay Methodology](docs/methodology_downturn_overlays.md)
+- [Limitations And Assumptions](docs/limitations_and_assumptions.md)
+- [Notebook Index](notebooks/README.md)
+
+### Legacy industry documents and report pack
 - [Executive Summary](output/executive_summary.md)
 - [Chart Explanations](output/chart_explanations.md)
 - [Formal Report PDF](industry_risk_formal_report.pdf)
-
-### Reference documents
-- [Docs Index](docs/README.md)
 - [Clean Methodology Reference](METHODOLOGY.md)
-- [Technical Methodology Appendix](data/methodology.md)
-- [Notebook Index](notebooks/README.md)
 - [Data Sources](docs/data_sources.md)
 - [Output Data Provenance](docs/output_data_provenance.md)
 - [APRA Practice Alignment Review](docs/australian_bank_industry_risk_practice_review.md)
 
-### Core generated outputs
+### Current reference-layer outputs
+- `data/output/region_risk/region_risk_table.csv`
+- `data/output/property_cycle/property_cycle_table.csv`
+- `data/output/arrears_environment/base_arrears_environment.csv`
+- `data/output/downturn_overlays/property_downturn_overlays.csv`
+
+### Legacy industry generated outputs
 - `output/tables/industry_base_risk_scorecard.csv`
 - `output/tables/industry_public_benchmarks.csv`
 - `output/tables/industry_generated_benchmarks.csv`
@@ -126,13 +250,13 @@ industry-risk-analysis-australia/
 - `output/tables/watchlist_triggers.csv`
 - `output/tables/chart_table.csv`
 
-### Guided notebooks
+### Guided legacy notebooks
 - [Results Walkthrough](notebooks/01_results_and_report_walkthrough.ipynb)
 - [Methodology and Output Map](notebooks/02_methodology_and_output_map.ipynb)
 
 ## Script and Output Numbering
 
-To make the workflow easier to follow, the repo uses this numbered script-to-output map:
+To make the workflow easier to follow, the repo uses this numbered script-to-output map. `scripts/run_pipeline.py` is the full build and calls the reference-layer pipeline at the end; `scripts/run_reference_layer.py` runs only the reference-layer subset.
 
 1. `Script 1`: `scripts/download_ptrs_public_data.py`
    `Output 1.1`: Cycle 8 PTRS PDF
@@ -159,12 +283,23 @@ To make the workflow easier to follow, the repo uses this numbered script-to-out
    `Table 3.13`: `output/tables/industry_esg_sensitivity_overlay.csv`
    `Table 3.14`: `output/tables/industry_portfolio_proxy.csv`
    `Table 3.15`: `output/tables/chart_table.csv`
-   `Workbook 3.16`: `data/processed/industry_risk_reporting_workbook.xlsx`
+   `Workbook 3.16`: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
    `Report 3.17`: `output/executive_summary.md`
    `Report 3.18`: `output/chart_explanations.md`
    `Report 3.19`: `industry_risk_formal_report.pdf`
 
-## Project Logic
+4. `Script 4`: `scripts/run_reference_layer.py`
+   `Table 4.1`: `data/processed/property/building_approvals_segment_metrics.csv`
+   `Table 4.2`: `data/processed/property/building_activity_segment_metrics.csv`
+   `Table 4.3`: `data/processed/property/housing_finance_segment_metrics.csv`
+   `Table 4.4`: `data/processed/property/cash_rate_reference_summary.csv`
+   `Table 4.5`: `data/processed/property/reference_input_availability.csv`
+   `Table 4.6`: `data/output/region_risk/region_risk_table.csv`
+   `Table 4.7`: `data/output/property_cycle/property_cycle_table.csv`
+   `Table 4.8`: `data/output/arrears_environment/base_arrears_environment.csv`
+   `Table 4.9`: `data/output/downturn_overlays/property_downturn_overlays.csv`
+
+## Legacy Industry Project Logic
 
 The pipeline follows nine layers:
 
@@ -197,7 +332,20 @@ Generates a workbook-backed chart pack, generated executive summary, and consoli
 
 ## Maintained Source Modules
 
-The live `src/` package is now organised by analysis domain rather than by legacy build-script naming:
+The live `src/` package now has two maintained layers.
+
+### Current reference-layer modules
+
+- `src/reference_layer.py`: orchestrates the current property-reference build
+- `src/data_loader_abs.py`: approvals, building-activity, and lending-indicator staging
+- `src/data_loader_apra.py`: optional APRA property-context staging
+- `src/data_loader_rba.py`: cash-rate and housing-context staging
+- `src/region_risk.py`: region-risk reference table generation
+- `src/property_cycle.py`: property-cycle and softness-band generation
+- `src/arrears_environment.py`: base arrears-environment output
+- `src/downturn_overlay.py`: PD / LGD / CCF / value-haircut scenario overlays
+
+### Legacy industry modules
 
 - `src/foundation.py`: structural industry classification signals
 - `src/macro.py`: macro, demand, inventory, and rate signals
@@ -210,9 +358,9 @@ The live `src/` package is now organised by analysis domain rather than by legac
 - `src/visualisation.py`: chart rendering helpers
 - `src/load_public_data.py` and `src/ptrs_reconstruction.py`: data ingestion and PTRS reconstruction utilities
 
-## Public Data Used
+## Legacy Industry Data Used
 
-The live pipeline currently uses six raw public files:
+The retained industry pipeline currently uses six raw public files:
 - ABS Australian Industry 2023-24
 - ABS Business Indicators profit ratio
 - ABS Business Indicators inventory ratio
@@ -225,9 +373,9 @@ The pipeline can also use:
 
 See [Data Sources](docs/data_sources.md) for the full list with local file names, source URLs, and usage.
 
-## Current Public Data Vintages Used
+## Legacy Industry Data Vintages
 
-The current model run in this repository is based on these staged source periods:
+The current legacy industry model run in this repository is based on these staged source periods:
 
 - `ABS Australian Industry`: FY `2022-23` and FY `2023-24` annual values from the `2023-24` release. Refresh annually when the next release is available.
 - `ABS Business Indicators - Gross Operating Profit / Sales Ratio`: quarterly series through `December 2025`. Refresh quarterly.
@@ -236,6 +384,8 @@ The current model run in this repository is based on these staged source periods
 - `ABS Building Approvals - Non-Residential`: monthly series through `February 2026`. Refresh monthly.
 - `RBA F1 cash-rate table`: local CSV snapshot published `2 April 2026`, with the latest staged daily observation dated `16 March 2026`. Refresh when a newer RBA snapshot is staged or when the policy-rate series changes.
 - `PTRS`: Cycle `8` (`July 2025`) and Cycle `9` (`January 2026`) publications, plus `March 2025` guidance used to rebuild the local PTRS workbook. Refresh when a new PTRS cycle publication is released.
+
+The current reference-layer staged inputs are summarised near the top of this README and in [Docs Index](docs/README.md).
 
 After any of those source files are refreshed, rerun `python scripts/run_pipeline.py` so the CSV outputs, workbook, markdown summaries, and PDF report are rebuilt from the new vintages.
 
@@ -273,7 +423,7 @@ The same limitation applies to internal borrower grades, true portfolio concentr
 
 The repository documents those assumptions in:
 - [Clean Methodology Reference](METHODOLOGY.md)
-- [Technical Methodology Appendix](data/methodology.md)
+- [Limitations And Assumptions](docs/limitations_and_assumptions.md)
 - [Output Data Provenance](docs/output_data_provenance.md)
 - [Executive Summary](output/executive_summary.md)
 

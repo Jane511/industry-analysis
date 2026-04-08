@@ -1,7 +1,7 @@
 [project]
-name = "industry-risk-analysis-australia"
+name = "australian-property-industry-risk-reference-layer"
 version = "0.1.0"
-description = "Public-data-driven Australian industry risk analysis pipeline for credit portfolio demonstration."
+description = "Australian public-data reference layer for property and industry risk overlays used by downstream PD, LGD, and EL workflows."
 readme = "README.md"
 requires-python = ">=3.13"
 

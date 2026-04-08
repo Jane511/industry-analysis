@@ -1,16 +1,21 @@
 # Clean Methodology Reference
 
-This document is a clean rewrite of the current methodology for the project. It is designed for:
+This document is a clean rewrite of the retained legacy industry-analysis methodology in this repository. It is designed for:
 
 - readers who are not technical
 - readers who want to understand what the project is doing without reading Python
 - credit or risk reviewers who want to trace each output back to its source data and formula
 
-The goal of the project is not to reproduce an internal institutional model. The goal is to show, in a transparent way, how Australian public data can be turned into a structured industry risk analysis workflow.
+Scope note:
+
+- this file covers the legacy industry workflow that writes to `output/tables/`, `output/`, and `industry_risk_formal_report.pdf`
+- the current property-reference-layer methodology lives in `docs/project_overview.md`, `docs/methodology_region_risk.md`, `docs/methodology_property_cycle.md`, `docs/methodology_arrears_environment.md`, and `docs/methodology_downturn_overlays.md`
+
+The goal of this legacy workflow is not to reproduce an internal institutional model. The goal is to show, in a transparent way, how Australian public data can be turned into a structured industry risk analysis workflow.
 
 ## 1. Executive Summary
 
-At a high level, the project does five things:
+At a high level, this legacy workflow does five things:
 
 1. It uses public Australian data to build a sector-level risk view.
 2. It converts that public data into simple credit-style metrics such as margin pressure, inventory pressure, payment timing, and stress sensitivity.
@@ -27,7 +32,7 @@ The key point for non-technical readers is this:
 
 ## 2. What The Public Datasets Mean
 
-The project uses seven main public datasets.
+The legacy industry workflow uses seven main public datasets.
 
 | Dataset ID | Dataset | Plain-English Meaning | Main Use In The Project |
 |---|---|---|---|

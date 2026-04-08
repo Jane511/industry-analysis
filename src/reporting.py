@@ -22,7 +22,7 @@ from src.output import save_csv
 from src import visualisation as viz
 
 
-REPORT_WORKBOOK_RELATIVE = "data/processed/industry_risk_reporting_workbook.xlsx"
+REPORT_WORKBOOK_RELATIVE = "data/processed/industry/industry_risk_reporting_workbook.xlsx"
 REPORT_STYLE = {
     "header_bg": "#12324a",
     "header_text": "#ffffff",
