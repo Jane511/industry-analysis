@@ -1,26 +1,26 @@
 # Australian Industry Risk Analysis for Credit Assessment
 
-This repository is a portfolio project that demonstrates how Australian public data can be converted into an APRA-informed, bank-inspired industry risk framework for credit analysis.
+This repository demonstrates how Australian public data can be converted into an APRA-informed industry risk framework for credit analysis.
 
 The project uses downloaded ABS and RBA datasets to build:
 - industry classification risk views
 - macro and sector trend overlays
-- deterministic benchmark ratios where public data does not publish banking metrics directly
+- deterministic benchmark ratios where public data does not publish internal credit metrics directly
 - sector archetype borrower scorecards
 - pricing, policy, concentration, stress testing, ESG, and watchlist outputs
 - a formal chart report for portfolio presentation
 
 ## What This Project Demonstrates
 
-This repository is designed to show an interviewer that the project can:
+This repository is designed to show that the project can:
 - translate public macro and industry data into credit-relevant signals
-- structure industry analysis using concepts commonly seen in Australian bank credit risk frameworks
+- structure industry analysis using concepts commonly seen in prudential credit risk frameworks
 - separate directly observed public metrics from derived and hard-coded banking assumptions
 - turn qualitative sector judgement into repeatable scoring logic
 - connect industry analysis to illustrative downstream credit decisions such as pricing, policy, concentration, and monitoring
 - present technical work in a clear portfolio format rather than only as code
 
-The repository does not claim to reproduce any bank's internal risk model, internal rating methodology, pricing engine, or portfolio MIS. Where public data does not provide a banking field directly, the project uses transparent proxy logic and synthetic examples.
+The repository does not claim to reproduce any institution's internal risk model, internal rating methodology, pricing engine, or portfolio MIS. Where public data does not provide an internal credit field directly, the project uses transparent proxy logic and synthetic examples.
 
 ## Current Headline Findings
 
@@ -36,13 +36,13 @@ Based on the latest generated outputs:
 
 ## How To Read The Repository
 
-If you are reviewing this repository as an interviewer, the most useful reading order is:
+If you are reviewing this repository, the most useful reading order is:
 
 1. [Executive Summary](output/executive_summary.md)
 2. [Formal PDF Report](industry_risk_formal_report.pdf)
 3. [Clean Methodology Reference](METHODOLOGY.md)
 4. [Output Data Provenance](docs/output_data_provenance.md)
-5. [Australian Bank Practice Review](docs/australian_bank_industry_risk_practice_review.md)
+5. [APRA Practice Alignment Review](docs/australian_bank_industry_risk_practice_review.md)
 
 ## How It Works
 
@@ -111,7 +111,7 @@ industry-risk-analysis-australia/
 - [Notebook Index](notebooks/README.md)
 - [Data Sources](docs/data_sources.md)
 - [Output Data Provenance](docs/output_data_provenance.md)
-- [Australian Bank Practice Review](docs/australian_bank_industry_risk_practice_review.md)
+- [APRA Practice Alignment Review](docs/australian_bank_industry_risk_practice_review.md)
 
 ### Core generated outputs
 - `output/tables/industry_base_risk_scorecard.csv`
@@ -189,8 +189,8 @@ Combines classification, macro, and bottom-up views into a final borrower indust
 7. `Credit Application`
 Maps risk results into illustrative pricing, policy, and concentration outputs.
 
-8. `Bank Practice Overlay`
-Adds industry appetite strategy, stress testing, and ESG sensitivity outputs aligned to APRA themes and observed Australian bank disclosure practice.
+8. `Practice Alignment Overlay`
+Adds industry appetite strategy, stress testing, and ESG sensitivity outputs aligned to APRA themes and public prudential disclosure references.
 
 9. `Reporting`
 Generates a workbook-backed chart pack, generated executive summary, and consolidated PDF report.
@@ -225,6 +225,20 @@ The pipeline can also use:
 
 See [Data Sources](docs/data_sources.md) for the full list with local file names, source URLs, and usage.
 
+## Current Public Data Vintages Used
+
+The current model run in this repository is based on these staged source periods:
+
+- `ABS Australian Industry`: FY `2022-23` and FY `2023-24` annual values from the `2023-24` release. Refresh annually when the next release is available.
+- `ABS Business Indicators - Gross Operating Profit / Sales Ratio`: quarterly series through `December 2025`. Refresh quarterly.
+- `ABS Business Indicators - Inventories / Sales Ratio`: quarterly series through `December 2025`. Refresh quarterly.
+- `ABS Labour Force, Australia, Detailed`: monthly industry series through `February 2026`. Refresh monthly.
+- `ABS Building Approvals - Non-Residential`: monthly series through `February 2026`. Refresh monthly.
+- `RBA F1 cash-rate table`: local CSV snapshot published `2 April 2026`, with the latest staged daily observation dated `16 March 2026`. Refresh when a newer RBA snapshot is staged or when the policy-rate series changes.
+- `PTRS`: Cycle `8` (`July 2025`) and Cycle `9` (`January 2026`) publications, plus `March 2025` guidance used to rebuild the local PTRS workbook. Refresh when a new PTRS cycle publication is released.
+
+After any of those source files are refreshed, rerun `python scripts/run_pipeline.py` so the CSV outputs, workbook, markdown summaries, and PDF report are rebuilt from the new vintages.
+
 ## Important Limitation
 
 This project is intentionally transparent about what is public and what is not.
@@ -235,8 +249,8 @@ The following banking fields are not published directly in the ABS/RBA public da
 - sector AP day benchmarks when PTRS is not supplied
 - direct official industry inventory-turnover-days series
 - borrower-level financial statements
-- bank portfolio exposure by sector
-- bank pricing and policy settings
+- internal portfolio exposure by sector
+- internal pricing and policy settings
 
 AR and AP days are no longer treated as purely generic proxy formulas when PTRS source files are available: the pipeline downloads the official publications, reconstructs the workbook automatically, and then uses those public payment-times tables as the primary AR/AP benchmark source.
 Inventory days are also no longer handled as a simple annualised placeholder. The pipeline now estimates inventory days from ABS quarterly inventories/sales ratios using a quarter-length conversion and a margin-based COGS proxy, with a separate stock-build risk flag and a transparent fallback for sectors where the ABS ratio is unavailable.
@@ -291,4 +305,4 @@ This project is not only a data pipeline. It is intended to show end-to-end cred
 
 ## Usage Note
 
-This repository is for education and portfolio demonstration. It is not production credit advice and does not represent any individual bank's internal model, policy, or delegated authority framework.
+This repository is for education and structured analysis. It is not production credit advice and does not represent any institution's internal model, policy, or delegated authority framework.

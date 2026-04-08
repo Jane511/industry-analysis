@@ -34,6 +34,52 @@ REPORT_STYLE = {
     "muted": "#6b7c93",
 }
 
+PUBLIC_DATA_VINTAGES = [
+    (
+        "ABS Australian Industry",
+        "FY 2022-23 and FY 2023-24 annual values from the 2023-24 release",
+        "Annual; refresh after each new ABS Australian Industry release",
+    ),
+    (
+        "ABS Business Indicators - Gross Operating Profit / Sales Ratio",
+        "Quarterly series through December 2025",
+        "Quarterly",
+    ),
+    (
+        "ABS Business Indicators - Inventories / Sales Ratio",
+        "Quarterly series through December 2025",
+        "Quarterly",
+    ),
+    (
+        "ABS Labour Force by Industry",
+        "Monthly series through February 2026",
+        "Monthly",
+    ),
+    (
+        "ABS Building Approvals (Non-Residential)",
+        "Monthly series through February 2026",
+        "Monthly",
+    ),
+    (
+        "RBA F1 cash-rate table",
+        "Local CSV snapshot published 2 April 2026, with the latest staged observation dated 16 March 2026",
+        "Refresh when a newer RBA snapshot is staged or the policy-rate series changes",
+    ),
+    (
+        "PTRS",
+        "Cycle 8 (July 2025) and Cycle 9 (January 2026) publications, plus March 2025 guidance",
+        "Refresh when a new PTRS cycle publication is released",
+    ),
+]
+
+SECTOR_CORE_SOURCE_PERIOD = (
+    "Annual ABS FY 2022-23 to FY 2023-24; quarterly ABS series to Dec 2025; "
+    "monthly ABS series to Feb 2026; RBA snapshot published 2 Apr 2026."
+)
+PTRS_SOURCE_PERIOD = "PTRS Cycle 8 (Jul 2025) and Cycle 9 (Jan 2026)."
+INVENTORY_SOURCE_PERIOD = "ABS inventory ratio to Dec 2025 plus ABS annual FY 2023-24 margin data."
+OVERLAY_SOURCE_PERIOD = "PTRS Jul 2025 and Jan 2026 plus ABS inventory ratio to Dec 2025."
+
 
 CHART_DEFINITIONS = [
     {
@@ -44,6 +90,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/industry_base_risk_scorecard.csv",
         "metric_basis": "Public ABS/RBA metrics plus public-data-derived classification scores",
+        "source_period": SECTOR_CORE_SOURCE_PERIOD,
     },
     {
         "chart_id": "C02",
@@ -53,6 +100,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/industry_base_risk_scorecard.csv",
         "metric_basis": "Public ABS/RBA metrics plus public-data-derived classification scores",
+        "source_period": SECTOR_CORE_SOURCE_PERIOD,
     },
     {
         "chart_id": "C03",
@@ -62,6 +110,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/industry_base_risk_scorecard.csv",
         "metric_basis": "Public ABS labour-force series",
+        "source_period": "ABS Labour Force monthly series to Feb 2026.",
     },
     {
         "chart_id": "C04",
@@ -71,6 +120,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/borrower_industry_risk_scorecard.csv",
         "metric_basis": "Synthetic borrower archetype financials combined with public sector metrics",
+        "source_period": f"{SECTOR_CORE_SOURCE_PERIOD} Synthetic borrower archetypes are model-generated.",
     },
     {
         "chart_id": "C05",
@@ -80,6 +130,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/pricing_grid.csv",
         "metric_basis": "Illustrative pricing assumptions combined with borrower score outputs",
+        "source_period": f"{SECTOR_CORE_SOURCE_PERIOD} Pricing settings are illustrative rather than sourced.",
     },
     {
         "chart_id": "C06",
@@ -89,6 +140,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/concentration_limits.csv",
         "metric_basis": "Portfolio exposure proxy plus illustrative concentration limit settings",
+        "source_period": f"{SECTOR_CORE_SOURCE_PERIOD} Exposure and limit settings are illustrative.",
     },
     {
         "chart_id": "C07",
@@ -98,6 +150,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/watchlist_triggers.csv",
         "metric_basis": "Public ABS/RBA signals converted into watchlist rules",
+        "source_period": SECTOR_CORE_SOURCE_PERIOD,
     },
     {
         "chart_id": "C08",
@@ -107,6 +160,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/industry_stress_test_matrix.csv",
         "metric_basis": "Public ABS/RBA metrics with simplified APRA-informed stress assumptions",
+        "source_period": SECTOR_CORE_SOURCE_PERIOD,
     },
     {
         "chart_id": "C09",
@@ -116,6 +170,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/industry_working_capital_risk_metrics.csv",
         "metric_basis": "PTRS public payment-times tables when available, otherwise fallback proxy formula",
+        "source_period": PTRS_SOURCE_PERIOD,
     },
     {
         "chart_id": "C10",
@@ -125,6 +180,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/industry_working_capital_risk_metrics.csv",
         "metric_basis": "PTRS public payment-times tables when available, otherwise fallback proxy formula",
+        "source_period": PTRS_SOURCE_PERIOD,
     },
     {
         "chart_id": "C11",
@@ -134,6 +190,7 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/industry_working_capital_risk_metrics.csv",
         "metric_basis": "ABS quarterly inventories/sales ratio converted to estimated inventory days plus stock-build overlay",
+        "source_period": INVENTORY_SOURCE_PERIOD,
     },
     {
         "chart_id": "C12",
@@ -143,8 +200,32 @@ CHART_DEFINITIONS = [
         "source_workbook": REPORT_WORKBOOK_RELATIVE,
         "source_table": "output/tables/industry_working_capital_risk_metrics.csv",
         "metric_basis": "Deterministic overlay scores derived from AR, AP, inventory, and cash-conversion-cycle metrics",
+        "source_period": OVERLAY_SOURCE_PERIOD,
     },
 ]
+
+
+def _public_data_vintage_markdown_lines() -> list[str]:
+    lines = [
+        "## Current Public Data Vintages Used",
+        "",
+        "The current generated outputs are based on the following staged source vintages. If any of these files are refreshed, rerun `python scripts/run_pipeline.py` so the workbook, tables, markdown outputs, and PDF report are rebuilt from the newer periods.",
+        "",
+    ]
+    for dataset, period, cadence in PUBLIC_DATA_VINTAGES:
+        lines.append(f"- **{dataset}**: {period}. Update cadence: {cadence}.")
+    lines.append("")
+    return lines
+
+
+def _public_data_vintage_cover_text() -> str:
+    return (
+        "Current source vintages in this report: ABS Australian Industry FY 2022-23 to FY 2023-24; "
+        "ABS Business Indicators series to December 2025; ABS labour and approvals series to February 2026; "
+        "RBA F1 local snapshot published 2 April 2026 using the latest staged observation dated 16 March 2026; "
+        "PTRS Cycle 8 July 2025 and Cycle 9 January 2026. Refresh cadence: annual, quarterly, monthly, rate-change driven, "
+        "and per new PTRS cycle respectively."
+    )
 
 
 def _fit_columns(df: pd.DataFrame) -> pd.DataFrame:
@@ -249,7 +330,7 @@ def build_reporting_workbook(
     hardcoded_portfolio = concentration_df[["industry", "current_exposure_pct"]].copy()
     hardcoded_portfolio["hardcoded_input_flag"] = "Y"
     hardcoded_portfolio["hardcoded_reason"] = (
-        "Actual bank portfolio exposure by sector is internal bank information and must remain a workbook input"
+        "Actual internal portfolio exposure by sector is not available in the public dataset layer and remains a workbook input"
     )
 
     pricing_settings = pd.DataFrame(
@@ -274,7 +355,7 @@ def build_reporting_workbook(
     )
     pricing_settings["hardcoded_input_flag"] = "Y"
     pricing_settings["hardcoded_reason"] = (
-        "Bank pricing, policy settings, and concentration limits are internal credit policy inputs"
+        "Pricing, policy settings, and concentration limits are internal credit settings"
     )
 
     chart_data_heatmap = macro_df.merge(
@@ -364,7 +445,7 @@ def build_reporting_workbook(
                 },
                 {
                     "section": "Hard-coded inputs retained",
-                    "detail": "Sector debt/EBITDA and ICR proxies, borrower financials, bank portfolio exposure, pricing settings, policy settings, and concentration limits",
+                    "detail": "Sector debt/EBITDA and ICR proxies, borrower financials, internal portfolio exposure, pricing settings, policy settings, and concentration limits",
                 },
                 {
                     "section": "Chart generation rule",
@@ -479,49 +560,54 @@ def build_executive_summary(
         "",
         "This reporting pack now generates a separate working-capital layer for AR, AP, and inventory signals because those metrics can inform borrower scorecards today and can later support PD and LGD thinking. Public ABS and RBA datasets remain the source for the sector view, PTRS becomes the primary AR/AP benchmark source when available, and the remaining borrower, policy, and pricing fields remain explicit proxies or synthetic assumptions.",
         "",
-        "This is an APRA-informed portfolio demonstration rather than a replica of an Australian bank's internal industry risk methodology. The sector overlays, appetite framing, monitoring triggers, stress themes, and ESG treatment are bank-inspired, while borrower metrics, benchmark ratios, concentration exposure, and pricing remain transparent proxies or synthetic assumptions.",
+        "This is an APRA-informed analytical workflow rather than a replica of any internal industry risk methodology. The sector overlays, appetite framing, monitoring triggers, stress themes, and ESG treatment are aligned to prudential themes, while borrower metrics, benchmark ratios, concentration exposure, and pricing remain transparent proxies or synthetic assumptions.",
         "",
         "## Current Deliverables",
         "",
         f"- Workbook: `{workbook_display}`",
         f"- Chart table: `{chart_table_display}`",
         "- Chart explanations: `output/chart_explanations.md`",
-        "- Formal PDF report: `output/industry_risk_formal_report.pdf`",
+        "- Formal PDF report: `industry_risk_formal_report.pdf`",
         "",
-        "## Current Sector View",
-        "",
-        f"- Highest current industry base risk score: **{highest_sector['industry']}** at **{highest_sector['industry_base_risk_score']:.2f}**",
-        f"- Lowest current industry base risk score: **{lowest_sector['industry']}** at **{lowest_sector['industry_base_risk_score']:.2f}**",
-        f"- Strongest employment growth: **{strongest_employment['industry']}** at **{strongest_employment['employment_yoy_growth_pct']:+.1f}% YoY**",
-        f"- Weakest employment growth: **{weakest_employment['industry']}** at **{weakest_employment['employment_yoy_growth_pct']:+.1f}% YoY**",
-        "",
-        "## Borrower and Portfolio View",
-        "",
-        f"- Highest borrower archetype score: **{highest_borrower['borrower_name']}** at **{highest_borrower['final_industry_risk_score']:.2f}**",
-        f"- Lowest borrower archetype score: **{lowest_borrower['borrower_name']}** at **{lowest_borrower['final_industry_risk_score']:.2f}**",
-        f"- Highest concentration utilisation: **{top_util['industry']}** at **{top_util['utilisation_pct']:.1f}%** of limit",
-        f"- Current concentration breaches: **{', '.join(breaches['industry']) if not breaches.empty else 'None'}**",
-        "",
-        "## Working-Capital View",
-        "",
-        f"- Highest sector AR benchmark: **{highest_ar['industry']}** at **{highest_ar['ar_days_benchmark']:.1f} days**",
-        f"- Largest AR stress uplift: **{biggest_ar_uplift['industry']}** at **+{biggest_ar_uplift['ar_stress_uplift_days']:.1f} days**",
-        f"- Highest sector AP benchmark: **{highest_ap['industry']}** at **{highest_ap['ap_days_benchmark']:.1f} days**",
-        f"- Highest inventory benchmark: **{highest_inventory['industry']}** at **{highest_inventory['inventory_days_benchmark']:.1f} days** with **{highest_inventory['inventory_stock_build_risk']}** stock-build risk",
-        f"- Highest working-capital scorecard overlay: **{highest_scorecard_overlay['industry']}** at **{highest_scorecard_overlay['working_capital_scorecard_overlay_score']:.2f}**",
-        f"- Highest working-capital PD overlay: **{highest_pd_overlay['industry']}** at **{highest_pd_overlay['working_capital_pd_overlay_score']:.2f}**",
-        f"- Highest working-capital LGD overlay: **{highest_lgd_overlay['industry']}** at **{highest_lgd_overlay['working_capital_lgd_overlay_score']:.2f}**",
-        f"- Highest borrower working-capital PD metric score: **{highest_borrower_wc['borrower_name']}** at **{highest_borrower_wc['working_capital_pd_metric_score']:.2f}**",
-        "",
-        "## Monitoring View",
-        "",
-        f"- Most watchlist triggers: **{top_watchlist}** with **{top_watchlist_count}**",
-        f"- Largest average stress scenario uplift: **{biggest_scenario['scenario_name']}** at **{biggest_scenario['stress_delta']:.2f}** score points",
-        "",
-        "## Report Use",
-        "",
-        "The PDF is designed as a formal portfolio-style chart pack for credit and portfolio discussion. Each chart is tied to a workbook source sheet and includes a written explanation so the chart set can be reviewed without reopening the raw pipeline code.",
     ]
+    lines.extend(_public_data_vintage_markdown_lines())
+    lines.extend(
+        [
+            "## Current Sector View",
+            "",
+            f"- Highest current industry base risk score: **{highest_sector['industry']}** at **{highest_sector['industry_base_risk_score']:.2f}**",
+            f"- Lowest current industry base risk score: **{lowest_sector['industry']}** at **{lowest_sector['industry_base_risk_score']:.2f}**",
+            f"- Strongest employment growth: **{strongest_employment['industry']}** at **{strongest_employment['employment_yoy_growth_pct']:+.1f}% YoY**",
+            f"- Weakest employment growth: **{weakest_employment['industry']}** at **{weakest_employment['employment_yoy_growth_pct']:+.1f}% YoY**",
+            "",
+            "## Borrower and Portfolio View",
+            "",
+            f"- Highest borrower archetype score: **{highest_borrower['borrower_name']}** at **{highest_borrower['final_industry_risk_score']:.2f}**",
+            f"- Lowest borrower archetype score: **{lowest_borrower['borrower_name']}** at **{lowest_borrower['final_industry_risk_score']:.2f}**",
+            f"- Highest concentration utilisation: **{top_util['industry']}** at **{top_util['utilisation_pct']:.1f}%** of limit",
+            f"- Current concentration breaches: **{', '.join(breaches['industry']) if not breaches.empty else 'None'}**",
+            "",
+            "## Working-Capital View",
+            "",
+            f"- Highest sector AR benchmark: **{highest_ar['industry']}** at **{highest_ar['ar_days_benchmark']:.1f} days**",
+            f"- Largest AR stress uplift: **{biggest_ar_uplift['industry']}** at **+{biggest_ar_uplift['ar_stress_uplift_days']:.1f} days**",
+            f"- Highest sector AP benchmark: **{highest_ap['industry']}** at **{highest_ap['ap_days_benchmark']:.1f} days**",
+            f"- Highest inventory benchmark: **{highest_inventory['industry']}** at **{highest_inventory['inventory_days_benchmark']:.1f} days** with **{highest_inventory['inventory_stock_build_risk']}** stock-build risk",
+            f"- Highest working-capital scorecard overlay: **{highest_scorecard_overlay['industry']}** at **{highest_scorecard_overlay['working_capital_scorecard_overlay_score']:.2f}**",
+            f"- Highest working-capital PD overlay: **{highest_pd_overlay['industry']}** at **{highest_pd_overlay['working_capital_pd_overlay_score']:.2f}**",
+            f"- Highest working-capital LGD overlay: **{highest_lgd_overlay['industry']}** at **{highest_lgd_overlay['working_capital_lgd_overlay_score']:.2f}**",
+            f"- Highest borrower working-capital PD metric score: **{highest_borrower_wc['borrower_name']}** at **{highest_borrower_wc['working_capital_pd_metric_score']:.2f}**",
+            "",
+            "## Monitoring View",
+            "",
+            f"- Most watchlist triggers: **{top_watchlist}** with **{top_watchlist_count}**",
+            f"- Largest average stress scenario uplift: **{biggest_scenario['scenario_name']}** at **{biggest_scenario['stress_delta']:.2f}** score points",
+            "",
+            "## Report Use",
+            "",
+            "The PDF is designed as a formal chart pack for credit and portfolio discussion. Each chart is tied to a workbook source sheet and includes a written explanation so the chart set can be reviewed without reopening the raw pipeline code.",
+        ]
+    )
     output_path.write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -630,7 +716,7 @@ def _chart_explanations(
         "C03": _build_commentary(
             "This chart isolates employment growth because it is one of the cleanest public indicators of sector operating momentum and labour demand. Positive growth generally signals healthier demand conditions, while negative growth can indicate weaker activity or cost pressure.",
             f"{best_employment['industry']} shows the strongest YoY employment growth at {best_employment['employment_yoy_growth_pct']:+.1f}%, while {worst_employment['industry']} is weakest at {worst_employment['employment_yoy_growth_pct']:+.1f}%. That dispersion provides a direct cross-check on the broader sector ranking.",
-            "In a bank-style reporting pack, employment is not usually used alone to set appetite, but it is a useful corroborating trend line when analysts assess whether a sector is stabilising, softening, or moving onto watchlist review.",
+            "In a formal sector reporting pack, employment is not usually used alone to set appetite, but it is a useful corroborating trend line when analysts assess whether a sector is stabilising, softening, or moving onto watchlist review.",
         ),
         "C04": _build_commentary(
             "This scorecard translates the sector view into one synthetic borrower archetype per industry so the industry analysis can be linked to borrower-level decisioning. The archetypes are deliberately transparent and should be read as illustrative comparators rather than real obligors.",
@@ -640,7 +726,7 @@ def _chart_explanations(
         "C05": _build_commentary(
             "This chart converts the borrower score outcome into indicative pricing above the cash rate using the repo's transparent pricing grid. It separates the common base margin from the industry loading so the user can see how much of pricing is attributable to sector risk.",
             pricing_text,
-            "In formal reporting, this type of page is useful because it shows whether the pricing framework is directionally consistent with risk appetite. It should still be read as illustrative because actual bank pricing would also depend on structure, security, tenor, return hurdles, and relationship economics.",
+            "In formal reporting, this type of page is useful because it shows whether the pricing framework is directionally consistent with risk appetite. It should still be read as illustrative because actual pricing would also depend on structure, security, tenor, return hurdles, and relationship economics.",
         ),
         "C06": _build_commentary(
             "This chart compares the proxy sector exposure mix against illustrative concentration limits. It highlights where the current portfolio shape would be above, near, or comfortably below the stated internal tolerance.",
@@ -650,7 +736,7 @@ def _chart_explanations(
         "C07": _build_commentary(
             "This chart converts selected public-data warning signals into a sector watchlist count. It is designed to summarise monitoring pressure rather than absolute risk, so multiple triggers indicate where a sector may need more frequent review even if it is not the single highest-risk sector.",
             f"{top_watchlist} has the highest number of triggers at {top_watchlist_count}. That indicates a sector where the public signals are clustering negatively rather than showing only one isolated weak data point.",
-            "A bank or large corporate risk team would typically use this kind of page to prioritise portfolio review resources, refresh covenant monitoring, and challenge whether current pipeline settings remain appropriate for the affected sectors.",
+            "A portfolio or risk team would typically use this kind of page to prioritise review resources, refresh covenant monitoring, and challenge whether current pipeline settings remain appropriate for the affected sectors.",
         ),
         "C08": _build_commentary(
             "This chart applies the simplified scenario framework to the current sector view and shows the stressed score under the worst scenario by industry. It is intended to demonstrate directional vulnerability rather than a full severe-but-plausible capital stress model.",
@@ -665,7 +751,7 @@ def _chart_explanations(
         "C10": _build_commentary(
             "This chart shows supplier-payment timing separately from receivables and inventory. It compares base AP days with the stressed AP benchmark so the user can identify where working-capital support may depend on extended creditor funding.",
             f"{highest_ap['industry']} currently has the longest AP benchmark at {highest_ap['ap_days_benchmark']:.1f} days, with the stress benchmark extending to {highest_ap['ap_days_stress_benchmark']:.1f} days. Longer payable cycles can improve cash conversion mechanically, but they can also point to supplier stretch when conditions tighten.",
-            "In a bank-style working-capital review, AP metrics matter because an apparently acceptable cash-conversion position can still be fragile if it is being achieved by leaning on suppliers. That is why this chart is presented separately instead of being netted inside the CCC alone.",
+            "In a formal working-capital review, AP metrics matter because an apparently acceptable cash-conversion position can still be fragile if it is being achieved by leaning on suppliers. That is why this chart is presented separately instead of being netted inside the CCC alone.",
         ),
         "C11": _build_commentary(
             "This chart converts the ABS inventories-to-sales ratio into estimated inventory days and overlays the stock-build flag. It therefore separates simple inventory duration from the broader question of whether stock is building into weaker conditions.",
@@ -682,12 +768,14 @@ def _chart_explanations(
 
 def _write_chart_explanations(path: Path, chart_table: pd.DataFrame, explanations: dict[str, str]) -> None:
     lines = ["# Chart Explanations", ""]
+    lines.extend(_public_data_vintage_markdown_lines())
     for row in chart_table.itertuples(index=False):
         lines.append(f"## {row.chart_id} {row.chart_title}")
         lines.append(f"Source workbook: `{row.source_workbook}`")
         lines.append(f"Source sheet: `{row.source_sheet}`")
         lines.append(f"Primary output table: `{row.source_table}`")
         lines.append(f"Metric basis: {row.metric_basis}")
+        lines.append(f"Source period: {row.source_period}")
         lines.append("")
         lines.extend(explanations[row.chart_id].split("\n\n"))
         lines.append("")
@@ -731,8 +819,8 @@ def _render_pdf_report(
         cover.text(0.08, 0.955, "Australian Industry Risk Analysis", fontsize=21, fontweight="bold", color=REPORT_STYLE["header_text"])
         cover.text(0.08, 0.905, "Formal Chart Report", fontsize=13, fontweight="bold", color=REPORT_STYLE["text_primary"])
         cover.text(0.92, 0.905, REPORT_WORKBOOK_RELATIVE, fontsize=8.5, color=REPORT_STYLE["muted"], ha="right")
-        _add_panel(cover, 0.07, 0.67, 0.86, 0.20, REPORT_STYLE["panel_bg"])
-        _add_panel(cover, 0.07, 0.11, 0.86, 0.50, REPORT_STYLE["panel_bg"])
+        _add_panel(cover, 0.07, 0.62, 0.86, 0.25, REPORT_STYLE["panel_bg"])
+        _add_panel(cover, 0.07, 0.09, 0.86, 0.49, REPORT_STYLE["panel_bg"])
         cover.text(0.09, 0.84, "Report Scope", fontsize=11.5, fontweight="bold", color=REPORT_STYLE["text_primary"])
         cover.text(
             0.09,
@@ -742,20 +830,29 @@ def _render_pdf_report(
                 "The report also uses estimated inventory days derived from ABS quarterly inventories/sales ratios rather than a direct official inventory-turnover-days series. "
                 "AR/AP timing is anchored to reconstructed official PTRS publications when available, and the report now includes separate working-capital overlays for scorecard, PD, and LGD interpretation. "
                 "The remaining explicit proxy or synthetic inputs are sector debt/EBITDA and ICR benchmarks, borrower archetype financials, "
-                "bank portfolio exposure by sector, and bank pricing/policy settings.",
+                "internal portfolio exposure by sector, and internal pricing/policy settings.",
                 width=88,
             ),
             fontsize=10.2,
             va="top",
             color=REPORT_STYLE["text_primary"],
         )
-        cover.text(0.09, 0.58, "Included Charts", fontsize=11.5, fontweight="bold", color=REPORT_STYLE["text_primary"])
-        y = 0.545
+        cover.text(0.09, 0.715, "Current Source Vintages", fontsize=11.0, fontweight="bold", color=REPORT_STYLE["text_primary"])
+        cover.text(
+            0.09,
+            0.69,
+            _wrap_paragraphs(_public_data_vintage_cover_text(), width=90),
+            fontsize=9.0,
+            va="top",
+            color=REPORT_STYLE["text_primary"],
+        )
+        cover.text(0.09, 0.55, "Included Charts", fontsize=11.5, fontweight="bold", color=REPORT_STYLE["text_primary"])
+        y = 0.515
         for row in chart_table.itertuples(index=False):
             cover.text(0.10, y, f"{row.chart_id}", fontsize=9, color=REPORT_STYLE["text_secondary"], fontweight="bold")
             cover.text(0.15, y, row.chart_title, fontsize=9.6, color=REPORT_STYLE["text_primary"])
             cover.text(0.91, y, row.source_table, fontsize=7.8, color=REPORT_STYLE["muted"], ha="right")
-            y -= 0.036
+            y -= 0.032
         cover.text(0.08, 0.05, "Workbook-backed report layout with source sheets and output-table references on each page.", fontsize=8.2, color=REPORT_STYLE["muted"])
         pdf.savefig(cover)
         plt.close(cover)
@@ -778,7 +875,9 @@ def _render_pdf_report(
             fig.text(0.52, 0.885, "Primary Output Table", fontsize=8.5, fontweight="bold", color=REPORT_STYLE["text_secondary"])
             fig.text(0.52, 0.865, row.source_table, fontsize=8.5, color=REPORT_STYLE["text_primary"])
             fig.text(0.09, 0.837, "Metric Basis", fontsize=8.5, fontweight="bold", color=REPORT_STYLE["text_secondary"])
-            fig.text(0.09, 0.819, _wrap_paragraphs(row.metric_basis, 98), fontsize=8.4, color=REPORT_STYLE["muted"], va="top")
+            fig.text(0.09, 0.819, _wrap_paragraphs(row.metric_basis, 48), fontsize=8.3, color=REPORT_STYLE["muted"], va="top")
+            fig.text(0.52, 0.837, "Source Period", fontsize=8.5, fontweight="bold", color=REPORT_STYLE["text_secondary"])
+            fig.text(0.52, 0.819, _wrap_paragraphs(row.source_period, 48), fontsize=8.3, color=REPORT_STYLE["muted"], va="top")
 
             fig.text(0.09, 0.745, "Chart", fontsize=11.2, fontweight="bold", color=REPORT_STYLE["text_primary"])
             ax_img = fig.add_axes([0.10, 0.43, 0.80, 0.29])

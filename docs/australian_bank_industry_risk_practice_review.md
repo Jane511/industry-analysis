@@ -1,10 +1,10 @@
-# Australian Bank Industry Risk Practice Review
+# APRA Practice Alignment Review
 
 ## Research summary
 
-Australian banks performing industry risk analysis for credit assessment typically operate within the APRA prudential framework and add institution-specific portfolio controls.
+Industry risk analysis for credit assessment typically operates within the APRA prudential framework together with organisation-specific portfolio controls.
 
-This note should be read as a practice-alignment review, not a claim that the repository reproduces internal bank methodology. The repo aligns most closely on governance themes, sector overlays, monitoring, appetite framing, and stress/ESG concepts. It is materially less realistic on borrower-level analytics, internal grading, pricing, and concentration measurement because those require internal bank data and policy infrastructure.
+This note should be read as a practice-alignment review, not a claim that the repository reproduces an internal institutional methodology. The repo aligns most closely on governance themes, sector overlays, monitoring, appetite framing, and stress/ESG concepts. It is materially less realistic on borrower-level analytics, internal grading, pricing, and concentration measurement because those require internal data and policy infrastructure.
 
 ### Core prudential expectations
 
@@ -13,10 +13,9 @@ This note should be read as a practice-alignment review, not a claim that the re
 - APRA APS 221 requires Board-approved policies for large exposures and risk concentrations, including consideration of counterparties, industries, countries and asset classes.
 - APRA APG 220 describes sound practice including internal portfolio limits, sector and geographic concentration controls, internal credit risk grading, stress testing, covenants, collateral/guarantees, watch-lists and remedial management.
 
-### Observed major-bank practice
+### Observed public practice references
 
-- Westpac Pillar 3 reporting states that concentration risk policies cover industries, countries and counterparties, and that credit policies include ESG credit risk, delegation of approval authorities, and end-to-end credit lifecycle controls.
-- NAB ESG risk management states that it maintains a high-risk ESG sectors and sensitive areas list and identifies sectors where appetite is restricted or not available.
+- Public prudential and disclosure references commonly emphasise concentration controls across industries, countries and counterparties, ESG-sensitive sectors, delegated approval settings, and end-to-end credit lifecycle controls.
 
 ## Source links
 
@@ -26,9 +25,9 @@ This note should be read as a practice-alignment review, not a claim that the re
   - https://handbook.apra.gov.au/ppg/apg-220
 - APRA APS 221 Large Exposures
   - https://handbook.apra.gov.au/standard/aps-221
-- Westpac Pillar 3 Report, March 2025
+- Pillar 3 disclosure example, March 2025
   - https://www.westpac.com.au/content/dam/public/wbc/documents/pdf/aw/ic/wbc-pillar-3-report-march-2025.pdf
-- NAB ESG risk management
+- ESG risk management example
   - https://www.nab.com.au/about-us/sustainability/reporting-policies-approach/esg-risk-management
 
 ## Coverage assessment of this repo
@@ -47,11 +46,11 @@ Missing before this review:
 - explicit industry credit appetite strategy
 - explicit industry stress testing matrix
 - explicit ESG-sensitive sector overlay
-- documented mapping between repo outputs and Australian bank practice
+- documented mapping between repo outputs and prudential practice references
 
 ## What was built
 
-The repo now includes three additional bank-practice outputs:
+The repo now includes three additional practice-alignment outputs:
 
 - `industry_credit_appetite_strategy.csv`
   - sector stance, tenor guidance, covenant intensity, collateral expectation, review frequency and ESG due diligence standard
@@ -60,14 +59,14 @@ The repo now includes three additional bank-practice outputs:
 - `industry_esg_sensitivity_overlay.csv`
   - ESG-sensitive sector flags and associated credit policy overlays
 
-These outputs are generated from the existing public-data sector risk results and align to the prudential themes above. They should be described as APRA-informed proxies rather than direct replicas of bank-internal frameworks.
+These outputs are generated from the existing public-data sector risk results and align to the prudential themes above. They should be described as APRA-informed proxies rather than direct replicas of internal frameworks.
 
 ## Remaining limitations
 
-The repo still does not replicate internal bank-only capabilities such as:
+The repo still does not replicate internal institution-only capabilities such as:
 
 - actual internal borrower ratings and default history
-- bank-specific delegated authorities and exception data
+- institution-specific delegated authorities and exception data
 - observed portfolio exposure and utilisation by sector
 - customer-level covenant compliance and arrears trends
 - workout/provisioning data
@@ -75,4 +74,4 @@ The repo still does not replicate internal bank-only capabilities such as:
 - borrower-level cash flow, security, sponsor, and structure analysis used in real credit approval
 - severe-but-plausible stress testing linked to portfolio systems and management actions
 
-Those would require internal bank systems or proprietary datasets rather than additional ABS/RBA downloads.
+Those would require internal systems or proprietary datasets rather than additional ABS/RBA downloads.

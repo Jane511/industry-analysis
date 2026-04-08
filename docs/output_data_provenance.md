@@ -1,5 +1,19 @@
 # Output Data Provenance
 
+## Current public data vintages behind this output pack
+
+The current generated outputs in `output/` are based on these staged source vintages:
+
+- `ABS Australian Industry`: FY `2022-23` and FY `2023-24` annual values from the `2023-24` release
+- `ABS Business Indicators - Gross Operating Profit / Sales Ratio`: quarterly series through `December 2025`
+- `ABS Business Indicators - Inventories / Sales Ratio`: quarterly series through `December 2025`
+- `ABS Labour Force Detailed by industry`: monthly series through `February 2026`
+- `ABS Building Approvals - Non-residential`: monthly series through `February 2026`
+- `RBA F1`: local CSV snapshot published `2 April 2026`, latest staged observation `16 March 2026`
+- `PTRS`: Cycle `8` (`July 2025`) and Cycle `9` (`January 2026`) publications, plus `March 2025` guidance
+
+If any of those source files are refreshed, rerun `python scripts/run_pipeline.py` before relying on the downstream output tables, workbook, markdown summaries, or PDF report.
+
 ## Directly sourced from Australian public datasets
 
 The following output fields are directly loaded from ABS or RBA files already present in `data/raw/public`:
@@ -79,9 +93,9 @@ These outputs use rules, scorecards, or transformations built from public ABS/RB
 - `watchlist_triggers.csv`
   - all rows are derived from public-data signals using trigger rules
 
-## Generated because public datasets do not provide the banking field directly
+## Generated because public datasets do not provide the internal credit field directly
 
-The following outputs rely on generated data because no borrower-specific public dataset or bank policy dataset is included in the repo:
+The following outputs rely on generated data because no borrower-specific public dataset or internal policy dataset is included in the repo:
 
 - `borrower_benchmark_comparison.csv`
   - `borrower_name`
@@ -142,9 +156,9 @@ The remaining generated fields are not missing because of absent downloads. They
 - sector debt / EBITDA benchmarks
 - sector interest coverage benchmarks
 - sector AP day benchmarks when PTRS is unavailable
-- true bank portfolio exposure by sector
-- bank pricing grids
-- bank policy overlays
+- true internal portfolio exposure by sector
+- internal pricing grids
+- internal policy overlays
 - direct public sector PD, LGD, or recovery datasets aligned to this sector set
 
 ## Public PTRS proxy layer after official source reconstruction
