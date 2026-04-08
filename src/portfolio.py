@@ -1,3 +1,5 @@
+"""Portfolio and policy overlays aligned to public-data sector analysis."""
+
 from pathlib import Path
 
 import pandas as pd
@@ -12,6 +14,53 @@ ESG_SENSITIVE_SECTORS = {
     "accommodation and food services": "Labour practices, energy and waste intensity",
     "transport postal and warehousing": "Fuel transition, fleet emissions, safety",
 }
+
+CONCENTRATION_LIMITS = {
+    "Low": 25.0,
+    "Medium": 20.0,
+    "Elevated": 15.0,
+    "High": 10.0,
+}
+
+
+def build_portfolio_proxy(macro_df: pd.DataFrame, processed_dir: Path) -> pd.DataFrame:
+    """Estimate sector exposure using a transparent public-data portfolio proxy."""
+    df = macro_df[["industry", "sales_m_latest", "employment_000_latest"]].copy()
+    df["sales_share"] = df["sales_m_latest"] / df["sales_m_latest"].sum()
+    df["employment_share"] = df["employment_000_latest"] / df["employment_000_latest"].sum()
+    df["current_exposure_pct"] = ((0.7 * df["sales_share"] + 0.3 * df["employment_share"]) * 100).round(1)
+    df["exposure_proxy_source"] = (
+        "public proxy based on 70% industry sales share and 30% employment share from ABS Australian Industry"
+    )
+    out = df[["industry", "current_exposure_pct", "exposure_proxy_source"]]
+    save_csv(out, processed_dir / "industry_portfolio_proxy.csv")
+    return out
+
+
+def build_concentration_limits(macro_df: pd.DataFrame, portfolio_df: pd.DataFrame) -> pd.DataFrame:
+    """Compare current portfolio proxy exposure against risk-based limits."""
+    base = macro_df[["industry", "industry_base_risk_score", "industry_base_risk_level"]].copy()
+    base = base.rename(columns={"industry_base_risk_level": "risk_level"})
+    base["concentration_limit_pct"] = base["risk_level"].map(CONCENTRATION_LIMITS)
+
+    df = base.merge(portfolio_df, on="industry", how="left")
+    df["current_exposure_pct"] = df["current_exposure_pct"].fillna(0)
+    df["headroom_pct"] = df["concentration_limit_pct"] - df["current_exposure_pct"]
+    df["breach"] = df["current_exposure_pct"] > df["concentration_limit_pct"]
+    df["utilisation_pct"] = (df["current_exposure_pct"] / df["concentration_limit_pct"] * 100).round(1)
+
+    return df[
+        [
+            "industry",
+            "risk_level",
+            "industry_base_risk_score",
+            "concentration_limit_pct",
+            "current_exposure_pct",
+            "headroom_pct",
+            "breach",
+            "utilisation_pct",
+        ]
+    ]
 
 
 def build_industry_credit_appetite_strategy(macro_df: pd.DataFrame, processed_dir: Path) -> pd.DataFrame:
@@ -137,3 +186,62 @@ def build_industry_esg_overlay(macro_df: pd.DataFrame, processed_dir: Path) -> p
     out = pd.DataFrame(rows).sort_values(["esg_sensitive_sector", "industry"], ascending=[False, True])
     save_csv(out, processed_dir / "industry_esg_sensitivity_overlay.csv")
     return out
+
+
+def build_watchlist(macro_df: pd.DataFrame) -> pd.DataFrame:
+    """Flag industries that trip one or more watchlist triggers."""
+    triggers = []
+    component_cols = [
+        "employment_score",
+        "margin_level_score",
+        "margin_trend_score",
+        "inventory_score",
+        "demand_score",
+    ]
+
+    for _, row in macro_df.iterrows():
+        industry = row["industry"]
+
+        if pd.notna(row.get("employment_yoy_growth_pct")) and row["employment_yoy_growth_pct"] < 0:
+            triggers.append(
+                {
+                    "industry": industry,
+                    "trigger": "Negative employment growth",
+                    "value": f"{row['employment_yoy_growth_pct']:+.1f}%",
+                    "recommended_action": "Review sector exposure and borrower performance",
+                }
+            )
+
+        if pd.notna(row.get("margin_trend_score")) and row["margin_trend_score"] >= 4:
+            triggers.append(
+                {
+                    "industry": industry,
+                    "trigger": "Declining margin trend",
+                    "value": f"Margin trend score = {row['margin_trend_score']:.0f}",
+                    "recommended_action": "Request updated financials from borrowers in this sector",
+                }
+            )
+
+        if pd.notna(row.get("industry_base_risk_score")) and row["industry_base_risk_score"] >= 3.5:
+            triggers.append(
+                {
+                    "industry": industry,
+                    "trigger": "Elevated base risk score",
+                    "value": f"Base score = {row['industry_base_risk_score']:.2f}",
+                    "recommended_action": "Tighten new lending criteria; escalate to credit committee",
+                }
+            )
+
+        for col in component_cols:
+            if col in row and pd.notna(row[col]) and row[col] == 5:
+                label = col.replace("_score", "").replace("_", " ").title()
+                triggers.append(
+                    {
+                        "industry": industry,
+                        "trigger": f"Extreme signal - {label}",
+                        "value": f"{col} = 5",
+                        "recommended_action": f"Investigate {label.lower()} driver; consider watchlist placement",
+                    }
+                )
+
+    return pd.DataFrame(triggers)

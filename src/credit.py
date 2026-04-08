@@ -1,9 +1,6 @@
-"""Credit application functions — pricing, policy overlays, and concentration limits."""
+"""Borrower-level pricing and policy overlays."""
 
-from pathlib import Path
 import pandas as pd
-from src.utils import risk_band
-from src.output import save_csv
 
 
 # ---------------------------------------------------------------------------
@@ -81,31 +78,3 @@ def build_policy_overlay(scorecard_df: pd.DataFrame) -> pd.DataFrame:
         })
     return pd.DataFrame(rows)
 
-
-# ---------------------------------------------------------------------------
-# Concentration limits
-# ---------------------------------------------------------------------------
-CONCENTRATION_LIMITS = {
-    'Low': 25.0,
-    'Medium': 20.0,
-    'Elevated': 15.0,
-    'High': 10.0,
-}
-
-
-def build_concentration_limits(macro_df: pd.DataFrame,
-                               portfolio_df: pd.DataFrame) -> pd.DataFrame:
-    """Compare current portfolio exposure to risk-based concentration limits."""
-    base = macro_df[['industry', 'industry_base_risk_score', 'industry_base_risk_level']].copy()
-    base = base.rename(columns={'industry_base_risk_level': 'risk_level'})
-    base['concentration_limit_pct'] = base['risk_level'].map(CONCENTRATION_LIMITS)
-
-    df = base.merge(portfolio_df, on='industry', how='left')
-    df['current_exposure_pct'] = df['current_exposure_pct'].fillna(0)
-    df['headroom_pct'] = df['concentration_limit_pct'] - df['current_exposure_pct']
-    df['breach'] = df['current_exposure_pct'] > df['concentration_limit_pct']
-    df['utilisation_pct'] = (df['current_exposure_pct'] / df['concentration_limit_pct'] * 100).round(1)
-
-    return df[['industry', 'risk_level', 'industry_base_risk_score',
-               'concentration_limit_pct', 'current_exposure_pct',
-               'headroom_pct', 'breach', 'utilisation_pct']]

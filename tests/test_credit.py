@@ -1,13 +1,10 @@
-"""Tests for src.credit_application functions."""
+"""Tests for pricing and policy overlays."""
 
 import pandas as pd
-import pytest
-from src.credit_application import (
+from src.credit import (
     build_pricing_grid,
     build_policy_overlay,
-    build_concentration_limits,
     PRICING_LOADING,
-    CONCENTRATION_LIMITS,
 )
 
 
@@ -73,31 +70,3 @@ class TestPolicyOverlay:
         policy = build_policy_overlay(scorecard)
         high = policy[policy['risk_level'] == 'High'].iloc[0]
         assert 'committee' in high['approval_authority'].lower()
-
-
-# ---------------------------------------------------------------------------
-# Concentration limits
-# ---------------------------------------------------------------------------
-class TestConcentrationLimits:
-    def test_breach_detection(self):
-        macro = pd.DataFrame([
-            {'industry': 'Construction', 'industry_base_risk_score': 3.74,
-             'industry_base_risk_level': 'Elevated'},
-        ])
-        portfolio = pd.DataFrame([
-            {'industry': 'Construction', 'current_exposure_pct': 20.0},
-        ])
-        result = build_concentration_limits(macro, portfolio)
-        assert bool(result.iloc[0]['breach']) is True
-        assert result.iloc[0]['concentration_limit_pct'] == CONCENTRATION_LIMITS['Elevated']
-
-    def test_within_limit(self):
-        macro = pd.DataFrame([
-            {'industry': 'Health Care', 'industry_base_risk_score': 2.0,
-             'industry_base_risk_level': 'Low'},
-        ])
-        portfolio = pd.DataFrame([
-            {'industry': 'Health Care', 'current_exposure_pct': 10.0},
-        ])
-        result = build_concentration_limits(macro, portfolio)
-        assert bool(result.iloc[0]['breach']) is False

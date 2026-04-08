@@ -1,18 +1,18 @@
 from src.config import RAW_PUBLIC_DIR_ABS, PROCESSED_DIR, OUTPUT_CHARTS_DIR, OUTPUT_TABLES_DIR, DELIVERABLES_DIR
-from src.build_foundation import build_foundation
-from src.build_macro_view import build_macro_view
-from src.build_benchmarks import build_industry_benchmarks
-from src.build_portfolio import build_portfolio_proxy
-from src.build_bottom_up import build_bottom_up
-from src.build_scorecard import build_scorecard
-from src.build_working_capital import build_working_capital_metrics
-from src.bank_practice import (
+from src.foundation import build_foundation
+from src.macro import build_macro_view
+from src.benchmarks import build_industry_benchmarks
+from src.borrowers import build_bottom_up, build_scorecard
+from src.working_capital import build_working_capital_metrics
+from src.portfolio import (
+    build_portfolio_proxy,
+    build_concentration_limits,
     build_industry_credit_appetite_strategy,
     build_industry_stress_test_matrix,
     build_industry_esg_overlay,
+    build_watchlist,
 )
-from src.credit_application import build_pricing_grid, build_policy_overlay, build_concentration_limits
-from src.portfolio_monitoring import build_watchlist
+from src.credit import build_pricing_grid, build_policy_overlay
 from src.reporting import build_reporting_workbook, build_formal_chart_report
 from src.output import save_csv
 

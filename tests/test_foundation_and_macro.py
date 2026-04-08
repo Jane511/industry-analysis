@@ -1,11 +1,11 @@
 import pandas as pd
 
-from src.build_foundation import (
+from src.foundation import (
     _score_demand_dependency,
     _score_external_shock,
     _score_rate_sensitivity,
 )
-from src.build_macro_view import (
+from src.macro import (
     DEMAND_PROXY_MAP,
     LOW_RELIABILITY_DEMAND_PROXY_SECTORS,
     _estimate_inventory_days_from_ratio,

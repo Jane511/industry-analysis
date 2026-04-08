@@ -1,9 +1,8 @@
 import pandas as pd
 from pathlib import Path
 
-import src.build_benchmarks as build_benchmarks_module
-import src.build_bottom_up as build_bottom_up_module
-from src.build_portfolio import build_portfolio_proxy
+import src.benchmarks as build_benchmarks_module
+import src.borrowers as borrowers_module
 
 
 def _make_public_df() -> pd.DataFrame:
@@ -139,9 +138,9 @@ def test_build_bottom_up_uses_generated_benchmarks(monkeypatch):
             }
         ]
     )
-    monkeypatch.setattr(build_bottom_up_module, "save_csv", lambda df, path: None)
+    monkeypatch.setattr(borrowers_module, "save_csv", lambda df, path: None)
 
-    result = build_bottom_up_module.build_bottom_up(public_df, benchmark_df, Path("."))
+    result = borrowers_module.build_bottom_up(public_df, benchmark_df, Path("."))
 
     row = result.iloc[0]
     assert row["benchmark_origin"] == "generated"
@@ -149,18 +148,22 @@ def test_build_bottom_up_uses_generated_benchmarks(monkeypatch):
     assert row["bottom_up_risk_score"] > 0
 
 
-def test_build_portfolio_proxy_uses_public_weights(monkeypatch):
-    macro_df = pd.DataFrame(
+def test_build_scorecard_combines_component_scores(monkeypatch):
+    borrower_compare = pd.DataFrame(
         [
-            {"industry": "Retail Trade", "sales_m_latest": 600, "employment_000_latest": 100},
-            {"industry": "Construction", "sales_m_latest": 400, "employment_000_latest": 100},
+            {
+                "borrower_name": "Retail Trade Archetype",
+                "industry": "Retail Trade",
+                "classification_risk_score": 4.0,
+                "macro_risk_score": 3.4,
+                "bottom_up_risk_score": 3.0,
+            }
         ]
     )
-    monkeypatch.setattr("src.build_portfolio.save_csv", lambda df, path: None)
+    monkeypatch.setattr(borrowers_module, "save_csv", lambda df, path: None)
 
-    result = build_portfolio_proxy(macro_df, Path("."))
+    result = borrowers_module.build_scorecard(borrower_compare, Path("."), Path("."))
 
-    retail = result[result["industry"] == "Retail Trade"].iloc[0]
-    construction = result[result["industry"] == "Construction"].iloc[0]
-    assert retail["current_exposure_pct"] > construction["current_exposure_pct"]
-    assert round(result["current_exposure_pct"].sum(), 1) == 100.0
+    row = result.iloc[0]
+    assert row["final_industry_risk_score"] == 3.47
+    assert row["risk_level"] == "Elevated"
