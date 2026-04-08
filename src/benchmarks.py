@@ -1,3 +1,5 @@
+"""Stage 3: industry benchmark proxies and PTRS-linked working-capital anchors."""
+
 from pathlib import Path
 import os
 

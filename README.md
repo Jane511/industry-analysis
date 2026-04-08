@@ -39,17 +39,36 @@ Based on the latest generated outputs:
 If you are reviewing this repository as an interviewer, the most useful reading order is:
 
 1. [Executive Summary](output/executive_summary.md)
-2. [Formal PDF Report](output/industry_risk_formal_report.pdf)
-3. [Methodology](docs/methodology.md)
+2. [Formal PDF Report](industry_risk_formal_report.pdf)
+3. [Clean Methodology Reference](METHODOLOGY.md)
 4. [Output Data Provenance](docs/output_data_provenance.md)
 5. [Australian Bank Practice Review](docs/australian_bank_industry_risk_practice_review.md)
+
+## How It Works
+
+- Uses public ABS, RBA, and PTRS data as the starting point for all sector analysis.
+- Builds structural industry scores first, then overlays current macro, margin, inventory, employment, demand, and rate signals.
+- Converts public sector signals into benchmark-style credit metrics such as AR days, AP days, inventory days, leverage, and coverage.
+- Generates one synthetic borrower archetype per industry so the sector view can be translated into a borrower-style scorecard.
+- Separates working-capital analysis into AR, AP, inventory, cash-conversion-cycle, and PD / LGD-style overlays.
+- Combines structural, macro, and borrower views into one final industry risk score for each borrower archetype.
+- Maps the results into illustrative pricing, policy, concentration, stress-testing, ESG, and watchlist outputs.
+- Produces a workbook-backed executive summary, chart pack, notebooks, and formal PDF report for reviewer-friendly presentation.
 
 ## Repository Structure
 
 ```text
 industry-risk-analysis-australia/
+├── METHODOLOGY.md
+├── data/
+│   ├── methodology.md         # Technical appendix
+│   ├── raw/public/            # Downloaded ABS / RBA / PTRS input files
+│   └── processed/             # Intermediate pipeline outputs
+├── notebooks/
+│   ├── 01_results_and_report_walkthrough.ipynb
+│   ├── 02_methodology_and_output_map.ipynb
+│   └── README.md
 ├── docs/
-│   ├── methodology.md
 │   ├── data_sources.md
 │   ├── output_data_provenance.md
 │   ├── australian_bank_industry_risk_practice_review.md
@@ -57,15 +76,21 @@ industry-risk-analysis-australia/
 ├── scripts/
 │   └── run_pipeline.py        # Main entrypoint
 ├── src/                       # Implementation modules
-├── data/
-│   ├── raw/public/            # Downloaded ABS / RBA input files
-│   └── processed/             # Intermediate pipeline outputs
+│   ├── foundation.py
+│   ├── macro.py
+│   ├── benchmarks.py
+│   ├── borrowers.py
+│   ├── working_capital.py
+│   ├── portfolio.py
+│   ├── credit.py
+│   ├── pipeline.py
+│   └── ...
 ├── output/
 │   ├── executive_summary.md   # Portfolio-facing outputs
 │   ├── chart_explanations.md
-│   ├── industry_risk_formal_report.pdf
 │   ├── charts/                # Temporary chart workspace
 │   └── tables/                # Generated CSV output tables
+├── industry_risk_formal_report.pdf
 ├── tests/
 ├── pyproject.toml
 ├── requirements.txt
@@ -77,11 +102,13 @@ industry-risk-analysis-australia/
 ### Portfolio-facing documents
 - [Executive Summary](output/executive_summary.md)
 - [Chart Explanations](output/chart_explanations.md)
-- [Formal Report PDF](output/industry_risk_formal_report.pdf)
+- [Formal Report PDF](industry_risk_formal_report.pdf)
 
 ### Reference documents
 - [Docs Index](docs/README.md)
-- [Methodology](docs/methodology.md)
+- [Clean Methodology Reference](METHODOLOGY.md)
+- [Technical Methodology Appendix](data/methodology.md)
+- [Notebook Index](notebooks/README.md)
 - [Data Sources](docs/data_sources.md)
 - [Output Data Provenance](docs/output_data_provenance.md)
 - [Australian Bank Practice Review](docs/australian_bank_industry_risk_practice_review.md)
@@ -98,6 +125,10 @@ industry-risk-analysis-australia/
 - `output/tables/concentration_limits.csv`
 - `output/tables/watchlist_triggers.csv`
 - `output/tables/chart_table.csv`
+
+### Guided notebooks
+- [Results Walkthrough](notebooks/01_results_and_report_walkthrough.ipynb)
+- [Methodology and Output Map](notebooks/02_methodology_and_output_map.ipynb)
 
 ## Script and Output Numbering
 
@@ -131,7 +162,7 @@ To make the workflow easier to follow, the repo uses this numbered script-to-out
    `Workbook 3.16`: `data/processed/industry_risk_reporting_workbook.xlsx`
    `Report 3.17`: `output/executive_summary.md`
    `Report 3.18`: `output/chart_explanations.md`
-   `Report 3.19`: `output/industry_risk_formal_report.pdf`
+   `Report 3.19`: `industry_risk_formal_report.pdf`
 
 ## Project Logic
 
@@ -163,6 +194,21 @@ Adds industry appetite strategy, stress testing, and ESG sensitivity outputs ali
 
 9. `Reporting`
 Generates a workbook-backed chart pack, generated executive summary, and consolidated PDF report.
+
+## Maintained Source Modules
+
+The live `src/` package is now organised by analysis domain rather than by legacy build-script naming:
+
+- `src/foundation.py`: structural industry classification signals
+- `src/macro.py`: macro, demand, inventory, and rate signals
+- `src/benchmarks.py`: benchmark proxy construction including PTRS-linked AR/AP inputs
+- `src/borrowers.py`: borrower archetype generation and final borrower scorecard
+- `src/working_capital.py`: AR, AP, inventory, CCC, and PD/LGD overlay metrics
+- `src/portfolio.py`: appetite, stress, ESG, concentration, exposure proxy, and watchlist outputs
+- `src/credit.py`: pricing and borrower policy overlays
+- `src/reporting.py`: workbook, chart metadata, and PDF generation
+- `src/visualisation.py`: chart rendering helpers
+- `src/load_public_data.py` and `src/ptrs_reconstruction.py`: data ingestion and PTRS reconstruction utilities
 
 ## Public Data Used
 
@@ -212,7 +258,8 @@ python scripts/rebuild_ptrs_workbook.py
 The same limitation applies to internal borrower grades, true portfolio concentrations, exception tracking, covenant compliance, and workout data. Those are not replicated here.
 
 The repository documents those assumptions in:
-- [Methodology](docs/methodology.md)
+- [Clean Methodology Reference](METHODOLOGY.md)
+- [Technical Methodology Appendix](data/methodology.md)
 - [Output Data Provenance](docs/output_data_provenance.md)
 - [Executive Summary](output/executive_summary.md)
 

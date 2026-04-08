@@ -1,3 +1,5 @@
+"""Stage 2: macro and sector-trend signals built from public data."""
+
 from pathlib import Path
 import pandas as pd
 import numpy as np

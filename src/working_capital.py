@@ -1,3 +1,5 @@
+"""Working-capital overlays for scorecard, PD, and LGD interpretation."""
+
 from pathlib import Path
 
 import numpy as np

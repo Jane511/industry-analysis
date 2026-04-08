@@ -4,7 +4,7 @@ from uuid import uuid4
 
 import pandas as pd
 
-from src.build_working_capital import build_working_capital_metrics
+from src.working_capital import build_working_capital_metrics
 
 
 def test_build_working_capital_metrics_creates_expected_columns() -> None:

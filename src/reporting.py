@@ -16,7 +16,8 @@ from matplotlib.patches import FancyBboxPatch, Rectangle
 from PIL import Image
 
 from src.config import REPO_ROOT
-from src.credit_application import BASE_MARGIN_PCT, CONCENTRATION_LIMITS, POLICY_RULES, PRICING_LOADING
+from src.credit import BASE_MARGIN_PCT, POLICY_RULES, PRICING_LOADING
+from src.portfolio import CONCENTRATION_LIMITS
 from src.output import save_csv
 from src import visualisation as viz
 
