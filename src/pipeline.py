@@ -1,4 +1,4 @@
-from src.config import RAW_PUBLIC_DIR_ABS, PROCESSED_DIR, OUTPUT_CHARTS_DIR, OUTPUT_TABLES_DIR, DELIVERABLES_DIR
+from src.config import RAW_PUBLIC_DIR_ABS, PROCESSED_DIR, OUTPUT_CHARTS_DIR, OUTPUT_TABLES_DIR, DELIVERABLES_DIR, REPO_ROOT
 from src.foundation import build_foundation
 from src.macro import build_macro_view
 from src.benchmarks import build_industry_benchmarks
@@ -110,6 +110,6 @@ def run_pipeline() -> None:
     build_formal_chart_report(
         workbook_path,
         OUTPUT_CHARTS_DIR,
-        DELIVERABLES_DIR / 'industry_risk_formal_report.pdf',
+        REPO_ROOT / 'industry_risk_formal_report.pdf',
         DELIVERABLES_DIR / 'chart_explanations.md',
     )

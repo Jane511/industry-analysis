@@ -22,5 +22,19 @@ This repo uses official Australian public data for the public-data layer.
 
 The repo can download those official PTRS publications and automatically rebuild `data/raw/public/ptrs/PTRS_MultiCycle_AR_Days_Model_Official.xlsx` from the published cycle tables.
 
+## Current source vintages used by the model
+
+| Dataset | Local file | Current period used | Suggested refresh cadence |
+|---|---|---|---|
+| ABS Australian Industry | `data/raw/public/abs/81550DO001_202324.xlsx` | FY `2022-23` and FY `2023-24` annual values | Annual |
+| ABS Business Indicators - Profit ratio | `data/raw/public/abs/56760022_dec2025_profit_ratio.xlsx` | Quarterly series through `December 2025` | Quarterly |
+| ABS Business Indicators - Inventory ratio | `data/raw/public/abs/56760023_dec2025_inventory_ratio.xlsx` | Quarterly series through `December 2025` | Quarterly |
+| ABS Labour Force Detailed by industry | `data/raw/public/abs/6291004_feb2026_labour_force_industry.xlsx` | Monthly series through `February 2026` | Monthly |
+| ABS Building Approvals - Non-residential | `data/raw/public/abs/87310051_feb2026_building_approvals_nonres.xlsx` | Monthly series through `February 2026` | Monthly |
+| RBA F1 cash-rate table | `data/raw/public/rba_f1_data.csv` | Local snapshot published `2 April 2026`, latest staged observation `16 March 2026` | Refresh when a newer RBA snapshot is staged |
+| PTRS | `data/raw/public/ptrs/PTRS_MultiCycle_AR_Days_Model_Official.xlsx` rebuilt from official PDFs | Cycle `8` (`July 2025`) and Cycle `9` (`January 2026`) publications, plus `March 2025` guidance | Refresh on each new PTRS cycle publication |
+
+After refreshing any of those files, rerun `python scripts/run_pipeline.py` so the model outputs and reporting pack are rebuilt from the new source periods.
+
 ## Generated non-public layers
-Where the public datasets do not expose a direct banking metric, the repo generates deterministic, APRA-informed proxy metrics from the public ABS/RBA signals instead of relying on user-entered bank-only workbook inputs.
+Where the public datasets do not expose a direct credit metric, the repo generates deterministic, APRA-informed proxy metrics from the public ABS/RBA signals instead of relying on user-entered non-public workbook inputs.

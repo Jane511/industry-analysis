@@ -179,7 +179,7 @@ def build_industry_esg_overlay(macro_df: pd.DataFrame, processed_dir: Path) -> p
                     else "Standard credit review cycle"
                 ),
                 "source_note": (
-                    "Built to reflect Australian bank practice of maintaining high-risk ESG/sensitive sector overlays"
+                    "Built to reflect prudentially aligned handling of high-risk ESG and sensitive-sector overlays"
                 ),
             }
         )

@@ -2,11 +2,11 @@
 
 This document is a clean rewrite of the current methodology for the project. It is designed for:
 
-- hiring managers or HR reviewers who are not technical
-- interviewers who want to understand what the project is doing without reading Python
+- readers who are not technical
+- readers who want to understand what the project is doing without reading Python
 - credit or risk reviewers who want to trace each output back to its source data and formula
 
-The goal of the project is not to reproduce a bank's internal model. The goal is to show, in a transparent way, how Australian public data can be turned into a structured industry risk analysis workflow.
+The goal of the project is not to reproduce an internal institutional model. The goal is to show, in a transparent way, how Australian public data can be turned into a structured industry risk analysis workflow.
 
 ## 1. Executive Summary
 
@@ -21,9 +21,9 @@ At a high level, the project does five things:
 The key point for non-technical readers is this:
 
 - public data is used wherever possible
-- when public data does not directly publish a banking metric, the project uses a fixed rule or formula
+- when public data does not directly publish an internal credit metric, the project uses a fixed rule or formula
 - those fixed rules are called deterministic proxy rules
-- the output is a transparent portfolio demonstration, not a production credit model
+- the output is a transparent analytical workflow, not a production credit model
 
 ## 2. What The Public Datasets Mean
 
@@ -38,6 +38,26 @@ The project uses seven main public datasets.
 | `ABS-BA` | ABS Building Approvals (Non-Residential) | Monthly non-residential approvals by building type | Demand proxy for selected sectors |
 | `RBA-F1` | RBA Cash Rate | Official Australian cash rate time series | Interest-rate backdrop and pricing reference |
 | `PTRS` | Payment Times Reporting Scheme publications | Public payment timing by industry | AR and AP benchmark timing proxy |
+
+### Current Public Data Vintages Used
+
+The current staged source vintages used by the model are:
+
+- `ABS Australian Industry`: FY `2022-23` and FY `2023-24` annual values from the `2023-24` release
+- `ABS Business Indicators - Gross Operating Profit / Sales Ratio`: quarterly series through `December 2025`
+- `ABS Business Indicators - Inventories / Sales Ratio`: quarterly series through `December 2025`
+- `ABS Labour Force by Industry`: monthly series through `February 2026`
+- `ABS Building Approvals (Non-Residential)`: monthly series through `February 2026`
+- `RBA F1`: local CSV snapshot published `2 April 2026`, with the latest staged observation dated `16 March 2026`
+- `PTRS`: Cycle `8` (`July 2025`) and Cycle `9` (`January 2026`) publications, plus `March 2025` guidance
+
+Suggested refresh cadence:
+
+- annual for `ABS Australian Industry`
+- quarterly for `ABS Business Indicators`
+- monthly for `ABS Labour Force` and `ABS Building Approvals`
+- whenever a newer `RBA F1` file is staged or the cash-rate series changes
+- whenever a new `PTRS` cycle publication is released
 
 ## 3. Important Credit Terms
 
@@ -902,7 +922,7 @@ final_industry_risk_score
 
 **Role**
 
-Estimate a simple sector exposure mix because actual bank exposure data is not public.
+Estimate a simple sector exposure mix because actual internal portfolio exposure data is not public.
 
 **Equation**
 
@@ -1081,7 +1101,7 @@ This table also adds:
 | `esg_sensitive_sector` | Whether the sector is flagged for ESG sensitivity |
 | `esg_focus_area` | Main ESG topic to watch |
 | `due_diligence_standard` | Screening intensity |
-| `practice_rationale` | Note explaining the APRA / bank-practice framing |
+| `practice_rationale` | Note explaining the APRA / practice-alignment framing |
 
 ### 7.12 `industry_stress_test_matrix.csv`
 
@@ -1313,14 +1333,14 @@ The following items are **not** directly published by the public datasets and ar
 - credit-policy settings
 - concentration limits
 
-That is normal for a portfolio project like this. The important point is that the assumptions are visible and formula-based, not hidden.
+That is normal for a structured project like this. The important point is that the assumptions are visible and formula-based, not hidden.
 
 ## 10. Final Takeaway
 
-If someone from HR or a non-credit background asks, "What does this project actually do?", the simplest answer is:
+If someone from a non-credit background asks, "What does this project actually do?", the simplest answer is:
 
 > It takes official Australian public datasets, turns them into industry risk signals, builds simple credit-style benchmark ratios and synthetic borrower examples, then converts the results into a portfolio-style risk report with pricing, concentration, monitoring, and working-capital overlays.
 
-If someone asks, "Is this a real bank model?", the correct answer is:
+If someone asks, "Is this an internal production model?", the correct answer is:
 
-> No. It is an APRA-informed, bank-inspired demonstration built from public data and transparent proxy rules.
+> No. It is an APRA-informed analytical workflow built from public data and transparent proxy rules.
