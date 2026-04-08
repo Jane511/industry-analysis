@@ -4,6 +4,9 @@ import pandas as pd
 def normalise_text(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", str(value).lower()).strip()
 
+def clamp(value: float, lower: float, upper: float) -> float:
+    return max(lower, min(upper, value))
+
 def risk_band(score: float) -> str:
     if score <= 2.0:
         return "Low"
@@ -90,3 +93,47 @@ def score_icr(actual: float, benchmark: float) -> int:
     if actual >= benchmark - 0.5: return 3
     if actual >= benchmark - 1.0: return 4
     return 5
+
+def score_change_pct(value: float) -> float:
+    if pd.isna(value):
+        return 3.0
+    value = float(value)
+    if value <= -40:
+        return 5.0
+    if value <= -15:
+        return 4.0
+    if value < 10:
+        return 3.0
+    if value < 30:
+        return 2.0
+    return 1.0
+
+def average_scores(*values: float) -> float:
+    clean_values = [float(value) for value in values if pd.notna(value)]
+    if not clean_values:
+        return 3.0
+    return round(sum(clean_values) / len(clean_values), 2)
+
+def trend_label_from_score(score: float) -> str:
+    if score <= 1.5:
+        return "Strong expansion"
+    if score <= 2.5:
+        return "Improving"
+    if score <= 3.5:
+        return "Mixed"
+    if score <= 4.25:
+        return "Softening"
+    return "Sharp contraction"
+
+def classify_directional_trend(yoy_change: float, momentum_change: float | None = None) -> tuple[float, str]:
+    score = average_scores(score_change_pct(yoy_change), score_change_pct(momentum_change))
+    return score, trend_label_from_score(score)
+
+def cycle_stage_from_score(score: float) -> str:
+    if score <= 1.75:
+        return "growth"
+    if score <= 2.75:
+        return "neutral"
+    if score <= 4.0:
+        return "slowing"
+    return "downturn"

@@ -13,7 +13,7 @@ The current generated outputs are based on the following staged source vintages.
 - **PTRS**: Cycle 8 (July 2025) and Cycle 9 (January 2026) publications, plus March 2025 guidance. Update cadence: Refresh when a new PTRS cycle publication is released.
 
 ## C01 Industry Risk Dimensions Heatmap
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_heatmap`
 Primary output table: `output/tables/industry_base_risk_scorecard.csv`
 Metric basis: Public ABS/RBA metrics plus public-data-derived classification scores
@@ -24,7 +24,7 @@ Current read: Rate sensitivity is the strongest average pressure across the port
 Credit relevance: In a formal credit pack, this chart helps explain why a sector ranks where it does before management moves to pricing, concentration, or monitoring actions. It supports top-down sector challenge rather than borrower-specific approval decisions.
 
 ## C02 Industry Base Risk Score by Sector
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_industry_s`
 Primary output table: `output/tables/industry_base_risk_scorecard.csv`
 Metric basis: Public ABS/RBA metrics plus public-data-derived classification scores
@@ -35,7 +35,7 @@ Current read: Agriculture, Forestry And Fishing is currently the highest-risk se
 Credit relevance: A portfolio or industry committee would typically use this chart to identify sectors for growth, maintenance, selective origination, or restriction. It is the central ranking view that anchors the rest of the report.
 
 ## C03 Employment Growth by Industry
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_industry_s`
 Primary output table: `output/tables/industry_base_risk_scorecard.csv`
 Metric basis: Public ABS labour-force series
@@ -46,7 +46,7 @@ Current read: Professional, Scientific And Technical Services shows the stronges
 Credit relevance: In a formal sector reporting pack, employment is not usually used alone to set appetite, but it is a useful corroborating trend line when analysts assess whether a sector is stabilising, softening, or moving onto watchlist review.
 
 ## C04 Borrower Industry Risk Scorecard
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_borrower`
 Primary output table: `output/tables/borrower_industry_risk_scorecard.csv`
 Metric basis: Synthetic borrower archetype financials combined with public sector metrics
@@ -57,7 +57,7 @@ Current read: Agriculture, Forestry And Fishing Archetype is currently the highe
 Credit relevance: A corporate credit team could use this style of view to show how industry pressure changes the expected score distribution across a target origination pipeline. It is most useful as an explanatory layer, not as a production rating model.
 
 ## C05 Indicative Pricing by Borrower
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_pricing`
 Primary output table: `output/tables/pricing_grid.csv`
 Metric basis: Illustrative pricing assumptions combined with borrower score outputs
@@ -68,7 +68,7 @@ Current read: The highest all-in rate is 6.85% for Agriculture, Forestry And Fis
 Credit relevance: In formal reporting, this type of page is useful because it shows whether the pricing framework is directionally consistent with risk appetite. It should still be read as illustrative because actual pricing would also depend on structure, security, tenor, return hurdles, and relationship economics.
 
 ## C06 Sector Concentration: Current Exposure vs Limit
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_concentrat`
 Primary output table: `output/tables/concentration_limits.csv`
 Metric basis: Portfolio exposure proxy plus illustrative concentration limit settings
@@ -79,7 +79,7 @@ Current read: The highest utilisation is Retail Trade at 113.3% of limit. 2 sect
 Credit relevance: This is the style of chart a portfolio forum would use to decide whether to slow new flow, require stronger structure, or actively rebalance the book. It is especially useful when combined with the sector risk ranking so management can distinguish high exposure in low-risk sectors from high exposure in stressed sectors.
 
 ## C07 Industry Watchlist Trigger Count
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_watchlist`
 Primary output table: `output/tables/watchlist_triggers.csv`
 Metric basis: Public ABS/RBA signals converted into watchlist rules
@@ -90,7 +90,7 @@ Current read: Agriculture, Forestry And Fishing has the highest number of trigge
 Credit relevance: A portfolio or risk team would typically use this kind of page to prioritise review resources, refresh covenant monitoring, and challenge whether current pipeline settings remain appropriate for the affected sectors.
 
 ## C08 Industry Stress Test Impact
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_stress`
 Primary output table: `output/tables/industry_stress_test_matrix.csv`
 Metric basis: Public ABS/RBA metrics with simplified APRA-informed stress assumptions
@@ -101,7 +101,7 @@ Current read: Demand shock produces the largest average uplift at 0.23 score poi
 Credit relevance: A formal portfolio report would use this page to support management actions such as tighter appetite, higher monitoring frequency, or stronger underwriting expectations in sectors that are both risky today and highly stress-sensitive.
 
 ## C09 AR Days Benchmark and Stress by Industry
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_wc_ar`
 Primary output table: `output/tables/industry_working_capital_risk_metrics.csv`
 Metric basis: PTRS public payment-times tables when available, otherwise fallback proxy formula
@@ -112,7 +112,7 @@ Current read: Manufacturing currently has the longest AR benchmark at 33.7 days,
 Credit relevance: From a credit perspective, this page is relevant to borrower scorecards and PD interpretation because weaker collection performance can reduce liquidity headroom and increase the probability of financial stress before leverage ratios visibly worsen.
 
 ## C10 AP Days Benchmark and Stress by Industry
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_wc_ap`
 Primary output table: `output/tables/industry_working_capital_risk_metrics.csv`
 Metric basis: PTRS public payment-times tables when available, otherwise fallback proxy formula
@@ -123,7 +123,7 @@ Current read: Manufacturing currently has the longest AP benchmark at 33.7 days,
 Credit relevance: In a formal working-capital review, AP metrics matter because an apparently acceptable cash-conversion position can still be fragile if it is being achieved by leaning on suppliers. That is why this chart is presented separately instead of being netted inside the CCC alone.
 
 ## C11 Inventory Days and Stock-Build Risk by Industry
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_wc_inv`
 Primary output table: `output/tables/industry_working_capital_risk_metrics.csv`
 Metric basis: ABS quarterly inventories/sales ratio converted to estimated inventory days plus stock-build overlay
@@ -134,7 +134,7 @@ Current read: Manufacturing has the highest inventory benchmark at 52.7 days and
 Credit relevance: This page is particularly relevant to scorecard and LGD thinking. Inventory that is slow-moving or building into weaker trading conditions may both weaken current liquidity and reduce expected recoverability in a downside case.
 
 ## C12 Working-Capital Overlay Scores for PD, Scorecard, and LGD
-Source workbook: `data/processed/industry_risk_reporting_workbook.xlsx`
+Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_wc_overlay`
 Primary output table: `output/tables/industry_working_capital_risk_metrics.csv`
 Metric basis: Deterministic overlay scores derived from AR, AP, inventory, and cash-conversion-cycle metrics
