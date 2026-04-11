@@ -1,14 +1,16 @@
-# industry-analysis
+# Industry Risk & Macro Overlay Project
+
+This repository is the industry and macro overlay layer in the commercial credit-risk stack. It uses public-data-style sector indicators and synthetic portfolio exposure data to produce industry risk scores, benchmark references, downturn overlays, and concentration support tables. The outputs feed borrower scoring, LGD, stress testing, and pricing workflows across the broader commercial stack.
 
 ## What this repo is
 
-This repo is the Australian industry-risk and macro-overlay engine for a bank-style Australian credit-risk portfolio demonstration. It uses public-data friendly and synthetic sample data only.
+This project demonstrates how public industry signals can be translated into practical commercial credit-risk overlays. It is structured as a portfolio project, so the methodology is transparent, the outputs are reusable, and the repo is easy for non-specialist reviewers to navigate.
 
-## Where it sits in the full credit-risk stack
+## Where it sits in the stack
 
 Upstream inputs:
-- Australian public-data style sector indicators
-- synthetic portfolio exposure mix
+- Australian public-data style sector and macro indicators
+- synthetic portfolio exposure mix and industry mapping
 
 Downstream consumers:
 - `PD-and-scorecard-commercial`
@@ -16,15 +18,7 @@ Downstream consumers:
 - `stress-testing-commercial`
 - `RAROC-pricing-and-return-hurdle`
 
-## Inputs
-
-The demo pipeline uses `data/raw/demo_portfolio.csv`, generated automatically when missing. The fields cover borrower IDs, facility IDs, segment, industry, product type, limit, drawn balance, collateral, PD, LGD, EAD, and borrower financial metrics.
-
-## What the pipeline does
-
-It loads demo data, builds reusable credit features, runs the `industry` engine, validates the outputs, and writes downstream-friendly CSV files.
-
-## Outputs
+## Key outputs
 
 - `outputs/tables/industry_risk_score_table.csv`
 - `outputs/tables/benchmark_ratio_reference_table.csv`
@@ -32,6 +26,17 @@ It loads demo data, builds reusable credit features, runs the `industry` engine,
 - `outputs/tables/market_softness_overlay.csv`
 - `outputs/tables/concentration_support_table.csv`
 - `outputs/tables/pipeline_validation_report.csv`
+
+## Repo structure
+
+- `data/`: raw, interim, processed, and external reference inputs
+- `output/`: retained legacy report pack and reference tables used by older notebooks and reviewer-facing artifacts
+- `src/`: reusable industry-risk and overlay pipeline logic
+- `scripts/`: wrapper scripts for pipeline execution
+- `docs/`: methodology, assumptions, data dictionary, and validation notes
+- `notebooks/`: reviewer-facing walkthrough notebooks
+- `outputs/`: exported tables, reports, and sample artifacts
+- `tests/`: validation and regression checks
 
 ## How to run
 
@@ -45,12 +50,8 @@ Or:
 python scripts/run_codex_pipeline.py
 ```
 
-## Limitations and synthetic-data note
+## Limitations / Demo-Only Note
 
-- Demo data is synthetic and not confidential bank data.
-- Thresholds, overlays, and formulae are transparent portfolio-demonstration assumptions.
-- Production use would require governed source data, calibration, model validation, and approval.
-
-## How it connects to the next repo
-
-The exported CSV files are intentionally flat and can be copied to the next repository's `data/external` or replaced with validated production extracts.
+- Industry indicators and exposure data are synthetic or public-style proxies rather than internal portfolio feeds.
+- Overlay logic is simplified so the relationship between public signals and credit interpretation remains easy to explain.
+- The repo is intended for portfolio presentation and methodology review, not as a production macro forecasting or sector model platform.
