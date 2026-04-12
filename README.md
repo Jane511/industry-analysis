@@ -1,6 +1,6 @@
-# Industry Risk & Macro Overlay Project
+# Commercial Industry Risk & Macro Overlay Project
 
-This repository is the industry and macro overlay layer in the commercial credit-risk stack. It uses public-data-style sector indicators and synthetic portfolio exposure data to produce industry risk scores, benchmark references, downturn overlays, and concentration support tables. The outputs feed borrower scoring, LGD, stress testing, and pricing workflows across the broader commercial stack.
+This repository is the industry and macro overlay layer in the public commercial credit-risk stack. It uses public-data-style sector indicators and synthetic portfolio exposure mapping to produce industry risk scores, benchmark references, downturn overlays, and concentration support tables for downstream borrower, loss, stress, and pricing workflows.
 
 ## What this repo is
 
@@ -8,15 +8,13 @@ This project demonstrates how public industry signals can be translated into pra
 
 ## Where it sits in the stack
 
-Upstream inputs:
+This repo sits upstream of borrower scoring, LGD, stress testing, and pricing in the public commercial stack.
+
+## Key inputs
+
 - Australian public-data style sector and macro indicators
 - synthetic portfolio exposure mix and industry mapping
-
-Downstream consumers:
-- `PD-and-scorecard-commercial`
-- `LGD-commercial`
-- `stress-testing-commercial`
-- `RAROC-pricing-and-return-hurdle`
+- staged reference assumptions and legacy industry report-pack context
 
 ## Key outputs
 
@@ -29,13 +27,14 @@ Downstream consumers:
 
 ## Repo structure
 
-- `data/`: raw, interim, processed, and external reference inputs
-- `output/`: retained legacy report pack and reference tables used by older notebooks and reviewer-facing artifacts
+- `data/`: raw, interim, processed, and external reference inputs, including the retained `data/output/` reference-layer tables
 - `src/`: reusable industry-risk and overlay pipeline logic
 - `scripts/`: wrapper scripts for pipeline execution
-- `docs/`: methodology, assumptions, data dictionary, and validation notes
+- `docs/`: current methodology, assumptions, data dictionary, validation notes, and legacy-reference index
 - `notebooks/`: reviewer-facing walkthrough notebooks
-- `outputs/`: exported tables, reports, and sample artifacts
+- `outputs/`: canonical exported output directory for the current portfolio-facing outputs
+- `output/`: retained legacy report-pack directory kept for reviewer continuity while the repo is normalized around `outputs/`
+- root legacy files such as `METHODOLOGY.md`, `industry_risk_formal_report.pdf`, `transform.pdf`, and the building/housing reference PDF are retained as archived reviewer references
 - `tests/`: validation and regression checks
 
 ## How to run

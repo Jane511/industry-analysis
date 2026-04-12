@@ -2,49 +2,60 @@
 
 ## Positioning
 
-This repository is now structured as an Australian property and industry risk reference layer.
+`industry-analysis` is the public commercial portfolio's industry-risk and macro-overlay repo. Its primary role is to convert public-data-style sector signals into reusable tables for borrower scoring, LGD interpretation, stress testing, and pricing workflows.
 
-Its purpose is to build reusable public-data tables that downstream repos can consume for:
+The repo also retains two supporting layers:
 
-- property-backed PD overlays
-- LGD overlays
-- expected-loss scenario testing
-- portfolio monitoring and credit commentary
+- `data/output/` for the property and reference-layer tables
+- `output/` plus the root legacy report documents for the earlier reviewer-facing industry report pack
 
-It is not positioned as a final loan-level model.
+## Canonical Output Convention
 
-## Current Output Set
+The top-level canonical output convention for the current repo narrative is `outputs/`.
 
-The current reference-layer outputs are:
+That means:
+
+- `outputs/tables/` is the main current portfolio-facing output contract
+- `outputs/reports/`, `outputs/charts/`, and `outputs/samples/` hold the current reviewer-facing artifacts
+- `output/` is retained as a legacy archive rather than the active top-level output convention
+
+## Current Portfolio Output Set
+
+The current portfolio-facing outputs are:
+
+- `outputs/tables/industry_risk_score_table.csv`
+- `outputs/tables/benchmark_ratio_reference_table.csv`
+- `outputs/tables/downturn_overlay_table.csv`
+- `outputs/tables/market_softness_overlay.csv`
+- `outputs/tables/concentration_support_table.csv`
+- `outputs/tables/pipeline_validation_report.csv`
+
+## Supporting Reference-Layer Output Set
+
+The retained supporting reference-layer outputs are:
 
 - `data/output/region_risk/region_risk_table.csv`
 - `data/output/property_cycle/property_cycle_table.csv`
 - `data/output/arrears_environment/base_arrears_environment.csv`
 - `data/output/downturn_overlays/property_downturn_overlays.csv`
 
-## Current Data Status
+## Data Status
 
-The current local build uses staged:
+The current staged local build uses:
 
 - `ABS Building Approvals (Non-residential)` through `February 2026`
 - `RBA F1 cash-rate data` with the latest staged observation dated `16 March 2026`
+- legacy industry source tables staged through the vintages documented in `output_data_provenance.md`
 
-The following property inputs are not yet staged locally:
-
-- `ABS Building Activity`
-- `ABS Lending Indicators`
-- `APRA` property-context files
-
-Because of that, the live build currently produces national segment-level property reference tables rather than full state/regional tables. Missing optional files are replaced with explicit proxy logic and labelled in `source_note`.
+Some optional property-context inputs are still not staged locally, so the reference-layer outputs remain more limited than the main industry and macro overlay layer.
 
 ## Build Flow
 
-1. Load staged ABS approvals and RBA cash-rate data.
-2. Load any optional ABS/APRA/RBA property extracts if they exist locally.
-3. Build processed summaries in `data/processed/property/`.
-4. Export the final reference tables in `data/output/`.
-5. Leave final PD/LGD/EL modelling to downstream repos.
+1. Load staged public sector, macro, and portfolio-proxy inputs.
+2. Build the main industry and macro overlay outputs used by the public commercial stack.
+3. Build or refresh the supporting reference-layer tables in `data/output/`.
+4. Retain the older industry report pack and root legacy references for reviewer context.
 
 ## Legacy Layer
 
-The original industry-analysis workflow remains in the repo under `src/`, `output/`, and `METHODOLOGY.md`. It is retained as a legacy analytical layer and reviewer-facing report pack.
+The legacy analytical layer remains in the repo for continuity with older notebooks and reviewer materials. It is useful context, but it is not the current top-level story of the repo.
