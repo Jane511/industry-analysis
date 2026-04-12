@@ -7,9 +7,9 @@ This is an APRA-informed analytical workflow rather than a replica of any intern
 ## Current Deliverables
 
 - Workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
-- Chart table: `output/tables/chart_table.csv`
-- Chart explanations: `output/chart_explanations.md`
-- Formal PDF report: `industry_risk_formal_report.pdf`
+- Chart table: `outputs/tables/chart_table.csv`
+- Chart explanations: `outputs/reports/chart_explanations.md`
+- Formal PDF report: `outputs/reports/industry_risk_formal_report.pdf`
 
 ## Current Public Data Vintages Used
 

@@ -15,7 +15,7 @@ The current generated outputs are based on the following staged source vintages.
 ## C01 Industry Risk Dimensions Heatmap
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_heatmap`
-Primary output table: `output/tables/industry_base_risk_scorecard.csv`
+Primary output table: `outputs/tables/industry_base_risk_scorecard.csv`
 Metric basis: Public ABS/RBA metrics plus public-data-derived classification scores
 Source period: Annual ABS FY 2022-23 to FY 2023-24; quarterly ABS series to Dec 2025; monthly ABS series to Feb 2026; RBA snapshot published 2 Apr 2026.
 
@@ -26,7 +26,7 @@ Credit relevance: In a formal credit pack, this chart helps explain why a sector
 ## C02 Industry Base Risk Score by Sector
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_industry_s`
-Primary output table: `output/tables/industry_base_risk_scorecard.csv`
+Primary output table: `outputs/tables/industry_base_risk_scorecard.csv`
 Metric basis: Public ABS/RBA metrics plus public-data-derived classification scores
 Source period: Annual ABS FY 2022-23 to FY 2023-24; quarterly ABS series to Dec 2025; monthly ABS series to Feb 2026; RBA snapshot published 2 Apr 2026.
 
@@ -37,7 +37,7 @@ Credit relevance: A portfolio or industry committee would typically use this cha
 ## C03 Employment Growth by Industry
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_industry_s`
-Primary output table: `output/tables/industry_base_risk_scorecard.csv`
+Primary output table: `outputs/tables/industry_base_risk_scorecard.csv`
 Metric basis: Public ABS labour-force series
 Source period: ABS Labour Force monthly series to Feb 2026.
 
@@ -48,7 +48,7 @@ Credit relevance: In a formal sector reporting pack, employment is not usually u
 ## C04 Borrower Industry Risk Scorecard
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_borrower`
-Primary output table: `output/tables/borrower_industry_risk_scorecard.csv`
+Primary output table: `outputs/tables/borrower_industry_risk_scorecard.csv`
 Metric basis: Synthetic borrower archetype financials combined with public sector metrics
 Source period: Annual ABS FY 2022-23 to FY 2023-24; quarterly ABS series to Dec 2025; monthly ABS series to Feb 2026; RBA snapshot published 2 Apr 2026. Synthetic borrower archetypes are model-generated.
 
@@ -59,7 +59,7 @@ Credit relevance: A corporate credit team could use this style of view to show h
 ## C05 Indicative Pricing by Borrower
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_pricing`
-Primary output table: `output/tables/pricing_grid.csv`
+Primary output table: `outputs/tables/pricing_grid.csv`
 Metric basis: Illustrative pricing assumptions combined with borrower score outputs
 Source period: Annual ABS FY 2022-23 to FY 2023-24; quarterly ABS series to Dec 2025; monthly ABS series to Feb 2026; RBA snapshot published 2 Apr 2026. Pricing settings are illustrative rather than sourced.
 
@@ -70,7 +70,7 @@ Credit relevance: In formal reporting, this type of page is useful because it sh
 ## C06 Sector Concentration: Current Exposure vs Limit
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_concentrat`
-Primary output table: `output/tables/concentration_limits.csv`
+Primary output table: `outputs/tables/concentration_limits.csv`
 Metric basis: Portfolio exposure proxy plus illustrative concentration limit settings
 Source period: Annual ABS FY 2022-23 to FY 2023-24; quarterly ABS series to Dec 2025; monthly ABS series to Feb 2026; RBA snapshot published 2 Apr 2026. Exposure and limit settings are illustrative.
 
@@ -81,7 +81,7 @@ Credit relevance: This is the style of chart a portfolio forum would use to deci
 ## C07 Industry Watchlist Trigger Count
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_watchlist`
-Primary output table: `output/tables/watchlist_triggers.csv`
+Primary output table: `outputs/tables/watchlist_triggers.csv`
 Metric basis: Public ABS/RBA signals converted into watchlist rules
 Source period: Annual ABS FY 2022-23 to FY 2023-24; quarterly ABS series to Dec 2025; monthly ABS series to Feb 2026; RBA snapshot published 2 Apr 2026.
 
@@ -92,7 +92,7 @@ Credit relevance: A portfolio or risk team would typically use this kind of page
 ## C08 Industry Stress Test Impact
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_stress`
-Primary output table: `output/tables/industry_stress_test_matrix.csv`
+Primary output table: `outputs/tables/industry_stress_test_matrix.csv`
 Metric basis: Public ABS/RBA metrics with simplified APRA-informed stress assumptions
 Source period: Annual ABS FY 2022-23 to FY 2023-24; quarterly ABS series to Dec 2025; monthly ABS series to Feb 2026; RBA snapshot published 2 Apr 2026.
 
@@ -103,7 +103,7 @@ Credit relevance: A formal portfolio report would use this page to support manag
 ## C09 AR Days Benchmark and Stress by Industry
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_wc_ar`
-Primary output table: `output/tables/industry_working_capital_risk_metrics.csv`
+Primary output table: `outputs/tables/industry_working_capital_risk_metrics.csv`
 Metric basis: PTRS public payment-times tables when available, otherwise fallback proxy formula
 Source period: PTRS Cycle 8 (Jul 2025) and Cycle 9 (Jan 2026).
 
@@ -114,7 +114,7 @@ Credit relevance: From a credit perspective, this page is relevant to borrower s
 ## C10 AP Days Benchmark and Stress by Industry
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_wc_ap`
-Primary output table: `output/tables/industry_working_capital_risk_metrics.csv`
+Primary output table: `outputs/tables/industry_working_capital_risk_metrics.csv`
 Metric basis: PTRS public payment-times tables when available, otherwise fallback proxy formula
 Source period: PTRS Cycle 8 (Jul 2025) and Cycle 9 (Jan 2026).
 
@@ -125,7 +125,7 @@ Credit relevance: In a formal working-capital review, AP metrics matter because 
 ## C11 Inventory Days and Stock-Build Risk by Industry
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_wc_inv`
-Primary output table: `output/tables/industry_working_capital_risk_metrics.csv`
+Primary output table: `outputs/tables/industry_working_capital_risk_metrics.csv`
 Metric basis: ABS quarterly inventories/sales ratio converted to estimated inventory days plus stock-build overlay
 Source period: ABS inventory ratio to Dec 2025 plus ABS annual FY 2023-24 margin data.
 
@@ -136,7 +136,7 @@ Credit relevance: This page is particularly relevant to scorecard and LGD thinki
 ## C12 Working-Capital Overlay Scores for PD, Scorecard, and LGD
 Source workbook: `data/processed/industry/industry_risk_reporting_workbook.xlsx`
 Source sheet: `chart_data_wc_overlay`
-Primary output table: `output/tables/industry_working_capital_risk_metrics.csv`
+Primary output table: `outputs/tables/industry_working_capital_risk_metrics.csv`
 Metric basis: Deterministic overlay scores derived from AR, AP, inventory, and cash-conversion-cycle metrics
 Source period: PTRS Jul 2025 and Jan 2026 plus ABS inventory ratio to Dec 2025.
 

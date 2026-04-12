@@ -7,7 +7,7 @@
 The repo also retains two supporting layers:
 
 - `data/output/` for the property and reference-layer tables
-- `output/` plus the root legacy report documents for the earlier reviewer-facing industry report pack
+- `docs/legacy/` and `outputs/legacy/` for archived methodology notes and earlier reviewer-reference material
 
 ## Canonical Output Convention
 
@@ -17,7 +17,7 @@ That means:
 
 - `outputs/tables/` is the main current portfolio-facing output contract
 - `outputs/reports/`, `outputs/charts/`, and `outputs/samples/` hold the current reviewer-facing artifacts
-- `output/` is retained as a legacy archive rather than the active top-level output convention
+- `outputs/legacy/` is reserved only for archived reference material rather than the active report-pack location
 
 ## Current Portfolio Output Set
 
@@ -54,8 +54,8 @@ Some optional property-context inputs are still not staged locally, so the refer
 1. Load staged public sector, macro, and portfolio-proxy inputs.
 2. Build the main industry and macro overlay outputs used by the public commercial stack.
 3. Build or refresh the supporting reference-layer tables in `data/output/`.
-4. Retain the older industry report pack and root legacy references for reviewer context.
+4. Keep older methodology notes and archived reviewer references in `docs/legacy/` and `outputs/legacy/`.
 
 ## Legacy Layer
 
-The legacy analytical layer remains in the repo for continuity with older notebooks and reviewer materials. It is useful context, but it is not the current top-level story of the repo.
+The legacy analytical layer remains in the repo for continuity with older notebooks and reviewer materials. It is useful context, but the active report-pack and current table outputs now sit under `outputs/`.
