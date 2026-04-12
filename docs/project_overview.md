@@ -1,8 +1,21 @@
 # Project Overview
 
-## Positioning
+## Portfolio role
 
 `industry-analysis` is the public commercial portfolio's industry-risk and macro-overlay repo. Its primary role is to convert public-data-style sector signals into reusable tables for borrower scoring, LGD interpretation, stress testing, and pricing workflows.
+
+## Upstream inputs
+
+- Australian public-data style sector and macro inputs staged under `data/`
+- retained `data/output/` reference-layer tables used by the legacy support layer
+
+## Downstream consumers
+
+- `PD-and-scorecard-commercial`
+- `LGD-commercial`
+- `expected-loss-engine-commercial`
+- `stress-testing-commercial`
+- `RAROC-pricing-and-return-hurdle`
 
 The repo also retains two supporting layers:
 
