@@ -8,6 +8,7 @@ This document is a clean rewrite of the retained legacy industry-analysis method
 
 Scope note:
 
+- this file is retained as a legacy methodology reference for reviewer continuity
 - this file covers the legacy industry workflow that writes to `output/tables/`, `output/`, and `industry_risk_formal_report.pdf`
 - the current property-reference-layer methodology lives in `docs/project_overview.md`, `docs/methodology_region_risk.md`, `docs/methodology_property_cycle.md`, `docs/methodology_arrears_environment.md`, and `docs/methodology_downturn_overlays.md`
 
