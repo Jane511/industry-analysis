@@ -1,8 +1,8 @@
 # Output Data Provenance
 
-## Current public data vintages behind the legacy output pack
+## Current public data vintages behind the current report pack
 
-The retained legacy report-pack outputs in `output/` are based on these staged source vintages:
+The current outputs in `outputs/tables/` and `outputs/reports/` are based on these staged source vintages:
 
 - `ABS Australian Industry`: FY `2022-23` and FY `2023-24` annual values from the `2023-24` release
 - `ABS Business Indicators - Gross Operating Profit / Sales Ratio`: quarterly series through `December 2025`

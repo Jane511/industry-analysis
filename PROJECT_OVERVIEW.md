@@ -9,12 +9,14 @@ This repo is the commercial industry-risk and macro-overlay layer in the public 
 ## Current structure choice
 
 - `outputs/` is the canonical top-level output convention for the current portfolio-facing artifacts.
-- `output/` is a retained legacy report-pack directory kept only for older reviewer material and compatibility with older notebooks.
+- `outputs/reports/` and `outputs/tables/` hold the active report pack and chart-linked tables.
+- `outputs/legacy/` and `docs/legacy/` are reserved for archived reviewer material and methodology references.
 - `data/output/` remains part of the reference-layer build and is separate from the top-level output convention.
 
 ## Key deliverables
 
 - Portfolio-facing tables in `outputs/tables`
 - Current methodology and assumptions in `docs/`
-- Legacy report-pack references retained in `output/` and the root legacy files
+- Current report-pack artifacts in `outputs/reports`
+- Archived reviewer references in `outputs/legacy/` and `docs/legacy/`
 - End-to-end Codex demo pipeline: `python -m src.codex_run_pipeline`

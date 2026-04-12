@@ -4,7 +4,7 @@ This repo now has three documentation layers:
 
 - the current industry and macro overlay documentation used by the public commercial portfolio
 - the supporting reference-layer documentation under `data/output/`
-- the retained legacy industry-analysis documentation and report pack
+- the retained legacy industry-analysis documentation and archived reference material under `docs/legacy/` and `outputs/legacy/`
 
 ## Current Portfolio Documents
 
@@ -24,9 +24,10 @@ This repo now has three documentation layers:
 
 ## Legacy Industry Documents
 
-- [Executive Summary](../output/executive_summary.md)
-- [Formal PDF Report](../industry_risk_formal_report.pdf)
-- [Legacy Methodology Reference](../METHODOLOGY.md)
+- [Executive Summary](../outputs/reports/executive_summary.md)
+- [Chart Explanations](../outputs/reports/chart_explanations.md)
+- [Formal PDF Report](../outputs/reports/industry_risk_formal_report.pdf)
+- [Legacy Methodology Reference](legacy/industry_legacy_methodology.md)
 - [Data Sources](data_sources.md)
 - [Output Data Provenance](output_data_provenance.md)
 - [APRA Practice Alignment Review](australian_bank_industry_risk_practice_review.md)
@@ -49,6 +50,7 @@ Current staged local source dates are:
 6. [Property Cycle Methodology](methodology_property_cycle.md)
 7. [Arrears Environment Methodology](methodology_arrears_environment.md)
 8. [Downturn Overlay Methodology](methodology_downturn_overlays.md)
-9. [Executive Summary](../output/executive_summary.md)
-10. [Formal PDF Report](../industry_risk_formal_report.pdf)
-11. [Legacy Methodology Reference](../METHODOLOGY.md)
+9. [Executive Summary](../outputs/reports/executive_summary.md)
+10. [Chart Explanations](../outputs/reports/chart_explanations.md)
+11. [Formal PDF Report](../outputs/reports/industry_risk_formal_report.pdf)
+12. [Legacy Methodology Reference](legacy/industry_legacy_methodology.md)

@@ -1,6 +1,7 @@
 from src.config import (
     DELIVERABLES_DIR,
     OUTPUT_CHARTS_DIR,
+    OUTPUT_REPORTS_DIR,
     OUTPUT_TABLES_DIR,
     PROCESSED_INDUSTRY_DIR,
     RAW_PUBLIC_DIR_ABS,
@@ -29,6 +30,7 @@ def run_pipeline() -> None:
     PROCESSED_INDUSTRY_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUT_TABLES_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUT_CHARTS_DIR.mkdir(parents=True, exist_ok=True)
+    OUTPUT_REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     DELIVERABLES_DIR.mkdir(parents=True, exist_ok=True)
 
     # --- Stage 1-4: core risk scoring ---
@@ -118,7 +120,7 @@ def run_pipeline() -> None:
     build_formal_chart_report(
         workbook_path,
         OUTPUT_CHARTS_DIR,
-        REPO_ROOT / 'industry_risk_formal_report.pdf',
+        OUTPUT_REPORTS_DIR / 'industry_risk_formal_report.pdf',
         DELIVERABLES_DIR / 'chart_explanations.md',
     )
 
