@@ -6,6 +6,19 @@ This repo is the commercial industry-risk and macro-overlay layer in the public 
 
 `industry-analysis` is the Australian industry-risk and macro-overlay engine for the non-mortgage commercial portfolio.
 
+## Upstream inputs
+
+- Australian public-data style sector and macro inputs staged under `data/`
+- retained `data/output/` reference-layer tables used by the legacy support layer
+
+## Downstream consumers
+
+- `PD-and-scorecard-commercial`
+- `LGD-commercial`
+- `expected-loss-engine-commercial`
+- `stress-testing-commercial`
+- `RAROC-pricing-and-return-hurdle`
+
 ## Current structure choice
 
 - `outputs/` is the canonical top-level output convention for the current portfolio-facing artifacts.

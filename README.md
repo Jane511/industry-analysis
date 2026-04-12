@@ -1,4 +1,4 @@
-# Commercial Industry Risk & Macro Overlay Project
+# Commercial Industry Analysis & Macro Overlay Project
 
 This repository is the industry and macro overlay layer in the public commercial credit-risk stack. It uses public-data-style sector indicators and synthetic portfolio exposure mapping to produce industry risk scores, benchmark references, downturn overlays, and concentration support tables for downstream borrower, loss, stress, and pricing workflows.
 
@@ -8,7 +8,16 @@ This project demonstrates how public industry signals can be translated into pra
 
 ## Where it sits in the stack
 
-This repo sits upstream of borrower scoring, LGD, stress testing, and pricing in the public commercial stack.
+Upstream inputs:
+- Australian public-data style sector and macro inputs staged under `data/`
+- retained `data/output/` reference-layer tables used by the legacy support layer
+
+Downstream consumers:
+- `PD-and-scorecard-commercial`
+- `LGD-commercial`
+- `expected-loss-engine-commercial`
+- `stress-testing-commercial`
+- `RAROC-pricing-and-return-hurdle`
 
 ## Key inputs
 
