@@ -1,1 +1,1 @@
-from .codex_pipeline import load_demo
+from .demo_pipeline import load_demo

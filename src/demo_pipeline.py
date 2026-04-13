@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 import pandas as pd
-from .codex_config import PROJECT_ROOT, REPO_NAME, PIPELINE_KIND, EXPECTED_OUTPUTS
+from .demo_config import PROJECT_ROOT, REPO_NAME, PIPELINE_KIND, EXPECTED_OUTPUTS
 
 DEMO = [
 {'borrower_id':'B001','facility_id':'F001','segment':'SME Cash Flow','industry':'Wholesale Trade','product_type':'term_loan','limit':1200000,'drawn':980000,'current_assets':1650000,'current_liabilities':920000,'inventory':410000,'receivables':560000,'payables':390000,'revenue':5200000,'ebitda':620000,'net_debt':1450000,'debt_service':360000,'collateral':1500000,'haircut':.18,'pd':.018,'lgd':.42,'ead':1040000,'maturity':3},

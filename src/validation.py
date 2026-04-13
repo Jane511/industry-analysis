@@ -1,1 +1,1 @@
-from .codex_pipeline import validate_outputs
+from .demo_pipeline import validate_outputs

@@ -32,4 +32,4 @@ This repo is the commercial industry-risk and macro-overlay layer in the public 
 - Current methodology and assumptions in `docs/`
 - Current report-pack artifacts in `outputs/reports`
 - Archived reviewer references in `outputs/legacy/` and `docs/legacy/`
-- End-to-end Codex demo pipeline: `python -m src.codex_run_pipeline`
+- End-to-end demo pipeline: `python -m src.run_pipeline`
