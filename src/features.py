@@ -1,1 +1,1 @@
-from .codex_pipeline import build_features
+from .demo_pipeline import build_features
