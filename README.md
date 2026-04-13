@@ -1,10 +1,10 @@
 # Commercial Industry Analysis & Macro Overlay Project
 
-This repository is the industry and macro overlay layer in the public commercial credit-risk stack. It uses public-data-style sector indicators and synthetic portfolio exposure mapping to produce industry risk scores, benchmark references, downturn overlays, and concentration support tables for downstream borrower, loss, stress, and pricing workflows.
+This repository is the industry and macro overlay layer in the public commercial credit-risk stack. It uses public-data-style sector indicators and synthetic portfolio exposure mapping to produce industry risk scores, benchmark references, downturn overlays, and concentration support tables for downstream borrower, loss, stress, pricing, and lending strategy workflows.
 
 ## What this repo is
 
-This project demonstrates how public industry signals can be translated into practical commercial credit-risk overlays. It is structured as a portfolio project, so the methodology is transparent, the outputs are reusable, and the repo is easy for non-specialist reviewers to navigate.
+This project demonstrates how public industry signals can be translated into practical commercial credit-risk overlays. It is structured as a portfolio project, so the methodology is transparent, the outputs are reusable, and the repo is easy for both portfolio-risk and lending-strategy reviewers to navigate.
 
 ## Where it sits in the stack
 
@@ -18,6 +18,22 @@ Downstream consumers:
 - `expected-loss-engine-commercial`
 - `stress-testing-commercial`
 - `RAROC-pricing-and-return-hurdle`
+
+## How this is used in practice
+
+This project can be applied in:
+
+### Bank / Institutional context
+
+- Sector and macro overlays for portfolio risk assessment and structured risk review
+- Concentration support for stress testing and portfolio segmentation
+- Benchmark context for borrower-level and loss-model interpretation
+
+### Non-bank / Fintech context
+
+- Industry segmentation for origination strategy and approval policy tuning
+- Sector overlays for pricing, limit setting, and growth mix decisions
+- Early portfolio performance context where internal long-history data is limited
 
 ## Key inputs
 
