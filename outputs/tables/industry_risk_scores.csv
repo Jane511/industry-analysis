@@ -1,0 +1,10 @@
+industry,classification_risk_score,macro_risk_score,industry_base_risk_score,industry_base_risk_level,cash_rate_latest_pct,cash_rate_change_1y_pctpts
+"Agriculture, Forestry And Fishing",3.75,3.2,3.5,Elevated,3.85,-0.24999999999999956
+Manufacturing,3.75,3.2,3.5,Elevated,3.85,-0.24999999999999956
+Wholesale Trade,3.25,3.2,3.23,Elevated,3.85,-0.24999999999999956
+Retail Trade,3.25,3.2,3.23,Elevated,3.85,-0.24999999999999956
+Accommodation And Food Services,2.75,2.6,2.68,Medium,3.85,-0.24999999999999956
+Construction,2.75,2.6,2.68,Medium,3.85,-0.24999999999999956
+Health Care and Social Assistance,1.75,2.8,2.22,Medium,3.85,-0.24999999999999956
+"Professional, Scientific And Technical Services",2.0,2.4,2.18,Medium,3.85,-0.24999999999999956
+"Transport, Postal And Warehousing",2.25,2.0,2.14,Medium,3.85,-0.24999999999999956
