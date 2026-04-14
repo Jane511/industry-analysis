@@ -17,7 +17,7 @@ It produces:
 - cleaned and standardized public-data panels
 - business-cycle and macro-regime indicators
 - industry overlay scores
-- contract exports in `data/exports/`
+- contract exports in `data/exports/` (core + optional explainability panels)
 
 Downstream repos use these exports for:
 - PD model conditioning and scorecard overlays
@@ -124,9 +124,9 @@ For SME/mid-market cash-flow lending, this repo supports three practical questio
 - Professional services and Health are typically more defensive (still cyclical, but differently exposed).
 
 ### How downstream projects use outputs
-- pull `industry_risk_scores.parquet` for sector overlay features
-- pull `business_cycle_panel.parquet` for detailed explainability fields
-- pull `macro_regime_flags.parquet` for regime conditioning logic
+- pull `industry_risk_scores.parquet` for sector overlay features (core)
+- pull `macro_regime_flags.parquet` for regime conditioning logic (core)
+- optionally pull `business_cycle_panel.parquet` for detailed explainability fields
 
 ---
 
@@ -157,21 +157,29 @@ What they expect from this repo:
 Canonical run order:
 1. `python scripts/download_public_data.py`  
    - downloads network-dependent PTRS source files and reconstructs the workbook
-2. `python scripts/build_public_panels.py`  
-   - builds business-cycle/property-cycle/macro-regime panel outputs
-3. `python scripts/build_overlays.py`  
-   - builds industry/property/downturn overlay tables (CSV inspection outputs)
-4. `python scripts/export_contracts.py`  
+2. `python scripts/export_contracts.py`  
    - writes canonical parquet contracts to `data/exports/`
-5. `python scripts/validate_upstream.py`  
-   - validates required output frames and required export files
+   - derives secondary CSV inspection outputs to `outputs/tables/`
+3. `python scripts/validate_upstream.py`  
+   - validates required core outputs and optional explainability panels
+
+Optional preflight steps:
+- `python scripts/build_public_panels.py` (build panel/reference CSVs in `data/processed/public/`)
+- `python scripts/build_overlays.py` (build overlay tables in-memory for sanity checks)
 
 Where outputs are stored:
 - **Canonical contracts**: `data/exports/`
-- **Inspection tables**: `outputs/tables/`
+- **Inspection tables**: `outputs/tables/` (secondary, derived from canonical parquet exports)
 
 What staff should check each run:
-- all six parquet files exist and are non-empty
+- all four core parquet files exist and are non-empty:
+  - `industry_risk_scores.parquet`
+  - `property_market_overlays.parquet`
+  - `downturn_overlay_table.parquet`
+  - `macro_regime_flags.parquet`
+- optional explainability panels if needed by consumers:
+  - `business_cycle_panel.parquet`
+  - `property_cycle_panel.parquet`
 - `as_of_date`/period fields align with staged source vintages
 - no unexpected missing values in critical score fields
 - `source_note` clearly describes any proxy fallback

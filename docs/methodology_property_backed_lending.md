@@ -18,7 +18,7 @@ It produces:
 - macro-regime and arrears environment context
 - property-market overlays
 - downturn scenario overlay tables
-- contract exports under `data/exports/`
+- contract exports under `data/exports/` (core + optional explainability panels)
 
 Downstream repos use these tables for:
 - collateral stress assumptions
@@ -164,20 +164,26 @@ This repo supplies:
 
 Canonical run order:
 1. `python scripts/download_public_data.py` (network-dependent PTRS download/rebuild)
-2. `python scripts/build_public_panels.py`
-3. `python scripts/build_overlays.py`
-4. `python scripts/export_contracts.py`
-5. `python scripts/validate_upstream.py`
+2. `python scripts/export_contracts.py`
+3. `python scripts/validate_upstream.py`
+
+Optional preflight steps:
+- `python scripts/build_public_panels.py` (build panel/reference CSVs in `data/processed/public/`)
+- `python scripts/build_overlays.py` (build overlay tables in-memory for sanity checks)
 
 Where outputs are stored:
 - canonical downstream contracts: `data/exports/`
-- inspection CSVs: `outputs/tables/`
+- inspection CSVs: `outputs/tables/` (secondary, derived from canonical parquet exports)
 
-Required property-related contract outputs:
-- `data/exports/property_cycle_panel.parquet`
-- `data/exports/macro_regime_flags.parquet`
+Core contract outputs:
+- `data/exports/industry_risk_scores.parquet`
 - `data/exports/property_market_overlays.parquet`
 - `data/exports/downturn_overlay_table.parquet`
+- `data/exports/macro_regime_flags.parquet`
+
+Optional explainability panels:
+- `data/exports/business_cycle_panel.parquet`
+- `data/exports/property_cycle_panel.parquet`
 
 What staff should check:
 - files exist and are non-empty

@@ -2,7 +2,7 @@
 
 This repository is the upstream public-data and overlay engine for the commercial credit-risk portfolio stack.
 
-## What This Repo Does (Plain English)
+## What This Repo Does
 
 This repo turns **public Australian economic and property data** (ABS/RBA/PTRS and optional staged extracts) into:
 
@@ -26,19 +26,23 @@ This repo turns **public Australian economic and property data** (ABS/RBA/PTRS a
 - `src/panels/`
 - `src/overlays/`
 - `outputs/tables/`
-- `outputs/charts/`
 - `docs/`
 
 ## Canonical Exports
 
-- `data/exports/business_cycle_panel.parquet`
-- `data/exports/property_cycle_panel.parquet`
-- `data/exports/macro_regime_flags.parquet`
+Core downstream contract (required):
+
 - `data/exports/industry_risk_scores.parquet`
 - `data/exports/property_market_overlays.parquet`
 - `data/exports/downturn_overlay_table.parquet`
+- `data/exports/macro_regime_flags.parquet`
 
-CSV inspection outputs:
+Optional explainability panels (published but not required for core joins):
+
+- `data/exports/business_cycle_panel.parquet`
+- `data/exports/property_cycle_panel.parquet`
+
+Secondary CSV inspection outputs (derived from the canonical parquet exports):
 
 - `outputs/tables/industry_risk_scores.csv`
 - `outputs/tables/property_market_overlays.csv`
@@ -49,19 +53,24 @@ CSV inspection outputs:
 ```powershell
 python -m pip install -r requirements.txt
 python scripts/download_public_data.py
-python scripts/build_public_panels.py
-python scripts/build_overlays.py
 python scripts/export_contracts.py
 python scripts/validate_upstream.py
+```
+
+Optional preflight scripts:
+
+```powershell
+python scripts/build_public_panels.py
+python scripts/build_overlays.py
 ```
 
 ## What Each Script Does
 
 - `scripts/download_public_data.py`: Downloads **network-dependent** PTRS public PDFs and rebuilds the PTRS workbook used as a public payment-times reference (`data/raw/public/ptrs/`).
-- `scripts/build_public_panels.py`: Builds the core upstream panels (business-cycle panel, property-cycle panel, macro regime flags) and writes CSV inspection outputs under `data/processed/public/`.
-- `scripts/build_overlays.py`: Builds the overlay tables (industry risk scores, property market overlays, downturn overlay table) and writes human-readable CSVs to `outputs/tables/`.
-- `scripts/export_contracts.py`: Writes the **canonical downstream contract exports** to `data/exports/` as parquet files.
-- `scripts/validate_upstream.py`: Runs simple “must-exist and non-empty” checks over both the in-memory outputs and the exported contract files.
+- `scripts/build_public_panels.py`: Builds the explainability panels and reference CSVs under `data/processed/public/`.
+- `scripts/build_overlays.py`: Builds overlay tables in-memory for quick row-count sanity checks.
+- `scripts/export_contracts.py`: Writes canonical parquet contracts to `data/exports/` and derives secondary CSV inspection tables in `outputs/tables/`.
+- `scripts/validate_upstream.py`: Validates core contract outputs as required checks and explainability panels as optional checks.
 
 ## Troubleshooting
 
@@ -86,4 +95,4 @@ python scripts/validate_upstream.py
 ## Notes
 
 - PTRS reconstruction remains in-repo for public-data support workflows.
-- This repo exposes a single canonical upstream workflow via the five scripts above.
+- Upstream handoff contract is the canonical parquet export set under `data/exports/`.

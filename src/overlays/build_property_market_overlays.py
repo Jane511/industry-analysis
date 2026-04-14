@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import pandas as pd
 
-from src.config import OUTPUT_PROPERTY_MARKET_OVERLAYS_CSV
-from src.output import save_csv
 from src.panels.build_property_cycle_panel import build_property_cycle_panel
 
 
@@ -31,6 +29,4 @@ def build_property_market_overlays(panel: pd.DataFrame | None = None) -> pd.Data
             "growth": "supportive",
         }
     ).fillna("normal")
-
-    save_csv(overlays, OUTPUT_PROPERTY_MARKET_OVERLAYS_CSV)
     return overlays
