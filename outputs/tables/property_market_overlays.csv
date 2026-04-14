@@ -1,0 +1,12 @@
+property_segment,cycle_stage,market_softness_score,region_risk_score,region_risk_band,approvals_change_pct,commencements_signal,completions_signal,market_softness_band
+Offices,downturn,4.3,4.03,High,-35.72,Proxy from approvals trend,Proxy from approvals trend,soft
+Education buildings,slowing,3.25,3.38,Elevated,-21.37,Proxy from approvals trend,Proxy from approvals trend,softening
+Retail and wholesale trade buildings,neutral,3.15,2.95,Medium,68.47,Proxy from approvals trend,Proxy from approvals trend,normal
+Short term accommodation buildings,growth,2.85,2.55,Medium,113.7,Proxy from approvals trend,Proxy from approvals trend,supportive
+Aged care facilities,neutral,2.7,2.73,Medium,219.88,Proxy from approvals trend,Proxy from approvals trend,normal
+Agricultural and aquacultural buildings,neutral,2.65,2.58,Medium,58.37,Proxy from approvals trend,Proxy from approvals trend,normal
+Total Non-residential,neutral,2.6,2.55,Medium,71.46,Proxy from approvals trend,Proxy from approvals trend,normal
+Industrial Buildings - Total,neutral,2.4,2.45,Medium,55.53,Proxy from approvals trend,Proxy from approvals trend,normal
+Commercial Buildings - Total,growth,2.3,2.15,Medium,165.42,Proxy from approvals trend,Proxy from approvals trend,supportive
+Warehouses,neutral,2.2,2.35,Medium,69.32,Proxy from approvals trend,Proxy from approvals trend,normal
+Health buildings,growth,1.65,1.82,Low,355.03,Proxy from approvals trend,Proxy from approvals trend,supportive

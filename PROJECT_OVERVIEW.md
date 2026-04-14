@@ -1,35 +1,76 @@
 # Project Overview - industry-analysis
 
-This repo is the commercial industry-risk and macro-overlay layer in the public credit-risk stack. It translates public-data-style sector signals into reusable tables that can feed borrower scoring, LGD interpretation, stress testing, and pricing workflows.
+`industry-analysis` is the upstream public-data and overlay repo in the commercial credit-risk portfolio stack.
 
-## Portfolio role
+This overview is written so a non-technical reviewer can understand what the repo does, what it produces, and what it does not do.
 
-`industry-analysis` is the Australian industry-risk and macro-overlay engine for the non-mortgage commercial portfolio.
+## One-Sentence Summary
 
-## Upstream inputs
+This repo converts public Australian macro/industry/property datasets into reusable overlay tables and exports them as stable contract files for downstream credit modelling projects.
 
-- Australian public-data style sector and macro inputs staged under `data/`
-- retained `data/output/` reference-layer tables used by the legacy support layer
+## Scope
 
-## Downstream consumers
+This repo owns:
 
-- `PD-and-scorecard-commercial`
-- `LGD-commercial`
-- `expected-loss-engine-commercial`
-- `stress-testing-commercial`
-- `RAROC-pricing-and-return-hurdle`
+- public-data ingestion (download + optional staged manual extracts)
+- public-data cleaning and standardisation
+- business-cycle, macro-regime, industry-risk, and property-cycle panel construction
+- canonical overlay exports for downstream repos
 
-## Current structure choice
+This repo does not own:
 
-- `outputs/` is the canonical top-level output convention for the current portfolio-facing artifacts.
-- `outputs/reports/` and `outputs/tables/` hold the active report pack and chart-linked tables.
-- `outputs/legacy/` and `docs/legacy/` are reserved for archived reviewer material and methodology references.
-- `data/output/` remains part of the reference-layer build and is separate from the top-level output convention.
+- loan-level model fitting (PD/LGD/EAD/cure/path)
+- borrower scorecard engines (as decision systems)
+- pricing decision engines
+- portfolio stress engines
 
-## Key deliverables
+## Who Uses This Repo (Downstream)
 
-- Portfolio-facing tables in `outputs/tables`
-- Current methodology and assumptions in `docs/`
-- Current report-pack artifacts in `outputs/reports`
-- Archived reviewer references in `outputs/legacy/` and `docs/legacy/`
-- End-to-end demo pipeline: `python -m src.run_pipeline`
+Downstream repos typically consume `data/exports/*.parquet` and then:
+
+- fit borrower/facility models (PD/LGD/EL)
+- run portfolio stress scenarios
+- apply pricing overlays and return-hurdle logic
+- produce portfolio reporting and governance packs
+
+## Canonical Output Contract
+
+All downstream repos should consume exports under `data/exports/`.
+
+Primary exports:
+
+- `business_cycle_panel.parquet`: industry + macro panel used for cash-flow lending overlays
+- `property_cycle_panel.parquet`: property-cycle panel used for property-backed lending overlays
+- `macro_regime_flags.parquet`: compact regime flags for conditioning downstream models
+- `industry_risk_scores.parquet`: ranked industry overlay table for downstream conditioning
+- `property_market_overlays.parquet`: property market overlay table for downstream conditioning
+- `downturn_overlay_table.parquet`: downturn scenario overlay table (illustrative multipliers/haircuts)
+
+## Canonical Scripts (What They Do)
+
+- `scripts/download_public_data.py`: downloads the network-dependent PTRS source PDFs and rebuilds the PTRS workbook reference.
+- `scripts/build_public_panels.py`: builds the core upstream panels (business-cycle panel, property-cycle panel, macro regime flags).
+- `scripts/build_overlays.py`: builds the overlay tables and writes CSV inspection outputs to `outputs/tables/`.
+- `scripts/export_contracts.py`: writes the canonical parquet exports to `data/exports/`.
+- `scripts/validate_upstream.py`: validates that required outputs exist and that required export files were written.
+
+## Methodology
+
+- Cash-flow lending manual: `docs/methodology_cash_flow_lending.md`
+- Property-backed lending manual: `docs/methodology_property_backed_lending.md`
+
+## Primary Execution
+
+```powershell
+python -m pip install -r requirements.txt
+python scripts/download_public_data.py
+python scripts/build_public_panels.py
+python scripts/build_overlays.py
+python scripts/export_contracts.py
+python scripts/validate_upstream.py
+```
+
+## Operational Notes
+
+- `scripts/download_public_data.py` requires outbound HTTPS. If your environment blocks network access, stage PTRS files manually under `data/raw/public/ptrs/`.
+- Parquet exports require `pyarrow` or `fastparquet`. If exports fail, reinstall dependencies from `requirements.txt`.

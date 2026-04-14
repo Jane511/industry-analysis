@@ -36,8 +36,11 @@ data/raw/
 data/source/
 data/financials/
 data/interim/
+!data/raw/manual/
+!data/raw/manual/.gitkeep
 
 # Keep handoff inputs/outputs tracked
 !data/external/
 !data/processed/
-!data/output/
+!data/exports/
+!data/exports/.gitkeep

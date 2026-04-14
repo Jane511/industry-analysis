@@ -2,7 +2,7 @@ from pathlib import Path
 from textwrap import dedent
 from uuid import uuid4
 
-from src.load_public_data import parse_ptrs_ar_workbook
+from src.public_data.load_abs_manual_exports import parse_ptrs_ar_workbook
 from src.ptrs_reconstruction import PTRS_MODEL_NOTE, parse_ptrs_cycle_table_from_text, write_ptrs_workbook
 
 

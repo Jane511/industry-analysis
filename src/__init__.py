@@ -1,5 +1,5 @@
-"""Industry risk analysis pipeline package."""
+"""Industry-analysis upstream public-data and overlay package."""
 
-from src.pipeline import run_pipeline
+from src.overlays.export_contracts import export_contracts
 
-__all__ = ["run_pipeline"]
+__all__ = ["export_contracts"]

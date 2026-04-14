@@ -1,7 +1,5 @@
-industry,industry_risk_score,pd_overlay_multiplier,lgd_overlay_addon
-Accommodation and Food Services,5.0,1.4,0.075
-Construction,5.0,1.4,0.075
-Manufacturing,4.1138,1.3291,0.0617
-Professional Services,2.3471,1.1878,0.0352
-Retail Trade,3.9177,1.3134,0.0588
-Wholesale Trade,4.7919,1.3834,0.0719
+scenario,pd_multiplier,lgd_multiplier,ccf_multiplier,property_value_haircut,notes,as_of_date
+base,1.0,1.0,1.0,0.0,Current staged environment. Anchored to a low / improving arrears backdrop and an average property-cycle softness score of 2.73.,2026-03-16
+mild,1.2,1.1,1.05,0.05,Illustrative mild downturn overlay for conservative portfolio calibration.,2026-03-16
+moderate,1.5,1.2,1.1,0.1,Illustrative moderate downturn overlay for stressed pricing and EL scenario analysis.,2026-03-16
+severe,2.0,1.3,1.2,0.2,Illustrative severe downturn overlay. Not a calibrated regulatory stress parameter.,2026-03-16

@@ -1,9 +1,15 @@
 import pandas as pd
 
+from src.panels.build_business_cycle_panel import build_business_cycle_panel
+from src.panels.build_macro_regime_flags import build_macro_regime_flags
+from src.panels.build_property_cycle_panel import build_property_cycle_panel
+from src.overlays.build_downturn_overlay_tables import build_downturn_overlay_tables
+from src.overlays.build_industry_risk_scores import build_industry_risk_scores
+from src.overlays.build_property_market_overlays import build_property_market_overlays
 from src.arrears_environment import build_base_arrears_environment
-from src.downturn_overlay import build_property_downturn_overlays
-from src.property_cycle import build_property_cycle_table
-from src.region_risk import build_region_risk_table
+from src.overlays.downturn_overlay_core import build_property_downturn_overlays
+from src.panels.property_cycle_core import build_property_cycle_table
+from src.panels.region_risk_core import build_region_risk_table
 
 
 def _sample_approvals_summary() -> pd.DataFrame:
@@ -143,3 +149,12 @@ def test_property_downturn_overlays_are_monotonic() -> None:
     assert pd_multipliers == sorted(pd_multipliers)
     assert haircuts == sorted(haircuts)
     assert haircuts[0] == 0.0
+
+
+def test_canonical_panel_overlay_builders_are_importable() -> None:
+    assert callable(build_business_cycle_panel)
+    assert callable(build_property_cycle_panel)
+    assert callable(build_macro_regime_flags)
+    assert callable(build_industry_risk_scores)
+    assert callable(build_property_market_overlays)
+    assert callable(build_downturn_overlay_tables)
