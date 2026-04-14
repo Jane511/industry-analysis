@@ -41,10 +41,35 @@ EXPORT_INDUSTRY_RISK_SCORES_PARQUET = EXPORTS_DIR / "industry_risk_scores.parque
 EXPORT_PROPERTY_MARKET_OVERLAYS_PARQUET = EXPORTS_DIR / "property_market_overlays.parquet"
 EXPORT_DOWNTURN_OVERLAY_TABLE_PARQUET = EXPORTS_DIR / "downturn_overlay_table.parquet"
 
-# Canonical visible table names
+# Canonical downstream contract (required)
+CORE_CONTRACT_EXPORTS = {
+    "industry_risk_scores": EXPORT_INDUSTRY_RISK_SCORES_PARQUET,
+    "property_market_overlays": EXPORT_PROPERTY_MARKET_OVERLAYS_PARQUET,
+    "downturn_overlay_table": EXPORT_DOWNTURN_OVERLAY_TABLE_PARQUET,
+    "macro_regime_flags": EXPORT_MACRO_REGIME_FLAGS_PARQUET,
+}
+
+# Optional explainability panels (published with the contract)
+OPTIONAL_EXPLAINABILITY_EXPORTS = {
+    "business_cycle_panel": EXPORT_BUSINESS_CYCLE_PANEL_PARQUET,
+    "property_cycle_panel": EXPORT_PROPERTY_CYCLE_PANEL_PARQUET,
+}
+
+ALL_CONTRACT_EXPORTS = {
+    **CORE_CONTRACT_EXPORTS,
+    **OPTIONAL_EXPLAINABILITY_EXPORTS,
+}
+
+# Secondary inspection outputs derived from canonical parquet exports
 OUTPUT_INDUSTRY_RISK_SCORES_CSV = OUTPUT_TABLES_DIR / "industry_risk_scores.csv"
 OUTPUT_PROPERTY_MARKET_OVERLAYS_CSV = OUTPUT_TABLES_DIR / "property_market_overlays.csv"
 OUTPUT_DOWNTURN_OVERLAY_TABLE_CSV = OUTPUT_TABLES_DIR / "downturn_overlay_table.csv"
+
+SECONDARY_INSPECTION_CSV_EXPORTS = {
+    "industry_risk_scores": OUTPUT_INDUSTRY_RISK_SCORES_CSV,
+    "property_market_overlays": OUTPUT_PROPERTY_MARKET_OVERLAYS_CSV,
+    "downturn_overlay_table": OUTPUT_DOWNTURN_OVERLAY_TABLE_CSV,
+}
 
 # Reporting paths
 DOCS_DIR = REPO_ROOT / "docs"

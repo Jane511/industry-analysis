@@ -2,58 +2,60 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 
 from src.config import (
-    EXPORT_BUSINESS_CYCLE_PANEL_PARQUET,
-    EXPORT_DOWNTURN_OVERLAY_TABLE_PARQUET,
-    EXPORT_INDUSTRY_RISK_SCORES_PARQUET,
-    EXPORT_MACRO_REGIME_FLAGS_PARQUET,
-    EXPORT_PROPERTY_CYCLE_PANEL_PARQUET,
-    EXPORT_PROPERTY_MARKET_OVERLAYS_PARQUET,
+    CORE_CONTRACT_EXPORTS,
+    OPTIONAL_EXPLAINABILITY_EXPORTS,
 )
 
 
-REQUIRED_EXPORT_KEYS = [
-    "business_cycle_panel",
-    "property_cycle_panel",
-    "macro_regime_flags",
-    "industry_risk_scores",
-    "property_market_overlays",
-    "downturn_overlay_table",
-]
-
-EXPORT_PATHS = {
-    "business_cycle_panel": EXPORT_BUSINESS_CYCLE_PANEL_PARQUET,
-    "property_cycle_panel": EXPORT_PROPERTY_CYCLE_PANEL_PARQUET,
-    "macro_regime_flags": EXPORT_MACRO_REGIME_FLAGS_PARQUET,
-    "industry_risk_scores": EXPORT_INDUSTRY_RISK_SCORES_PARQUET,
-    "property_market_overlays": EXPORT_PROPERTY_MARKET_OVERLAYS_PARQUET,
-    "downturn_overlay_table": EXPORT_DOWNTURN_OVERLAY_TABLE_PARQUET,
-}
-
-
-def validate_upstream_outputs(outputs: dict[str, pd.DataFrame]) -> pd.DataFrame:
+def _build_contract_checks(
+    outputs: dict[str, pd.DataFrame],
+    export_paths: dict[str, Path],
+    check_prefix: str,
+    required_for_pass: bool,
+) -> list[dict[str, object]]:
     checks = []
-    for key in REQUIRED_EXPORT_KEYS:
+    for key, export_path in export_paths.items():
         present = key in outputs and isinstance(outputs[key], pd.DataFrame) and not outputs[key].empty
         checks.append(
             {
-                "check_name": f"required_output::{key}",
+                "check_name": f"{check_prefix}_output::{key}",
                 "status": bool(present),
+                "required_for_pass": required_for_pass,
                 "detail": "present and non-empty" if present else "missing or empty",
             }
         )
 
-        export_path = EXPORT_PATHS[key]
         exists = export_path.exists()
         has_content = exists and export_path.stat().st_size > 0
         checks.append(
             {
-                "check_name": f"export_file::{export_path.name}",
+                "check_name": f"{check_prefix}_export_file::{export_path.name}",
                 "status": bool(has_content),
+                "required_for_pass": required_for_pass,
                 "detail": str(export_path) if has_content else f"missing or empty file at {export_path}",
             }
         )
+    return checks
 
+
+def validate_upstream_outputs(outputs: dict[str, pd.DataFrame]) -> pd.DataFrame:
+    checks = _build_contract_checks(
+        outputs=outputs,
+        export_paths=CORE_CONTRACT_EXPORTS,
+        check_prefix="core",
+        required_for_pass=True,
+    )
+    checks.extend(
+        _build_contract_checks(
+            outputs=outputs,
+            export_paths=OPTIONAL_EXPLAINABILITY_EXPORTS,
+            check_prefix="optional",
+            required_for_pass=False,
+        )
+    )
     return pd.DataFrame(checks)

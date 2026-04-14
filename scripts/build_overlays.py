@@ -29,7 +29,7 @@ def build_overlays() -> dict[str, int]:
 
 def main() -> None:
     counts = build_overlays()
-    print(f"Built overlays: {counts}")
+    print(f"Built overlays (in-memory): {counts}")
 
 
 if __name__ == "__main__":

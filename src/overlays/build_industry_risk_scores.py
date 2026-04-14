@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import pandas as pd
 
-from src.config import OUTPUT_INDUSTRY_RISK_SCORES_CSV
-from src.output import save_csv
 from src.panels.build_business_cycle_panel import build_business_cycle_panel
 
 
@@ -22,6 +20,4 @@ def build_industry_risk_scores(panel: pd.DataFrame | None = None) -> pd.DataFram
             "cash_rate_change_1y_pctpts",
         ]
     ].sort_values("industry_base_risk_score", ascending=False)
-
-    save_csv(scores, OUTPUT_INDUSTRY_RISK_SCORES_CSV)
     return scores

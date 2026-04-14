@@ -15,7 +15,8 @@ def validate_upstream() -> bool:
     outputs = export_contracts()
     checks = validate_upstream_outputs(outputs)
     print(checks.to_string(index=False))
-    return bool(checks["status"].all())
+    required_checks = checks[checks["required_for_pass"]]
+    return bool(required_checks["status"].all())
 
 
 def main() -> None:

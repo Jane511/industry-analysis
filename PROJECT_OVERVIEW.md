@@ -37,22 +37,27 @@ Downstream repos typically consume `data/exports/*.parquet` and then:
 
 All downstream repos should consume exports under `data/exports/`.
 
-Primary exports:
+Core downstream contract (required):
 
-- `business_cycle_panel.parquet`: industry + macro panel used for cash-flow lending overlays
-- `property_cycle_panel.parquet`: property-cycle panel used for property-backed lending overlays
-- `macro_regime_flags.parquet`: compact regime flags for conditioning downstream models
 - `industry_risk_scores.parquet`: ranked industry overlay table for downstream conditioning
 - `property_market_overlays.parquet`: property market overlay table for downstream conditioning
 - `downturn_overlay_table.parquet`: downturn scenario overlay table (illustrative multipliers/haircuts)
+- `macro_regime_flags.parquet`: compact regime flags for conditioning downstream models
+
+Optional explainability exports:
+
+- `business_cycle_panel.parquet`: industry + macro panel used for cash-flow lending overlays
+- `property_cycle_panel.parquet`: property-cycle panel used for property-backed lending overlays
+
+Secondary inspection outputs are CSV files in `outputs/tables/`, derived from canonical parquet exports.
 
 ## Canonical Scripts (What They Do)
 
 - `scripts/download_public_data.py`: downloads the network-dependent PTRS source PDFs and rebuilds the PTRS workbook reference.
-- `scripts/build_public_panels.py`: builds the core upstream panels (business-cycle panel, property-cycle panel, macro regime flags).
-- `scripts/build_overlays.py`: builds the overlay tables and writes CSV inspection outputs to `outputs/tables/`.
-- `scripts/export_contracts.py`: writes the canonical parquet exports to `data/exports/`.
-- `scripts/validate_upstream.py`: validates that required outputs exist and that required export files were written.
+- `scripts/build_public_panels.py`: builds explainability and reference panel CSVs in `data/processed/public/`.
+- `scripts/build_overlays.py`: builds overlay tables in-memory for quick sanity checks.
+- `scripts/export_contracts.py`: writes canonical parquet exports to `data/exports/` and derives CSV inspection outputs to `outputs/tables/`.
+- `scripts/validate_upstream.py`: validates core contract outputs as required and explainability panels as optional.
 
 ## Methodology
 
@@ -64,8 +69,6 @@ Primary exports:
 ```powershell
 python -m pip install -r requirements.txt
 python scripts/download_public_data.py
-python scripts/build_public_panels.py
-python scripts/build_overlays.py
 python scripts/export_contracts.py
 python scripts/validate_upstream.py
 ```
