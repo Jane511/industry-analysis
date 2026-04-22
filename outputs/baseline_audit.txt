@@ -1,0 +1,97 @@
+Export                             Rows   Cols    Nulls     Latest date
+---------------------------------------------------------------------------
+industry_risk_scores                  9      7        0             n/a
+property_market_overlays             11      9        0             n/a
+downturn_overlay_table                4      7        0      2026-03-16
+macro_regime_flags                    1      6        0      2026-03-16
+business_cycle_panel                  9     32       21             n/a
+property_cycle_panel                 11     12        0      2026-02-01
+
+===========================================================================
+Full schema per export:
+===========================================================================
+
+--- industry_risk_scores (9 rows) ---
+industry                       object
+classification_risk_score     float64
+macro_risk_score              float64
+industry_base_risk_score      float64
+industry_base_risk_level       object
+cash_rate_latest_pct          float64
+cash_rate_change_1y_pctpts    float64
+
+--- property_market_overlays (11 rows) ---
+property_segment          object
+cycle_stage               object
+market_softness_score    float64
+region_risk_score        float64
+region_risk_band          object
+approvals_change_pct     float64
+commencements_signal      object
+completions_signal        object
+market_softness_band      object
+
+--- downturn_overlay_table (4 rows) ---
+scenario                   object
+pd_multiplier             float64
+lgd_multiplier            float64
+ccf_multiplier            float64
+property_value_haircut    float64
+notes                      object
+as_of_date                 object
+
+--- macro_regime_flags (1 rows) ---
+as_of_date                   object
+cash_rate_regime             object
+arrears_environment_level    object
+arrears_trend                object
+macro_regime_flag            object
+source_dataset               object
+
+--- business_cycle_panel (9 rows) ---
+sector_key                                           object
+anzsic_division_code                                 object
+industry                                             object
+internal_grouping_example                            object
+classification_risk_score                           float64
+sales_m_latest                                        int64
+employment_000_latest                               float64
+ebitda_margin_pct_latest                            float64
+ebitda_margin_change_pctpts                         float64
+sales_growth_pct                                    float64
+wages_to_sales_pct_latest                           float64
+gross_operating_profit_to_sales_ratio_latest        float64
+gross_operating_profit_to_sales_ratio_yoy_change    float64
+inventories_to_sales_ratio_latest                   float64
+inventories_to_sales_ratio_yoy_change               float64
+employment_yoy_growth_pct                           float64
+demand_proxy_building_type                           object
+demand_yoy_growth_pct                               float64
+cash_rate_latest_pct                                float64
+cash_rate_change_1y_pctpts                          float64
+inventory_days_est                                  float64
+inventory_days_yoy_change                           float64
+inventory_days_est_source                            object
+inventory_stock_build_risk                           object
+employment_score                                      int64
+margin_level_score                                    int64
+margin_trend_score                                    int64
+inventory_score                                       int64
+demand_score                                          int64
+macro_risk_score                                    float64
+industry_base_risk_score                            float64
+industry_base_risk_level                             object
+
+--- property_cycle_panel (11 rows) ---
+region                    object
+property_segment          object
+approvals_change_pct     float64
+commencements_signal      object
+completions_signal        object
+cycle_stage               object
+market_softness_score    float64
+market_softness_band      object
+as_of_date                object
+source_note               object
+region_risk_score        float64
+region_risk_band          object

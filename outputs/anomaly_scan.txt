@@ -1,0 +1,6 @@
+
+LOW severity (2 findings):
+  [business_cycle_panel] null pattern: {'gross_operating_profit_to_sales_ratio_latest': 2, 'gross_operating_profit_to_sales_ratio_yoy_change': 2, 'inventories_to_sales_ratio_latest': 5, 'inventories_to_sales_ratio_yoy_change': 5, 'demand_yoy_growth_pct': 2, 'inventory_days_yoy_change': 5} — diagnostic flag columns present: ['inventory_days_est_source']
+  [business_cycle_panel] null rows span 2 industry entries; 1 match service-sector keywords, 1 do not. Null concentration in services = expected ABS data gap.
+
+Total findings: 2

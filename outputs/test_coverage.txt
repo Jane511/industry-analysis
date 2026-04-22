@@ -1,0 +1,49 @@
+Source module                            Tested by                               
+--------------------------------------------------------------------------------
+arrears_environment                      test_reference_layer.py
+build_business_cycle_panel               test_reference_layer.py
+build_downturn_overlay_tables            test_reference_layer.py
+build_industry_risk_scores               test_reference_layer.py
+build_macro_regime_flags                 test_reference_layer.py
+build_property_cycle_panel               test_reference_layer.py
+build_property_market_overlays           test_reference_layer.py
+config                                   (untested)
+download_apra_property_exposures         (untested)
+download_asic_insolvency                 (untested)
+download_rba_rates                       (untested)
+downturn_overlay_core                    test_reference_layer.py
+export_contracts                         (untested)
+foundation_signals                       test_foundation_and_macro.py
+load_abs_manual_exports                  test_ptrs_reconstruction.py
+load_abs_manual_exports_helpers          (untested)
+macro_signals                            test_foundation_and_macro.py
+output                                   (untested)
+property_cycle_core                      test_reference_layer.py
+ptrs_reconstruction                      test_ptrs_reconstruction.py
+region_risk_core                         test_reference_layer.py
+utils                                    test_utils.py, test_foundation_and_macro.py
+validation                               (untested)
+
+8 / 23 source modules have no direct test import
+
+================================================================================
+EXPORT CONTRACT TEST COVERAGE
+================================================================================
+  industry_risk             -> test_reference_layer.py
+  property_market           -> test_reference_layer.py
+  downturn_overlay          -> test_reference_layer.py
+  macro_regime              -> test_reference_layer.py
+  business_cycle            -> test_reference_layer.py
+  property_cycle            -> test_reference_layer.py
+  export_contract           -> NO TESTS reference this contract
+
+================================================================================
+TEST DENSITY ON CRITICAL MODULES (LOC ratio)
+================================================================================
+  src/overlays/build_industry_risk_scores.py              src=  18 test= 134 ratio=7.44
+  src/overlays/build_property_market_overlays.py          src=  27 test= 134 ratio=4.96
+  src/overlays/build_downturn_overlay_tables.py           src=  20 test= 134 ratio=6.70
+  src/overlays/export_contracts.py                        src=  42 test=   0 ratio=0.00
+  src/panels/build_business_cycle_panel.py                src=  19 test= 134 ratio=7.05
+  src/panels/build_property_cycle_panel.py                src=  37 test= 134 ratio=3.62
+  src/panels/build_macro_regime_flags.py                  src=  39 test= 134 ratio=3.44

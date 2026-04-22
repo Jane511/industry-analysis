@@ -1,0 +1,8 @@
+Downloading public PTRS source files (network-dependent step).
+Target directory: D:\Jane\Job Search\Github\credit-risk-portfolio_bank\credit risk models commercial\industry-analysis\.claude\worktrees\practical-wu-f936ab\data\raw\public\ptrs
+Note: optional manual context extracts should be staged under data/raw/manual/.
+Downloading ptrs_cycle_8_pdf -> reg-update-july-2025.pdf
+Downloading ptrs_cycle_9_pdf -> regulators-update-202601.pdf
+Downloading ptrs_guidance -> ptrs-guidance-materials-march2025.pdf
+Saved PTRS public files to D:\Jane\Job Search\Github\credit-risk-portfolio_bank\credit risk models commercial\industry-analysis\.claude\worktrees\practical-wu-f936ab\data\raw\public\ptrs
+Rebuilt PTRS workbook -> PTRS_MultiCycle_AR_Days_Model_Official.xlsx

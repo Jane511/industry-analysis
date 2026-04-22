@@ -1,0 +1,3 @@
+Exported core contracts: ['industry_risk_scores', 'property_market_overlays', 'downturn_overlay_table', 'macro_regime_flags']
+Exported optional explainability panels: ['business_cycle_panel', 'property_cycle_panel']
+Materialized output keys: ['business_cycle_panel', 'downturn_overlay_table', 'industry_risk_scores', 'macro_regime_flags', 'property_cycle_panel', 'property_market_overlays']

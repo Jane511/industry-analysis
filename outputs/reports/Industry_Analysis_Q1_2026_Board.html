@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Industry Analysis Report — Q1 2026 (Board Summary)</title>
+<style>
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        max-width: 1000px;
+        margin: 2em auto;
+        padding: 0 1.5em;
+        color: #222;
+        line-height: 1.5;
+        background: #ffffff;
+    }
+    h1 {
+        color: #1F4E79;
+        border-bottom: 2px solid #1F4E79;
+        padding-bottom: 0.3em;
+        margin-top: 1.4em;
+    }
+    h2 {
+        color: #2E75B6;
+        border-bottom: 1px solid #BDD7EE;
+        padding-bottom: 0.2em;
+        margin-top: 1.6em;
+    }
+    h3 { color: #2E75B6; margin-top: 1.2em; }
+    p { margin: 0.6em 0; }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1em 0;
+        font-size: 0.95em;
+    }
+    th {
+        background: #1F4E79;
+        color: #ffffff;
+        text-align: left;
+        padding: 8px 10px;
+        font-weight: 600;
+    }
+    td {
+        padding: 7px 10px;
+        border-bottom: 1px solid #E7E7E7;
+    }
+    tbody tr:nth-child(even) { background: #F2F2F2; }
+    tbody tr:hover { background: #E8F1FB; }
+    .caption {
+        font-style: italic;
+        color: #7F7F7F;
+        font-size: 0.9em;
+        margin: 0.4em 0 0.2em;
+    }
+    .summary-box {
+        background: #DEEBF7;
+        border-left: 4px solid #2E75B6;
+        padding: 12px 16px;
+        margin: 1.2em 0;
+        border-radius: 3px;
+    }
+    .flag {
+        padding: 12px 16px;
+        margin: 1.2em 0;
+        border-radius: 3px;
+        border-left: 4px solid;
+    }
+    .flag-orange { background: #FCE8D6; border-color: #D97B29; }
+    .flag-red    { background: #FADBD8; border-color: #C0392B; }
+    .flag-blue   { background: #DEEBF7; border-color: #2E75B6; }
+    .flag .flag-title { font-weight: 700; margin-bottom: 0.3em; }
+    .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.85em;
+        font-weight: 600;
+    }
+    .status-green  { background: #D4EFDF; color: #1E8449; }
+    .status-amber  { background: #FCE8B2; color: #9A6B00; }
+    .status-red    { background: #FADBD8; color: #C0392B; }
+    ul { margin: 0.4em 0 0.6em 1.2em; }
+    footer {
+        margin-top: 3em;
+        padding-top: 1em;
+        border-top: 1px solid #DDD;
+        color: #7F7F7F;
+        font-size: 0.85em;
+        text-align: center;
+    }
+
+</style>
+</head>
+<body>
+<h1>Industry Analysis Report — Q1 2026</h1>
+<p><em>Board Summary variant. Generated 2026-04-23.</em></p>
+<div class="summary-box">
+<p>Macro and downturn overlays as of 2026-03-16. Property cycle data as of 2026-02-01.</p>
+<p>This is a summary view for non-technical reviewers. Every table traces back to the canonical parquet contracts in <code>data/exports/</code>. For full per-column detail, methodology references, and the audit-log appendix, see the Technical variant.</p>
+</div>
+<h2>1. Executive Summary</h2>
+<p>This report summarises the current state of Australian industry and property market risk using public macro, industry, and property data. Overlays cover 9 industries and 11 property segments. Cash rate sits at 3.85%, 0.25pp lower than a year ago; arrears environment is Low and improving. 4 of 9 industries currently score Elevated on the base risk scale. 1 property segment is in downturn, 1 is slowing, and 3 are in growth.</p>
+<div class="flag flag-blue"><div class="flag-title">How to read this report</div><p>This report uses a 1–5 risk-score scale with four bands:</p>
+<ul>
+<li>Low (&lt; 2.0) — defensive, structurally resilient</li>
+<li>Medium (2.0 – 2.75) — neutral, typical business-cycle exposure</li>
+<li>Elevated (2.75 – 3.5) — cyclical or rate-sensitive; monitor closely</li>
+<li>High (&gt; 3.5) — stressed or structurally vulnerable</li>
+</ul></div>
+<h2>2. Macro Regime</h2>
+<p>Macro conditions shape how every industry and property segment is stressed. The cash rate is the dominant conditioning variable; the arrears backdrop confirms whether rate moves are already showing in borrower behaviour.</p>
+<p class="caption">Macro regime snapshot as of 2026-03-16</p>
+<table>
+<thead><tr>
+<th>Metric</th>
+<th>Value</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Cash rate (latest)</td>
+<td>3.85%</td>
+</tr>
+<tr>
+<td>Cash rate 1y change</td>
+<td>-0.25pp</td>
+</tr>
+<tr>
+<td>Cash rate regime</td>
+<td>neutral_easing</td>
+</tr>
+<tr>
+<td>Arrears environment</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>Arrears trend</td>
+<td>Improving</td>
+</tr>
+<tr>
+<td>Macro regime flag</td>
+<td>base</td>
+</tr>
+</tbody></table>
+<p>Combined with a low arrears backdrop, this suggests borrowers are absorbing rate pressure; credit models should weight structural over cyclical factors in current calibration. The downturn overlays currently apply the &#x27;base&#x27; scenario (no uplift to PD/LGD/CCF).</p>
+<h2>3. Industry Risk Rankings</h2>
+<p>Industries are ranked by a combined base risk score that blends structural classification risk (cyclicality, concentration, capital intensity) with current macro sensitivity. The table below is ordered highest-risk first.</p>
+<p class="caption">All 9 industries ranked by base risk score</p>
+<table>
+<thead><tr>
+<th>Rank</th>
+<th>Industry</th>
+<th>Base score</th>
+<th>Level</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Agriculture, Forestry And Fishing</td>
+<td>3.50</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Manufacturing</td>
+<td>3.50</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Wholesale Trade</td>
+<td>3.23</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Retail Trade</td>
+<td>3.23</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Accommodation And Food Services</td>
+<td>2.68</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Construction</td>
+<td>2.68</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Health Care and Social Assistance</td>
+<td>2.22</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Professional, Scientific And Technical Services</td>
+<td>2.18</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Transport, Postal And Warehousing</td>
+<td>2.14</td>
+<td>Medium</td>
+</tr>
+</tbody></table>
+<div class="flag flag-orange"><div class="flag-title">Construction ranking</div><p><strong>Methodology note.</strong> Construction base risk score (2.68, &#x27;Medium&#x27;) reflects structural classification risk only, not current insolvency pressure. See Section 9 for methodology context and the active review item.</p></div>
+<p>The top 4 industries all sit in the &#x27;Elevated&#x27; band, driven by structural cyclicality and current rate sensitivity. Defensive sectors (Health Care; Professional, Scientific and Technical) sit at the lower end, as expected.</p>
+<h2>4. Top Risk Industries</h2>
+<p>These are the five industries with the highest combined base risk score in the current environment. Review these first when calibrating portfolio concentration limits or sector caps.</p>
+<p class="caption">Top 5 industries by base risk score</p>
+<table>
+<thead><tr>
+<th>Industry</th>
+<th>Base score</th>
+<th>Level</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Agriculture, Forestry And Fishing</td>
+<td>3.50</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>Manufacturing</td>
+<td>3.50</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>Wholesale Trade</td>
+<td>3.23</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>Retail Trade</td>
+<td>3.23</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>Accommodation And Food Services</td>
+<td>2.68</td>
+<td>Medium</td>
+</tr>
+</tbody></table>
+<h2>5. Property Market Overlays</h2>
+<p>Property overlays track 11 commercial and non-residential segments through the cycle. Each segment is classified into one of four cycle stages (downturn, slowing, neutral, growth) using approvals momentum as the primary signal.</p>
+<p class="caption">All 11 segments grouped by cycle stage (as of 2026-02-01)</p>
+<table>
+<thead><tr>
+<th>Segment</th>
+<th>Cycle</th>
+<th>Softness score</th>
+<th>Region band</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Offices</td>
+<td>downturn</td>
+<td>4.30</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Education buildings</td>
+<td>slowing</td>
+<td>3.25</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>Retail and wholesale trade buildings</td>
+<td>neutral</td>
+<td>3.15</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Aged care facilities</td>
+<td>neutral</td>
+<td>2.70</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Agricultural and aquacultural buildings</td>
+<td>neutral</td>
+<td>2.65</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Total Non-residential</td>
+<td>neutral</td>
+<td>2.60</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Industrial Buildings - Total</td>
+<td>neutral</td>
+<td>2.40</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Warehouses</td>
+<td>neutral</td>
+<td>2.20</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Short term accommodation buildings</td>
+<td>growth</td>
+<td>2.85</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Commercial Buildings - Total</td>
+<td>growth</td>
+<td>2.30</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Health buildings</td>
+<td>growth</td>
+<td>1.65</td>
+<td>Low</td>
+</tr>
+</tbody></table>
+<p>Segments are grouped with downturn first, then slowing, neutral, and growth. Offices is the only segment flagged in downturn; Health buildings, Commercial Buildings Total, and Short-term accommodation are the three segments in growth.</p>
+<h2>6. Property Cycle Interpretation</h2>
+<p>1 segment is currently in downturn (Offices). 1 is slowing (Education buildings). 6 segments sit in neutral, and 3 are in growth (Short term accommodation buildings, Commercial Buildings - Total, Health buildings). For property-backed lending, Offices warrants elevated caution; the growth-stage segments look supportive but should be read alongside the approvals-base-effect caveat below.</p>
+<h2>7. Downturn Scenarios</h2>
+<p>Downturn overlays provide illustrative multipliers for PD, LGD, and CCF, plus property value haircuts, under four scenarios. These support scenario analysis and conservative pricing; they are not calibrated regulatory stress parameters.</p>
+<p class="caption">Illustrative downturn multipliers (as of 2026-03-16)</p>
+<table>
+<thead><tr>
+<th>Scenario</th>
+<th>PD ×</th>
+<th>LGD ×</th>
+<th>CCF ×</th>
+<th>Property haircut</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>base</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>1.00</td>
+<td>0.00</td>
+</tr>
+<tr>
+<td>mild</td>
+<td>1.20</td>
+<td>1.10</td>
+<td>1.05</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>moderate</td>
+<td>1.50</td>
+<td>1.20</td>
+<td>1.10</td>
+<td>0.10</td>
+</tr>
+<tr>
+<td>severe</td>
+<td>2.00</td>
+<td>1.30</td>
+<td>1.20</td>
+<td>0.20</td>
+</tr>
+</tbody></table>
+<p>Apply multiplicatively to modelled PD/LGD/CCF; haircut applies to property valuations in collateral-backed lines. The severe scenario doubles PD; mild and moderate are graduated. Current environment selects the &#x27;base&#x27; row (see Section 2).</p>
+<h2>8. Data Sources and Freshness</h2>
+<p>Each overlay is built from public data refreshed on a published cadence. The table below lists the primary source and last-refresh date for each contract.</p>
+<p class="caption">Primary sources and refresh dates</p>
+<table>
+<thead><tr>
+<th>Overlay</th>
+<th>Primary source</th>
+<th>Refreshed</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>industry_risk_scores</td>
+<td>ABS Economic Activity Survey + RBA F1</td>
+<td>2026-03-16</td>
+</tr>
+<tr>
+<td>property_market_overlays</td>
+<td>ABS Building Approvals (non-residential)</td>
+<td>2026-02-01</td>
+</tr>
+<tr>
+<td>downturn_overlay_table</td>
+<td>Staged arrears context + property softness</td>
+<td>2026-03-16</td>
+</tr>
+<tr>
+<td>macro_regime_flags</td>
+<td>RBA F1 cash-rate table + arrears staging</td>
+<td>2026-03-16</td>
+</tr>
+<tr>
+<td>business_cycle_panel</td>
+<td>ABS EAS + RBA F1 (panel assembly)</td>
+<td>2026-03-16</td>
+</tr>
+<tr>
+<td>property_cycle_panel</td>
+<td>ABS Building Approvals</td>
+<td>2026-02-01</td>
+</tr>
+</tbody></table>
+<h2>9. Validation and Caveats</h2>
+<p>Contract validation runs automatically before every downstream handoff. All 12 current checks passed on the latest pipeline run. This section also documents active methodology review items and known gaps.</p>
+<p class="caption">Contract validation summary</p>
+<table>
+<thead><tr>
+<th>Check category</th>
+<th>Items</th>
+<th>Status</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Core contract presence</td>
+<td>4</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>Core contract file on disk</td>
+<td>4</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>Optional panel presence</td>
+<td>2</td>
+<td>Pass</td>
+</tr>
+<tr>
+<td>Optional panel file on disk</td>
+<td>2</td>
+<td>Pass</td>
+</tr>
+</tbody></table>
+<p>Two caveats to flag: (1) Construction&#x27;s &#x27;Medium&#x27; rating reflects structural factors only, not current insolvency pressure — see the callout below. (2) Property overlay commencements and completions are proxied from approvals in this cycle, not directly observed.</p>
+<div class="flag flag-orange"><div class="flag-title">Methodology review item: Construction ranking</div><p>Construction scores 2.68 (&#x27;Medium&#x27;). Market narrative (builder insolvencies, subcontractor arrears, fixed-price-contract pressure) suggests this understates near-term credit risk. The Australian construction sector has seen three major builder collapses (Porter Davis, Probuild, Clough) over 2024-2026; this sector-specific stress isn&#x27;t captured in structural risk scoring. Logged as an active methodology review item; this session did not apply a fix — the Technical variant of this report documents the full discussion and three review options.</p></div>
+<h2>10. Methodology References</h2>
+<p>Full methodology manuals are maintained in the repo <code>docs/</code> folder. These describe how each overlay is constructed from raw inputs.</p>
+<p class="caption">Methodology documents</p>
+<table>
+<thead><tr>
+<th>Area</th>
+<th>Document</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Cash-flow lending</td>
+<td>docs/methodology_cash_flow_lending.md</td>
+</tr>
+<tr>
+<td>Property-backed lending</td>
+<td>docs/methodology_property_backed_lending.md</td>
+</tr>
+<tr>
+<td>Audit + polish log (this session)</td>
+<td>outputs/industry_analysis_audit_log.md</td>
+</tr>
+<tr>
+<td>Baseline state</td>
+<td>outputs/baseline_state.md</td>
+</tr>
+</tbody></table>
+<footer>END OF REPORT</footer>
+</body>
+</html>
