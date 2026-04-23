@@ -13,10 +13,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from reports.industry_analysis_report import build_report
-from reports.render_docx import write_docx_variants
-from reports.render_html import write_html_variants
-from reports.render_markdown import write_markdown_variants
+from src.reporting.industry_analysis_report import build_report
+from src.reporting.render_docx import write_docx_variants
+from src.reporting.render_html import write_html_variants
+from src.reporting.render_markdown import write_markdown_variants
 
 
 FORMATS = {"markdown", "docx", "html", "all"}

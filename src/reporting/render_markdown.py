@@ -1,7 +1,7 @@
 """Markdown renderer for the industry-analysis board report.
 
 Consumes the structured content tree produced by
-`reports.industry_analysis_report.build_report()` and emits Board or Technical
+`src.reporting.industry_analysis_report.build_report()` and emits Board or Technical
 markdown. Both variants are produced from the same tree; variant selection
 governs which narrative strings, table columns, and callout bodies are used.
 

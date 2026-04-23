@@ -18,10 +18,10 @@ from docx import Document
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-from reports.industry_analysis_report import build_report  # noqa: E402
-from reports.render_docx import write_docx_variants  # noqa: E402
-from reports.render_html import render as render_html  # noqa: E402
-from reports.render_markdown import render as render_markdown  # noqa: E402
+from src.reporting.industry_analysis_report import build_report  # noqa: E402
+from src.reporting.render_docx import write_docx_variants  # noqa: E402
+from src.reporting.render_html import render as render_html  # noqa: E402
+from src.reporting.render_markdown import render as render_markdown  # noqa: E402
 
 
 @pytest.fixture(scope="module")

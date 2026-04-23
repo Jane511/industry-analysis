@@ -1,8 +1,8 @@
 """DOCX renderer for the industry-analysis board report.
 
 Consumes the structured content tree produced by
-`reports.industry_analysis_report.build_report()` and emits a formatted
-.docx per variant (Board, Technical). Uses helpers in `reports.docx_helpers`
+`src.reporting.industry_analysis_report.build_report()` and emits a formatted
+.docx per variant (Board, Technical). Uses helpers in `src.reporting.docx_helpers`
 for styling; does not touch parquet files directly.
 
 Callout style -> flag-box colour:
@@ -19,7 +19,7 @@ from typing import Any
 
 import pandas as pd
 
-from reports.docx_helpers import (
+from src.reporting.docx_helpers import (
     COLOR_GREY,
     add_flag_box,
     add_para,
