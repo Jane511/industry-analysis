@@ -1,7 +1,7 @@
 """HTML renderer for the industry-analysis board report.
 
 Consumes the structured tree produced by
-`reports.industry_analysis_report.build_report()` and emits a self-contained
+`src.reporting.industry_analysis_report.build_report()` and emits a self-contained
 HTML document per variant (Board, Technical). Styles are inlined in a single
 `<style>` block so the file is portable with no external assets.
 

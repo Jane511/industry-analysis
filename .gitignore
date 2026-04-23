@@ -1,37 +1,51 @@
+# Claude Code workspace (never commit)
+.claude/
+
 # Python
 __pycache__/
-*.pyc
-*.pyo
-dist/
+*.py[cod]
 *.egg-info/
+build/
+dist/
+.eggs/
 
-# Jupyter
-.ipynb_checkpoints/
-
-# Environment
+# Virtual environments
 .env
 .venv/
 venv/
 env/
 
-# IDE
+# Jupyter
+.ipynb_checkpoints/
+
+# Testing / tooling caches
+.pytest_cache/
+.pytest_tmp/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+tests/.tmp/
+
+# IDE / editor
 .vscode/
 .idea/
 *.swp
-.pytest_cache/
-.pytest_tmp/
-tests/.tmp/
+*.swo
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Generated artifacts
-output/charts/*.png
+# Scratch / temp artifacts
 tmp*/
+*.tmp
+*.log.*
 pytest-cache-files-*/
 
-# Raw/source data (do not commit)
+# Raw / source data (do not commit — recreated from scripts)
 data/raw/
 data/source/
 data/financials/
