@@ -208,16 +208,6 @@ def _publisher_from_key_url(key: str, url: str) -> str:
         return "Australian Bureau of Statistics"
     if "paymenttimes.gov.au" in url or key.startswith("ptrs_"):
         return "Payment Times Reporting Scheme"
-    if "asic.gov.au" in url or "asic" in key:
-        return "ASIC"
-    if "cotality" in url or key.startswith("cotality_"):
-        return "Cotality"
-    if "domain.com.au" in url or key.startswith("domain_"):
-        return "Domain"
-    if "sqmresearch" in url or key.startswith("sqm_"):
-        return "SQM Research"
-    if "_rental_" in key or key.endswith("_rental_bonds_page"):
-        return "State rental bond authorities"
     return "Public source"
 
 
@@ -240,15 +230,11 @@ def _source_status(key: str, url: str, entry: dict[str, Any] | None, staged_path
     1. Manifest entry with a recorded local_path -> auto-downloaded.
     2. A file matching the registered staged-file glob is present on disk
        -> manually staged (or auto-downloaded when the manifest registers it).
-    3. Known manual-only sources (Cotality, Domain, SQM, state rental bonds)
-       -> manually staged.
-    4. Otherwise -> missing.
+    3. Otherwise -> missing.
     """
     if entry and entry.get("local_path"):
         return "auto-downloaded"
     if staged_path is not None and staged_path.exists():
-        return "manually staged"
-    if key.startswith(("cotality_", "domain_", "sqm_")) or "_rental_" in key or key.endswith("_rental_bonds_page"):
         return "manually staged"
     return "missing"
 

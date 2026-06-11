@@ -12,10 +12,6 @@ RAW_PUBLIC_DIR = REPO_ROOT / "data" / "raw" / "public"
 RAW_PUBLIC_DIR_ABS = RAW_PUBLIC_DIR / "abs"
 RAW_PUBLIC_DIR_PTRS = RAW_PUBLIC_DIR / "ptrs"
 RAW_PUBLIC_DIR_RBA = RAW_PUBLIC_DIR / "rba"
-RAW_PUBLIC_DIR_COTALITY = RAW_PUBLIC_DIR / "cotality"
-RAW_PUBLIC_DIR_DOMAIN = RAW_PUBLIC_DIR / "domain"
-RAW_PUBLIC_DIR_SQM = RAW_PUBLIC_DIR / "sqm"
-RAW_PUBLIC_DIR_STATE_RENTAL_BONDS = RAW_PUBLIC_DIR / "state_rental_bonds"
 
 # Expected ABS macro / property-reference filenames. The catalogue numbers are
 # stable; only the date-suffix portion rotates each release.
@@ -133,12 +129,4 @@ PUBLIC_SOURCE_URLS = {
     "rba_fsr_page": "https://www.rba.gov.au/publications/fsr/",
     "rba_smp_page": "https://www.rba.gov.au/publications/smp/",
     "rba_chart_pack_page": "https://www.rba.gov.au/chart-pack/",
-    # Workstream B — manual-extraction sources (HTML / PDF only)
-    "cotality_hvi_page": "https://www.cotality.com/au/news-research/insights/home-value-index/",
-    "cotality_auction_clearance_page": "https://www.cotality.com/au/our-data/auction-results",
-    "domain_quarterly_page": "https://www.domain.com.au/research/house-price-report/",
-    "sqm_headline_page": "https://sqmresearch.com.au/",
-    "nsw_rental_bonds_page": "https://www.fairtrading.nsw.gov.au/",
-    "vic_rental_report_page": "https://www.dffh.vic.gov.au/publications/rental-report",
-    "qld_median_rents_page": "https://www.rta.qld.gov.au/about-the-rta/research-and-reports/median-rents-quarterly-data",
 }

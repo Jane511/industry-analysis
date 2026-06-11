@@ -25,12 +25,8 @@ from src.config import (
     PUBLIC_SOURCE_URLS,
     RAW_PUBLIC_DIR,
     RAW_PUBLIC_DIR_ABS,
-    RAW_PUBLIC_DIR_COTALITY,
-    RAW_PUBLIC_DIR_DOMAIN,
     RAW_PUBLIC_DIR_PTRS,
     RAW_PUBLIC_DIR_RBA,
-    RAW_PUBLIC_DIR_SQM,
-    RAW_PUBLIC_DIR_STATE_RENTAL_BONDS,
     REPO_ROOT,
 )
 
@@ -72,14 +68,6 @@ def destination_dir_for_key(key: str) -> Path:
         return RAW_PUBLIC_DIR_RBA
     if key.startswith("ptrs_"):
         return RAW_PUBLIC_DIR_PTRS
-    if key.startswith("cotality_"):
-        return RAW_PUBLIC_DIR_COTALITY
-    if key.startswith("domain_"):
-        return RAW_PUBLIC_DIR_DOMAIN
-    if key.startswith("sqm_"):
-        return RAW_PUBLIC_DIR_SQM
-    if key.endswith("_rental_bonds") or "_rental_" in key:
-        return RAW_PUBLIC_DIR_STATE_RENTAL_BONDS
     if key.startswith(ABS_KEY_PREFIXES) or "abs" in key:
         return RAW_PUBLIC_DIR_ABS
     return RAW_PUBLIC_DIR

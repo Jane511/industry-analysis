@@ -27,10 +27,6 @@ def test_is_direct_download_url_classifies_files_and_landing_pages() -> None:
     [
         ("rba_cash_rate_csv", "rba"),
         ("ptrs_cycle_8_pdf", "ptrs"),
-        ("cotality_hvi_page", "cotality"),
-        ("domain_quarterly_page", "domain"),
-        ("sqm_headline_page", "sqm"),
-        ("nsw_rental_bonds", "state_rental_bonds"),
         ("business_indicators_profit_ratio_xlsx", "abs"),
         ("labour_force_industry_xlsx", "abs"),
     ],
@@ -40,10 +36,6 @@ def test_destination_dir_for_key_routes_to_source_directory(monkeypatch, tmp_pat
         "RAW_PUBLIC_DIR": tmp_path / "public",
         "RAW_PUBLIC_DIR_RBA": tmp_path / "rba",
         "RAW_PUBLIC_DIR_PTRS": tmp_path / "ptrs",
-        "RAW_PUBLIC_DIR_COTALITY": tmp_path / "cotality",
-        "RAW_PUBLIC_DIR_DOMAIN": tmp_path / "domain",
-        "RAW_PUBLIC_DIR_SQM": tmp_path / "sqm",
-        "RAW_PUBLIC_DIR_STATE_RENTAL_BONDS": tmp_path / "state_rental_bonds",
         "RAW_PUBLIC_DIR_ABS": tmp_path / "abs",
     }
     for attr, value in paths.items():
