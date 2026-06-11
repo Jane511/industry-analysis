@@ -11,6 +11,48 @@ RAW_MANUAL_DIR = RAW_DIR / "manual"
 RAW_PUBLIC_DIR = REPO_ROOT / "data" / "raw" / "public"
 RAW_PUBLIC_DIR_ABS = RAW_PUBLIC_DIR / "abs"
 RAW_PUBLIC_DIR_PTRS = RAW_PUBLIC_DIR / "ptrs"
+RAW_PUBLIC_DIR_RBA = RAW_PUBLIC_DIR / "rba"
+RAW_PUBLIC_DIR_COTALITY = RAW_PUBLIC_DIR / "cotality"
+RAW_PUBLIC_DIR_DOMAIN = RAW_PUBLIC_DIR / "domain"
+RAW_PUBLIC_DIR_SQM = RAW_PUBLIC_DIR / "sqm"
+RAW_PUBLIC_DIR_STATE_RENTAL_BONDS = RAW_PUBLIC_DIR / "state_rental_bonds"
+
+# Expected ABS macro / property-reference filenames. The catalogue numbers are
+# stable; only the date-suffix portion rotates each release.
+ABS_MACRO_FILENAMES = {
+    "cpi_all_groups": "64010001_dec2025_cpi_all_groups.xlsx",
+    "cpi_subgroups": "64010007_dec2025_cpi_subgroups.xlsx",
+    "ppi_manufacturing": "64270012_dec2025_ppi_manufacturing.xlsx",
+    "ppi_construction": "64270013_dec2025_ppi_construction.xlsx",
+    "dwelling_approvals": "87520006_feb2026_dwelling_approvals.xlsx",
+    "dwelling_value": "87520011_feb2026_dwelling_value.xlsx",
+}
+ABS_PROPERTY_REFERENCE_FILENAMES = {
+    "property_price_index": "64160001_dec2025_property_price_index.xlsx",
+    "property_price_capitals": "64160002_dec2025_property_price_capitals.xlsx",
+    "total_value_dwellings": "64320001_dec2025_total_value_dwellings.xlsx",
+    "lending_indicators": "56010001_feb2026_lending_indicators.xlsx",
+}
+RBA_PROPERTY_REFERENCE_FILENAMES = {
+    "table_e2_housing_loan_payments": "rba_e2_housing_loan_payments_feb2026.xls",
+    "fsr_aggregates": "rba_fsr_aggregates_oct2025.csv",
+}
+PROPERTY_REFERENCE_MANUAL_GLOBS = {
+    "cotality_hvi": "cotality_hvi_*.csv",
+    "cotality_auction_clearance": "cotality_auction_clearance_*.csv",
+    "domain_quarterly": "domain_quarterly_*.csv",
+    "sqm_headline": "sqm_headline_*.csv",
+}
+STATE_RENTAL_BOND_GLOBS = {
+    "nsw": "nsw_rental_bonds_*.csv",
+    "vic": "vic_rental_report_*.csv",
+    "qld": "qld_median_rents_*.csv",
+    "sa": "sa_rental_*.csv",
+    "wa": "wa_rental_*.csv",
+    "tas": "tas_rental_*.csv",
+    "nt": "nt_rental_*.csv",
+    "act": "act_rental_*.csv",
+}
 
 # Processed directories
 PROCESSED_ROOT_DIR = REPO_ROOT / "data" / "processed"
@@ -33,42 +75,46 @@ OUTPUT_CHARTS_DIR = OUTPUT_DIR / "charts"
 OUTPUT_REPORTS_DIR = OUTPUT_DIR / "reports"
 
 # Canonical export location (contract outputs)
-EXPORTS_DIR = REPO_ROOT / "data" / "exports"
-EXPORT_BUSINESS_CYCLE_PANEL_PARQUET = EXPORTS_DIR / "business_cycle_panel.parquet"
-EXPORT_PROPERTY_CYCLE_PANEL_PARQUET = EXPORTS_DIR / "property_cycle_panel.parquet"
-EXPORT_MACRO_REGIME_FLAGS_PARQUET = EXPORTS_DIR / "macro_regime_flags.parquet"
-EXPORT_INDUSTRY_RISK_SCORES_PARQUET = EXPORTS_DIR / "industry_risk_scores.parquet"
-EXPORT_PROPERTY_MARKET_OVERLAYS_PARQUET = EXPORTS_DIR / "property_market_overlays.parquet"
-EXPORT_DOWNTURN_OVERLAY_TABLE_PARQUET = EXPORTS_DIR / "downturn_overlay_table.parquet"
+CONTRACTS_DIR = OUTPUT_DIR / "contracts"
+LEGACY_PARQUET_EXPORTS_DIR = REPO_ROOT / "data" / "exports"
+EXPORT_BUSINESS_CYCLE_PANEL_CSV = CONTRACTS_DIR / "business_cycle_panel.csv"
+EXPORT_PROPERTY_CYCLE_PANEL_CSV = CONTRACTS_DIR / "property_cycle_panel.csv"
+EXPORT_MACRO_REGIME_FLAGS_CSV = CONTRACTS_DIR / "macro_regime_flags.csv"
+EXPORT_INDUSTRY_RISK_SCORES_CSV = CONTRACTS_DIR / "industry_risk_scores.csv"
+EXPORT_PROPERTY_MARKET_OVERLAYS_CSV = CONTRACTS_DIR / "property_market_overlays.csv"
+EXPORT_PROPERTY_MARKET_OVERLAYS_BY_BUILDING_TYPE_CSV = (
+    CONTRACTS_DIR / "property_market_overlays_by_building_type.csv"
+)
+EXPORT_DOWNTURN_OVERLAY_TABLE_CSV = CONTRACTS_DIR / "downturn_overlay_table.csv"
+EXPORT_INDUSTRY_FAILURE_RATES_CSV = CONTRACTS_DIR / "industry_failure_rates.csv"
+EXPORT_INDUSTRY_FINANCIAL_BENCHMARKS_CSV = (
+    CONTRACTS_DIR / "industry_financial_benchmarks.csv"
+)
+EXPORT_MACRO_CONTEXT_CSV = CONTRACTS_DIR / "macro_context.csv"
+EXPORT_PROPERTY_MARKET_DETAIL_CSV = CONTRACTS_DIR / "property_market_detail.csv"
 
 # Canonical downstream contract (required)
 CORE_CONTRACT_EXPORTS = {
-    "industry_risk_scores": EXPORT_INDUSTRY_RISK_SCORES_PARQUET,
-    "property_market_overlays": EXPORT_PROPERTY_MARKET_OVERLAYS_PARQUET,
-    "downturn_overlay_table": EXPORT_DOWNTURN_OVERLAY_TABLE_PARQUET,
-    "macro_regime_flags": EXPORT_MACRO_REGIME_FLAGS_PARQUET,
+    "industry_risk_scores": EXPORT_INDUSTRY_RISK_SCORES_CSV,
+    "property_market_overlays": EXPORT_PROPERTY_MARKET_OVERLAYS_CSV,
+    "downturn_overlay_table": EXPORT_DOWNTURN_OVERLAY_TABLE_CSV,
+    "macro_regime_flags": EXPORT_MACRO_REGIME_FLAGS_CSV,
+    "industry_failure_rates": EXPORT_INDUSTRY_FAILURE_RATES_CSV,
+    "industry_financial_benchmarks": EXPORT_INDUSTRY_FINANCIAL_BENCHMARKS_CSV,
+    "macro_context": EXPORT_MACRO_CONTEXT_CSV,
+    "property_market_detail": EXPORT_PROPERTY_MARKET_DETAIL_CSV,
 }
 
 # Optional explainability panels (published with the contract)
 OPTIONAL_EXPLAINABILITY_EXPORTS = {
-    "business_cycle_panel": EXPORT_BUSINESS_CYCLE_PANEL_PARQUET,
-    "property_cycle_panel": EXPORT_PROPERTY_CYCLE_PANEL_PARQUET,
+    "business_cycle_panel": EXPORT_BUSINESS_CYCLE_PANEL_CSV,
+    "property_cycle_panel": EXPORT_PROPERTY_CYCLE_PANEL_CSV,
+    "property_market_overlays_by_building_type": EXPORT_PROPERTY_MARKET_OVERLAYS_BY_BUILDING_TYPE_CSV,
 }
 
 ALL_CONTRACT_EXPORTS = {
     **CORE_CONTRACT_EXPORTS,
     **OPTIONAL_EXPLAINABILITY_EXPORTS,
-}
-
-# Secondary inspection outputs derived from canonical parquet exports
-OUTPUT_INDUSTRY_RISK_SCORES_CSV = OUTPUT_TABLES_DIR / "industry_risk_scores.csv"
-OUTPUT_PROPERTY_MARKET_OVERLAYS_CSV = OUTPUT_TABLES_DIR / "property_market_overlays.csv"
-OUTPUT_DOWNTURN_OVERLAY_TABLE_CSV = OUTPUT_TABLES_DIR / "downturn_overlay_table.csv"
-
-SECONDARY_INSPECTION_CSV_EXPORTS = {
-    "industry_risk_scores": OUTPUT_INDUSTRY_RISK_SCORES_CSV,
-    "property_market_overlays": OUTPUT_PROPERTY_MARKET_OVERLAYS_CSV,
-    "downturn_overlay_table": OUTPUT_DOWNTURN_OVERLAY_TABLE_CSV,
 }
 
 # Reporting paths
@@ -92,4 +138,29 @@ PUBLIC_SOURCE_URLS = {
     "ptrs_cycle_8_pdf": "https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2025-07/reg-update-july-2025.pdf",
     "ptrs_cycle_9_pdf": "https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2026-01/regulators-update-202601.pdf",
     "ptrs_guidance": "https://paymenttimes.gov.au/sites/ptrs.gov.au/files/regulatory-resource/ptrs-guidance-materials-march2025.pdf",
+    # Workstream A — ABS macro overlay catalogues
+    "cpi_all_groups_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640101.xlsx",
+    "cpi_subgroups_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640107.xlsx",
+    "ppi_manufacturing_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642712.xlsx",
+    "ppi_construction_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642713.xlsx",
+    "dwelling_approvals_xlsx": "https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/875206.xlsx",
+    "dwelling_value_xlsx": "https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/875211.xlsx",
+    # Workstream B — property reference ABS catalogues
+    "property_price_index_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/residential-property-price-indexes-eight-capital-cities/dec-2025/641601.xlsx",
+    "property_price_capitals_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/residential-property-price-indexes-eight-capital-cities/dec-2025/641602.xlsx",
+    "total_value_dwellings_xlsx": "https://www.abs.gov.au/statistics/economy/finance/total-value-dwellings/dec-2025/643201.xlsx",
+    "lending_indicators_xlsx": "https://www.abs.gov.au/statistics/economy/finance/lending-indicators/feb-2026/560101.xlsx",
+    # Workstream B — RBA tables and FSR
+    "rba_table_e2_xls": "https://www.rba.gov.au/statistics/tables/xls/e02hist.xls",
+    "rba_fsr_page": "https://www.rba.gov.au/publications/fsr/",
+    "rba_smp_page": "https://www.rba.gov.au/publications/smp/",
+    "rba_chart_pack_page": "https://www.rba.gov.au/chart-pack/",
+    # Workstream B — manual-extraction sources (HTML / PDF only)
+    "cotality_hvi_page": "https://www.cotality.com/au/news-research/insights/home-value-index/",
+    "cotality_auction_clearance_page": "https://www.cotality.com/au/our-data/auction-results",
+    "domain_quarterly_page": "https://www.domain.com.au/research/house-price-report/",
+    "sqm_headline_page": "https://sqmresearch.com.au/",
+    "nsw_rental_bonds_page": "https://www.fairtrading.nsw.gov.au/",
+    "vic_rental_report_page": "https://www.dffh.vic.gov.au/publications/rental-report",
+    "qld_median_rents_page": "https://www.rta.qld.gov.au/about-the-rta/research-and-reports/median-rents-quarterly-data",
 }

@@ -1,5 +1,6 @@
 # Claude Code workspace (never commit)
 .claude/
+.trainning/
 
 # Python
 __pycache__/
@@ -42,8 +43,14 @@ desktop.ini
 # Scratch / temp artifacts
 tmp*/
 *.tmp
+*.log
 *.log.*
 pytest-cache-files-*/
+# Build/run logs and baseline audit artefacts (not deliverables)
+outputs/*.log
+outputs/baseline_*
+outputs/anomaly_scan.txt
+outputs/test_coverage.txt
 
 # Raw / source data (do not commit — recreated from scripts)
 data/raw/
@@ -58,3 +65,8 @@ data/interim/
 !data/processed/
 !data/exports/
 !data/exports/.gitkeep
+
+# Internal reference/training material — not part of the portfolio deliverables
+prompts.pdf
+trainning/
+*.doc

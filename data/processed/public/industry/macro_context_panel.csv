@@ -1,0 +1,9 @@
+as_of_date,period_label,cpi_yoy_pct,cpi_qoq_pct,cpi_housing_yoy_pct,cpi_food_yoy_pct,cpi_transport_yoy_pct,ppi_manufacturing_yoy_pct,ppi_construction_yoy_pct,unemployment_rate_pct,cash_rate_pct,household_debt_to_disposable_income_ratio,national_arrears_30d_pct,source_note
+2024-05-01,2024Q2,,,,,,,,-15.45,3.85,184.0,1.1,ABS Labour Force (proxy); RBA FSR; RBA F1 cash rate
+2024-08-01,2024Q3,,,,,,,,-137.15,3.85,184.0,1.1,ABS Labour Force (proxy); RBA FSR; RBA F1 cash rate
+2024-11-01,2024Q4,,,,,,,,41.97,3.85,184.0,1.1,ABS Labour Force (proxy); RBA FSR; RBA F1 cash rate
+2025-02-01,2025Q1,,,,,,,,26.37,3.85,184.0,1.1,ABS Labour Force (proxy); RBA FSR; RBA F1 cash rate
+2025-05-01,2025Q2,,,,,,,,-35.43,3.85,184.0,1.1,ABS Labour Force (proxy); RBA FSR; RBA F1 cash rate
+2025-08-01,2025Q3,,,,,,,,54.22,3.85,184.0,1.1,ABS Labour Force (proxy); RBA FSR; RBA F1 cash rate
+2025-11-01,2025Q4,,,,,,,,-402.04,3.85,184.0,1.1,ABS Labour Force (proxy); RBA FSR; RBA F1 cash rate
+2026-02-01,2026Q1,,,,,,,,-2786.07,3.85,184.0,1.1,ABS Labour Force (proxy); RBA FSR; RBA F1 cash rate

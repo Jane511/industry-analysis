@@ -1,131 +1,173 @@
-# Commercial Industry Analysis & Macro Overlay Engine
+# Australian Industry & Property Risk Reference Layer
 
-This repository is the upstream public-data and overlay engine for the commercial credit-risk portfolio stack. It turns public Australian economic and property data into canonical parquet contracts, and ships a board-ready industry-analysis report built from those contracts.
+**A reproducible Python pipeline that turns public Australian macro, industry,
+and property data into credit-risk overlays — industry risk scores, property
+cycle signals, and PD/LGD downturn-stress multipliers — with a board-ready
+report.**
 
-## What This Repo Does
+Lenders need to know which industries and property segments are getting
+riskier *before* it shows up in arrears. This project reads public data from
+the ABS, RBA, ASIC, and the Payment Times Reporting Scheme, scores all 18
+ANZSIC industry divisions and 5 commercial-property segments, and emits a set
+of model-ready CSV "contracts" plus a plain-English report a credit committee
+can read.
 
-This repo turns **public Australian economic and property data** (ABS/RBA/PTRS and optional staged extracts) into:
+Every figure traces back to a named public source and a reporting date, and
+the same inputs always produce the same outputs — the discipline a model-risk
+or credit-risk function expects.
 
-- consistent **panels** (cleaned tables that summarise the state of the business cycle and property cycle)
-- **overlay tables** (industry/property risk signals and downturn scenario assumptions)
-- stable **contract exports** (`data/exports/*.parquet`) that downstream modelling repos can consume
-- a **board-ready industry-analysis report** in markdown, DOCX, and HTML, rendered from those same contracts
+---
 
-## Role in Portfolio Stack
+## What this project demonstrates
 
-- Owns public-data ingestion, cleaning, standardisation, panel construction, overlay exports, and the board-report renderer.
-- Publishes canonical contract outputs under `data/exports/` for downstream repos.
-- Does **not** own loan-level model fitting, borrower scorecard engines, pricing engines, or portfolio stress engines.
+A portfolio project for credit-risk / quantitative-modelling roles. What it shows:
 
-## Canonical Structure
+| Area | In this project |
+| --- | --- |
+| **PD overlays** | Per-industry base risk scores (classification + macro) and a `pd_multiplier` per ANZSIC division, ready to condition a PD model or scorecard. |
+| **LGD / collateral** | Property-market overlays (cycle stage, softness, region risk) and property-value haircuts feeding LGD and collateral assumptions. |
+| **Stress testing** | A downturn-overlay table with base / mild / moderate / severe PD, LGD, and CCF multipliers and property haircuts for scenario and EL analysis. |
+| **IFRS 9 / ECL inputs** | Industry failure rates, financial benchmarks, and macro-context panels that anchor current-state ECL and challenger overlays. |
+| **Regulatory grounding (APRA APG 220)** | Per-industry medians of the financial ratios APG 220 §64 names as standard credit-assessment benchmarks (EBITDA margin, wages-to-sales, inventory days, sales/employment growth). |
+| **Australian regulatory landscape** | Works directly with ABS industry/building/CPI/labour releases, the RBA cash-rate table, FSR/SMP, ASIC insolvency series, and the Payment Times Reporting Scheme. |
+| **Data engineering & governance** | ETL from XLSX/CSV/PDF into validated CSV contracts; a full source inventory and lineage in every report; reproducible outputs; and a 148-test pytest suite. |
 
-- `data/raw/public/`
-- `data/raw/manual/`
-- `data/processed/public/`
-- `data/exports/`
-- `src/public_data/`
-- `src/panels/`
-- `src/overlays/`
-- `src/reporting/` — board-report content builder + markdown/DOCX/HTML renderers
-- `outputs/tables/` — secondary CSV inspection outputs
-- `outputs/reports/` — rendered board reports
-- `tests/` — contract tests + renderer tests (77 cases)
-- `docs/`
+Written in **Python** (pandas, openpyxl, pdfplumber, python-docx). The skills
+transfer directly to SAS/SQL/R model-development and validation work.
 
-## Canonical Exports
+---
 
-Core downstream contract (required):
+## What it produces
 
-- `data/exports/industry_risk_scores.parquet`
-- `data/exports/property_market_overlays.parquet`
-- `data/exports/downturn_overlay_table.parquet`
-- `data/exports/macro_regime_flags.parquet`
+**Eleven CSV "contracts"** in [`outputs/contracts/`](outputs/contracts/) — the
+stable interface any downstream PD/LGD/ECL model reads:
 
-Optional explainability panels (published but not required for core joins):
+| Contract | What it provides |
+| --- | --- |
+| `industry_risk_scores.csv` | Per-industry classification + macro + base risk score, band, and PD multiplier |
+| `property_market_overlays.csv` | Per-segment cycle stage, softness, region risk, PD multiplier |
+| `downturn_overlay_table.csv` | Base/mild/moderate/severe PD, LGD, CCF multipliers + property haircuts |
+| `macro_regime_flags.csv` | Cash-rate regime, arrears level/trend, macro regime flag |
+| `industry_failure_rates.csv` | Realised insolvency rate per ANZSIC division (ASIC ÷ ABS active businesses) |
+| `industry_financial_benchmarks.csv` | APG 220 §64 financial ratios per industry |
+| `business_cycle_panel.csv` / `property_cycle_panel.csv` | Wide diagnostics behind the overlays |
+| `macro_context.csv` | CPI/PPI/labour/cash-rate macro panel |
+| `property_market_detail.csv` / `..._by_building_type.csv` | Multi-source property panels |
 
-- `data/exports/business_cycle_panel.parquet`
-- `data/exports/property_cycle_panel.parquet`
+**A two-variant report** in [`outputs/reports/`](outputs/reports/) —
+`Industry_Analysis_Q1_2026_Board` and `_Technical`, each in `.md` / `.html` /
+`.docx`. The **Board** variant opens with a plain-English executive summary
+(what the numbers mean for credit risk) and headline figures; the **Technical**
+variant adds full source inventory, transformations, lineage, and validation.
 
-Secondary CSV inspection outputs (derived from the canonical parquet exports):
+A sample of the headline picture this cycle: the cash rate is 3.85% (−0.25pp
+over the year) with a low/improving arrears backdrop, so the macro regime is
+`base`; **4 of 18 industries score Elevated**, **0 of 5 property segments are
+in downturn**, and the severe scenario applies **2.0× PD**.
 
-- `outputs/tables/industry_risk_scores.csv`
-- `outputs/tables/property_market_overlays.csv`
-- `outputs/tables/downturn_overlay_table.csv`
+---
 
-## Canonical Workflow
+## How it works
 
-```powershell
-python -m pip install -r requirements.txt
-python scripts/download_public_data.py
-python scripts/export_contracts.py
-python scripts/validate_upstream.py
-python scripts/build_board_report.py --format all --output outputs/reports/Industry_Analysis_Q1_2026
+```text
+   Public sources                 This engine                    Outputs
+ ┌──────────────────────┐   ┌────────────────────────────┐   ┌──────────────┐
+ │ ABS industry / build │   │ public_data/  download+load │   │ 11 CSV       │
+ │ approvals / CPI / PPI │──▶│ panels/       build panels  │──▶│ contracts    │
+ │ RBA cash rate, FSR    │   │ overlays/     risk scores,  │   │              │
+ │ ASIC insolvency       │   │               downturn,     │   │ Board +      │
+ │ Payment Times (PTRS)  │   │               property      │   │ Technical    │
+ │ Cotality/Domain/SQM   │   │ reporting/    render report │   │ md/html/docx │
+ └──────────────────────┘   └────────────────────────────┘   └──────────────┘
 ```
 
-Optional preflight scripts:
+Two ideas hold the design together:
 
-```powershell
-python scripts/build_public_panels.py
-python scripts/build_overlays.py
+- **Every number is traceable.** The report carries a full source inventory and
+  a transformation table — each contract lists its inputs, builder script, row
+  count, and validation status. Synthetic development stubs are labelled as
+  such, never silently presented as real data.
+- **The same inputs always produce the same outputs.** No randomness, no hidden
+  state; rerunning the pipeline on the same staged data yields identical
+  contracts, which is what makes the outputs auditable.
+
+---
+
+## Running it
+
+```bash
+# 1. Install
+python -m venv .venv
+.venv\Scripts\activate                 # Windows; macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+
+# 2. Download / stage public inputs (network-dependent)
+python src/download_public_data.py
+
+# 3. Build panels, overlays, and the CSV contracts
+python src/build_public_panels.py
+python src/export_contracts.py
+python src/validate_upstream.py
+
+# 4. Render the board + technical report (markdown / html / docx)
+python src/build_board_report.py --format all --output outputs/reports/Industry_Analysis_Q1_2026
 ```
 
-## What Each Script Does
+Methodology is documented in
+[`docs/methodology_cash_flow_lending.md`](docs/methodology_cash_flow_lending.md)
+and
+[`docs/methodology_property_backed_lending.md`](docs/methodology_property_backed_lending.md).
 
-- `scripts/download_public_data.py`: Downloads **network-dependent** PTRS public PDFs and rebuilds the PTRS workbook used as a public payment-times reference (`data/raw/public/ptrs/`).
-- `scripts/build_public_panels.py`: Builds the explainability panels and reference CSVs under `data/processed/public/`.
-- `scripts/build_overlays.py`: Builds overlay tables in-memory for quick row-count sanity checks.
-- `scripts/export_contracts.py`: Writes canonical parquet contracts to `data/exports/` and derives secondary CSV inspection tables in `outputs/tables/`.
-- `scripts/validate_upstream.py`: Validates core contract outputs as required checks and explainability panels as optional checks.
-- `scripts/build_board_report.py`: Renders the industry-analysis board report from the canonical parquet contracts. Supports `--format markdown|docx|html|all`; `all` emits six files (Board + Technical × three formats).
+---
 
-## Board Report
+## Data sources
 
-The `src/reporting/` package produces a variant-aware industry-analysis report from the canonical parquet exports. The content tree is built once; three renderers consume it without re-reading parquet files.
+| Source | Provides |
+| --- | --- |
+| ABS — Australian Industry (8155.0), Business Indicators (5676.0), Labour Force (6291.0) | Industry financial ratios, activity, employment |
+| ABS — Building Approvals (8731.0), Property Price Indexes (6416.0/6432.0) | Property cycle and segment signals |
+| ABS — CPI (6401.0), PPI (6427.0) | Macro-context panel |
+| RBA — F1 cash-rate table, Financial Stability Review, SMP, Chart Pack | Rate regime and stress context |
+| ASIC — insolvency series (Series 1A) | Realised industry failure rates |
+| Payment Times Reporting Scheme | Payment-stress signal |
+| Cotality, Domain, SQM, state rental bond authorities | Property detail panel |
 
-- **Board** variant — summary view for non-technical reviewers.
-- **Technical** variant — full-detail view for MRC, audit, and model-risk review. Includes per-row commentary, source URLs, and an audit-log appendix.
+---
 
-Generated files land in `outputs/reports/`:
+## Repository layout
 
-- `Industry_Analysis_<period>_Board.md` / `_Technical.md`
-- `Industry_Analysis_<period>_Board.docx` / `_Technical.docx`
-- `Industry_Analysis_<period>_Board.html` / `_Technical.html`
-
-## Tests
-
-```powershell
-python -m pytest -v
+```text
+industry-analysis/
+├── src/
+│   ├── public_data/            # Download + load ABS / RBA / ASIC / PTRS inputs
+│   ├── panels/                 # Business-cycle, property-cycle, macro panels
+│   ├── overlays/               # Industry risk scores, downturn + property overlays
+│   ├── reporting/              # Report builder + markdown/html/docx renderers
+│   ├── validation.py           # Risk bands + upstream validation
+│   ├── build_board_report.py   # CLI: render the report (entry point)
+│   ├── build_public_panels.py  # CLI: build panels
+│   ├── export_contracts.py     # CLI: write the 11 CSV contracts
+│   └── validate_upstream.py    # CLI: check inputs before a build
+├── outputs/
+│   ├── contracts/              # The 11 model-ready CSV contracts
+│   └── reports/                # Board + Technical report (md / html / docx)
+├── data/                       # Staged + processed public data (raw is gitignored)
+├── tests/                      # 148 tests (unit + report-render integration)
+└── docs/                       # Methodology notes
 ```
 
-77 tests across:
+---
 
-- `tests/test_export_contracts.py` — parametrized contract tests over all four core exports (file exists on disk, minimum row count, required columns, no all-null columns) plus downturn-multiplier invariants (monotonic base → severe, base scenario = 1.0).
-- `tests/test_report_renderers.py` — cross-renderer tests (deterministic markdown, six-file CLI output, Construction callout placement in the DOCX Board variant, Appendix A only in Technical, no unresolved `{placeholder}` strings in HTML).
-- Foundation, macro, reference-layer, PTRS-reconstruction, and utility test suites covering the overlay build path.
+## Scope — what it does and does not decide
 
-## Troubleshooting
+The engine assembles and scores **public, sector-level** signals into reusable
+overlays. It deliberately does **not** set a borrower's final PD, an
+internal-portfolio LGD, or a regulatory capital number — those are calibration
+decisions that belong to the PD/LGD/ECL model that consumes these overlays.
+Keeping that boundary sharp — public reference data here, modelling judgement
+there — is what makes the outputs trustworthy as an industry benchmark.
 
-- Missing parquet engine (`pyarrow`/`fastparquet`): run `python -m pip install -r requirements.txt` and rerun `python scripts/export_contracts.py`.
-- Missing `python-docx`: install via `python -m pip install -r requirements.txt`; required only for `--format docx` and `--format all` report builds.
-- Network-restricted environment: `scripts/download_public_data.py` downloads PTRS public files and requires outbound HTTPS; if blocked, stage files under `data/raw/public/ptrs/` manually.
-- Manual context datasets: optional staged inputs belong in `data/raw/manual/`; they are not downloaded by `scripts/download_public_data.py`.
+---
 
-## Notebooks
-
-- `notebooks/00_repo_overview.ipynb`: Quick orientation (repo role, where outputs land).
-- `notebooks/01_public_data_ingestion.ipynb`: Public-data ingestion walkthrough (PTRS download + how to stage optional manual extracts).
-- `notebooks/02_business_cycle_and_macro_panels.ipynb`: Business-cycle panel walkthrough (industry structural + macro signals).
-- `notebooks/03_property_cycle_panels.ipynb`: Property-cycle panel walkthrough (approvals/activity signals and segment-level cycle stage).
-- `notebooks/04_overlay_build_and_exports.ipynb`: Overlay build + contract export walkthrough (what downstream repos consume).
-- `notebooks/05_validation_and_contract_outputs.ipynb`: Validation walkthrough (what "done" looks like before handoff).
-
-## Methodology Manuals
-
-- `docs/methodology_cash_flow_lending.md`: How the repo supports cash-flow lending overlays (industry + macro).
-- `docs/methodology_property_backed_lending.md`: How the repo supports property-backed lending overlays (property cycle + downturn overlays).
-
-## Notes
-
-- PTRS reconstruction remains in-repo for public-data support workflows.
-- Upstream handoff contract is the canonical parquet export set under `data/exports/`.
-- The board report is a downstream consumer of that contract set, not part of it — regenerating reports does not mutate any parquet file.
+*Built by Jane Wu. Public data only; sector-level reference layer, not a
+firm-level credit model.*

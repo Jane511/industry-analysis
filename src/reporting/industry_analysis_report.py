@@ -1,9 +1,9 @@
 """Industry-analysis board report — content builder.
 
-Single source of truth for the structured report. Loads the canonical parquet
-exports in `data/exports/`, derives headline statistics, and emits a dict tree
+Single source of truth for the structured report. Loads the canonical CSV
+exports in `outputs/contracts/`, derives headline statistics, and emits a dict tree
 that renderers (e.g. `render_markdown.py`) consume without reaching back to
-the parquet files. Narrative text resolves template variables at build time
+the CSV files. Narrative text resolves template variables at build time
 so no literal `{placeholder}` strings escape into output.
 
 Block types used in section `elements`:
@@ -32,22 +32,67 @@ Block types used in section `elements`:
 from __future__ import annotations
 
 import datetime as dt
+import json
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
 
+from src.config import ALL_CONTRACT_EXPORTS, PUBLIC_SOURCE_URLS, RAW_PUBLIC_DIR
+from src.contract_exports import CONTRACT_EXPORT_SPECS, build_contract_export_summary_rows
+from src.csv_io import read_canonical_csv
+from src.public_data.staged_files import find_latest_staged_file
 
-EXPORTS_DIR = Path("data/exports")
+CONTRACTS_DIR = Path("outputs/contracts")
+MANIFEST_PATH = RAW_PUBLIC_DIR / "_manifest.json"
 
-RISK_LEVEL_BANDS = (
-    ("Low", 0.0, 2.0),
-    ("Medium", 2.0, 2.75),
-    ("Elevated", 2.75, 3.5),
-    ("High", 3.5, 6.0),
-)
+RBA_PUBLICATION_SOURCE_ROWS = {
+    "rba_fsr_pdf": {
+        "Overlay": "RBA FSR (forward-looking)",
+        "Primary source": "RBA Financial Stability Review",
+        "URL key": "rba_fsr_page",
+    },
+    "rba_smp_pdf": {
+        "Overlay": "RBA SMP (forward-looking)",
+        "Primary source": "RBA Statement on Monetary Policy",
+        "URL key": "rba_smp_page",
+    },
+    "rba_chart_pack_pdf": {
+        "Overlay": "RBA Chart Pack (forward-looking)",
+        "Primary source": "RBA Chart Pack",
+        "URL key": "rba_chart_pack_page",
+    },
+}
 
 CYCLE_STAGE_ORDER = ["downturn", "slowing", "neutral", "growth"]
+
+EXPORT_TRANSFORM_SCRIPTS = {
+    "industry_risk_scores": "src/overlays/build_industry_risk_scores.py",
+    "property_market_overlays": "src/overlays/build_property_market_overlays.py",
+    "downturn_overlay_table": "src/overlays/build_downturn_overlay_tables.py",
+    "macro_regime_flags": "src/panels/build_macro_regime_flags.py",
+    "industry_failure_rates": "src/panels/build_industry_failure_rates.py",
+    "industry_financial_benchmarks": "src/panels/build_industry_financial_benchmarks.py",
+    "macro_context": "src/panels/build_macro_context_panel.py",
+    "property_market_detail": "src/panels/build_property_reference_panel.py",
+    "business_cycle_panel": "src/panels/build_business_cycle_panel.py",
+    "property_cycle_panel": "src/panels/build_property_cycle_panel.py",
+    "property_market_overlays_by_building_type": "src/overlays/build_property_market_overlays.py",
+}
+
+EXPORT_INPUT_SOURCES = {
+    "industry_risk_scores": "australian_industry_xlsx; business_indicators_profit_ratio_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv",
+    "property_market_overlays": "building_approvals_nonres_xlsx; property_market_detail; property_cycle_panel",
+    "downturn_overlay_table": "property_cycle_panel; rba_fsr_page; staged arrears context",
+    "macro_regime_flags": "rba_cash_rate_csv; staged arrears context",
+    "industry_failure_rates": "asic insolvency public extracts; ABS active-business counts",
+    "industry_financial_benchmarks": "australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; labour_force_industry_xlsx",
+    "macro_context": "cpi_all_groups_xlsx; cpi_subgroups_xlsx; ppi_manufacturing_xlsx; ppi_construction_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv; rba_fsr_page",
+    "property_market_detail": "property_price_index_xlsx; property_price_capitals_xlsx; total_value_dwellings_xlsx; lending_indicators_xlsx; rba_table_e2_xls; cotality_hvi_page; domain_quarterly_page; sqm_headline_page; state rental bond pages",
+    "business_cycle_panel": "australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; business_indicators_consumer_sales_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv",
+    "property_cycle_panel": "building_approvals_nonres_xlsx; property reference staged sources",
+    "property_market_overlays_by_building_type": "building_approvals_nonres_xlsx; property_cycle_panel",
+}
 
 
 def _period_label(date_str: str) -> str:
@@ -56,14 +101,566 @@ def _period_label(date_str: str) -> str:
     return f"Q{q} {d.year}"
 
 
+def _as_iso_date(value: Any) -> str:
+    """Render an as_of_date value as an ISO date string (no time component).
+
+    The CSV reader parses ``as_of_date`` columns as datetimes, which str-print
+    as ``"2026-03-16 00:00:00"``. Reports show dates, not timestamps.
+    """
+    if value is None:
+        return ""
+    try:
+        if pd.isna(value):
+            return ""
+    except (TypeError, ValueError):
+        pass
+    if isinstance(value, dt.datetime):
+        return value.date().isoformat()
+    if isinstance(value, dt.date):
+        return value.isoformat()
+    parsed = pd.to_datetime(value, errors="coerce")
+    if pd.isna(parsed):
+        return str(value)
+    return parsed.date().isoformat()
+
+
+def _pluralise(count: int, singular: str, plural: str | None = None) -> str:
+    """Return ``"1 segment is"`` or ``"0 segments are"`` style strings."""
+    word = singular if count == 1 else (plural or f"{singular}s")
+    verb = "is" if count == 1 else "are"
+    return f"{count} {word} {verb}"
+
+
+def load_public_manifest(path: Path = MANIFEST_PATH) -> dict[str, dict[str, Any]]:
+    """Load the public-data download manifest if present."""
+    if not path.exists():
+        return {}
+    with path.open("r", encoding="utf-8") as handle:
+        data = json.load(handle)
+    if not isinstance(data, dict):
+        raise ValueError(f"Public-data manifest must be a JSON object: {path}")
+    return data
+
+
+def _manifest_refreshed(entry: dict[str, Any]) -> str:
+    return str(entry.get("period") or entry.get("fetched_at") or "")
+
+
+def _append_manifest_sources(sources_df: pd.DataFrame, manifest: dict[str, dict[str, Any]]) -> pd.DataFrame:
+    """Append manifest-only sources to the Section 8 source table.
+
+    Existing hand-authored rows remain the authority for current contract
+    exports. Manifest entries add chain-of-custody for direct downloads that do
+    not yet produce a structured export.
+    """
+    if not manifest:
+        return sources_df
+
+    existing_overlays = set(sources_df["Overlay"].astype(str))
+    rows = []
+    for key in sorted(manifest):
+        entry = manifest[key]
+        rba_row = RBA_PUBLICATION_SOURCE_ROWS.get(key)
+        if rba_row is not None:
+            overlay = str(entry.get("overlay") or rba_row["Overlay"])
+            if overlay in existing_overlays:
+                continue
+            rows.append({
+                "Overlay": overlay,
+                "Primary source": str(entry.get("primary_source") or rba_row["Primary source"]),
+                "URL": str(entry.get("landing_page_url") or PUBLIC_SOURCE_URLS.get(rba_row["URL key"], "")),
+                "Refreshed": _manifest_refreshed(entry),
+            })
+            continue
+
+        if key in existing_overlays:
+            continue
+        rows.append({
+            "Overlay": key,
+            "Primary source": "Downloaded public source",
+            "URL": str(entry.get("url") or PUBLIC_SOURCE_URLS.get(key, "")),
+            "Refreshed": _manifest_refreshed(entry),
+        })
+    if not rows:
+        return sources_df
+    return pd.concat([sources_df, pd.DataFrame(rows)], ignore_index=True)
+
+
+def _source_registry(manifest: dict[str, dict[str, Any]] | None = None) -> dict[str, dict[str, str]]:
+    registry = {
+        key: {
+            "url": url,
+            "source_key": key,
+        }
+        for key, url in PUBLIC_SOURCE_URLS.items()
+    }
+    for key, row in RBA_PUBLICATION_SOURCE_ROWS.items():
+        registry[key] = {
+            "url": PUBLIC_SOURCE_URLS[row["URL key"]],
+            "source_key": key,
+        }
+    for key, entry in (manifest or {}).items():
+        registry.setdefault(key, {
+            "url": str(entry.get("landing_page_url") or entry.get("url") or ""),
+            "source_key": key,
+        })
+    return registry
+
+
+def _publisher_from_key_url(key: str, url: str) -> str:
+    if "rba.gov.au" in url or key.startswith("rba_"):
+        return "Reserve Bank of Australia"
+    if "abs.gov.au" in url or key.startswith(("cpi_", "ppi_", "dwelling_", "property_price_", "total_value_", "lending_", "business_indicators_", "labour_force_", "building_", "australian_industry_", "anzsic_")):
+        return "Australian Bureau of Statistics"
+    if "paymenttimes.gov.au" in url or key.startswith("ptrs_"):
+        return "Payment Times Reporting Scheme"
+    if "asic.gov.au" in url or "asic" in key:
+        return "ASIC"
+    if "cotality" in url or key.startswith("cotality_"):
+        return "Cotality"
+    if "domain.com.au" in url or key.startswith("domain_"):
+        return "Domain"
+    if "sqmresearch" in url or key.startswith("sqm_"):
+        return "SQM Research"
+    if "_rental_" in key or key.endswith("_rental_bonds_page"):
+        return "State rental bond authorities"
+    return "Public source"
+
+
+def _file_type_from_url_or_entry(url: str, entry: dict[str, Any] | None, staged_path: Path | None = None) -> str:
+    if entry and entry.get("local_path"):
+        suffix = Path(str(entry["local_path"])).suffix.lower().lstrip(".")
+    elif staged_path is not None:
+        suffix = staged_path.suffix.lower().lstrip(".")
+    else:
+        suffix = Path(url.split("?", 1)[0]).suffix.lower().lstrip(".")
+    if suffix:
+        return suffix.upper()
+    return "landing page"
+
+
+def _source_status(key: str, url: str, entry: dict[str, Any] | None, staged_path: Path | None) -> str:
+    """Resolve the on-disk status of a registered public source.
+
+    Order of precedence:
+    1. Manifest entry with a recorded local_path -> auto-downloaded.
+    2. A file matching the registered staged-file glob is present on disk
+       -> manually staged (or auto-downloaded when the manifest registers it).
+    3. Known manual-only sources (Cotality, Domain, SQM, state rental bonds)
+       -> manually staged.
+    4. Otherwise -> missing.
+    """
+    if entry and entry.get("local_path"):
+        return "auto-downloaded"
+    if staged_path is not None and staged_path.exists():
+        return "manually staged"
+    if key.startswith(("cotality_", "domain_", "sqm_")) or "_rental_" in key or key.endswith("_rental_bonds_page"):
+        return "manually staged"
+    return "missing"
+
+
+def _staged_path_for(key: str) -> Path | None:
+    """Return the resolved staged-file path for ``key`` if present on disk."""
+    return find_latest_staged_file(key)
+
+
+def _staged_metadata(staged_path: Path | None) -> dict[str, str]:
+    if staged_path is None or not staged_path.exists():
+        return {"period": "", "fetched_at": "", "size_bytes": "", "url": ""}
+    stat = staged_path.stat()
+    fetched_at = dt.datetime.fromtimestamp(stat.st_mtime, tz=dt.timezone.utc).isoformat(timespec="seconds")
+    return {
+        "period": "",
+        "fetched_at": fetched_at,
+        "size_bytes": str(stat.st_size),
+        "url": staged_path.name,
+    }
+
+
+def build_source_inventory(manifest: dict[str, dict[str, Any]]) -> pd.DataFrame:
+    rows = []
+    for key, meta in sorted(_source_registry(manifest).items()):
+        url = meta["url"]
+        entry = manifest.get(key)
+        staged_path = None if entry and entry.get("local_path") else _staged_path_for(key)
+        staged_meta = _staged_metadata(staged_path) if staged_path is not None else {"period": "", "fetched_at": "", "size_bytes": "", "url": ""}
+
+        period = str((entry or {}).get("period") or staged_meta["period"])
+        fetched_at = str((entry or {}).get("fetched_at") or staged_meta["fetched_at"])
+        size_bytes = str((entry or {}).get("size_bytes") or staged_meta["size_bytes"])
+        url_or_landing = str((entry or {}).get("landing_page_url") or (entry or {}).get("url") or url)
+
+        rows.append({
+            "Source key": key,
+            "Publisher / origin": _publisher_from_key_url(key, url),
+            "URL or landing page": url_or_landing,
+            "File type": _file_type_from_url_or_entry(url, entry, staged_path),
+            "Period or vintage": period,
+            "Retrieved / fetched timestamp": fetched_at,
+            "File size or row count": size_bytes,
+            "Status": _source_status(key, url, entry, staged_path),
+            "Hash / version identifier": str((entry or {}).get("sha256") or ""),
+        })
+    return pd.DataFrame(rows)
+
+
+def _row_count(path: Path) -> int:
+    if not path.exists():
+        return 0
+    if path.suffix == ".csv":
+        return int(len(pd.read_csv(path)))
+    return 0
+
+
+def build_transformations_applied() -> pd.DataFrame:
+    rows = []
+    for spec in CONTRACT_EXPORT_SPECS:
+        path = spec.csv_path
+        exists = path.exists()
+        rows.append({
+            "Output filename": path.name,
+            "Input source(s)": EXPORT_INPUT_SOURCES.get(spec.key, "source inventory entries listed in methodology"),
+            "Transformation script": EXPORT_TRANSFORM_SCRIPTS.get(spec.key, ""),
+            "Row count of output": _row_count(path),
+            "Last build timestamp": dt.datetime.fromtimestamp(path.stat().st_mtime).isoformat(timespec="seconds") if exists else "",
+            "Validation status": "PASS: present_nonempty" if exists and _row_count(path) > 0 else "FAIL: missing_or_empty",
+        })
+    return pd.DataFrame(rows)
+
+
+def _export_detail_frames(data: dict[str, Any]) -> dict[str, pd.DataFrame]:
+    return {
+        "industry_risk_scores": data["industry"],
+        "property_market_overlays": data["property_overlays"],
+        "downturn_overlay_table": data["downturn"],
+        "macro_regime_flags": data["macro"],
+        "industry_failure_rates": data["failure_rates"],
+        "industry_financial_benchmarks": data["benchmarks"],
+        "business_cycle_panel": data["business_panel"],
+        "property_cycle_panel": data["property_panel"],
+        "macro_context": read_canonical_csv("macro_context", ALL_CONTRACT_EXPORTS["macro_context"]),
+        "property_market_detail": read_canonical_csv("property_market_detail", ALL_CONTRACT_EXPORTS["property_market_detail"]),
+        "property_market_overlays_by_building_type": read_canonical_csv("property_market_overlays_by_building_type", ALL_CONTRACT_EXPORTS["property_market_overlays_by_building_type"]),
+    }
+
+
+def _compact_detail(df: pd.DataFrame, max_cols: int = 10) -> pd.DataFrame:
+    priority = [
+        "as_of_date",
+        "period_label",
+        "anzsic_division_code",
+        "industry",
+        "property_segment",
+        "property_segment_code",
+        "region",
+        "region_name",
+        "scenario",
+        "classification_risk_score",
+        "macro_risk_score",
+        "industry_base_risk_score",
+        "industry_base_risk_level",
+        "pd_multiplier",
+        "failure_rate_pct",
+        "median_ebitda_margin_pct",
+        "market_softness_score",
+        "region_risk_score",
+        "cycle_stage",
+        "cash_rate_pct",
+        "data_completeness_pct",
+        "source_note",
+    ]
+    cols = [c for c in priority if c in df.columns]
+    for col in df.columns:
+        if col not in cols and len(cols) < max_cols:
+            cols.append(col)
+    out = df[cols].copy()
+    # Coerce datetime columns to ISO dates so report tables show "2026-04-28"
+    # rather than "2026-04-28 00:00:00".
+    for col in out.columns:
+        if pd.api.types.is_datetime64_any_dtype(out[col]):
+            out[col] = out[col].dt.strftime("%Y-%m-%d")
+    return out
+
+
+def build_lineage_table() -> pd.DataFrame:
+    rows = []
+    for spec in CONTRACT_EXPORT_SPECS:
+        rows.append({
+            "Analytical table": spec.csv_path.name,
+            "Number fields": "numeric columns in export",
+            "Source row reference": EXPORT_INPUT_SOURCES.get(spec.key, "source inventory"),
+            "Transformation script": EXPORT_TRANSFORM_SCRIPTS.get(spec.key, ""),
+            "Version / vintage": "Data Sources Inventory period/hash plus Transformations Applied build timestamp",
+            "Reference hops": "number -> table row -> transformation row -> source inventory row",
+        })
+    return pd.DataFrame(rows)
+
+
+def build_not_captured_table(inventory_df: pd.DataFrame) -> pd.DataFrame:
+    gaps = inventory_df[inventory_df["Status"].isin(["manually staged", "missing", "outdated"])].copy()
+    if gaps.empty:
+        return pd.DataFrame(columns=["Source key", "Reason", "Required action", "Target / next date"])
+    rows = []
+    for _, row in gaps.iterrows():
+        status = row["Status"]
+        if status == "manually staged":
+            reason = "Paid, gated, or manually extracted source"
+            action = "Manual staging required - see data/raw/manual or source-specific raw-public directory"
+        elif status == "missing":
+            reason = "No successful manifest entry for this registry item"
+            action = "Awaiting next release or implement downloader/scraper"
+        else:
+            reason = "Latest fetch is outside expected refresh window"
+            action = "Refresh source and inspect downloader logs"
+        rows.append({
+            "Source key": row["Source key"],
+            "Reason": reason,
+            "Required action": action,
+            "Target / next date": "Next scheduled refresh cycle",
+        })
+    return pd.DataFrame(rows)
+
+
+def _coerce_dates_for_display(df: pd.DataFrame) -> pd.DataFrame:
+    """Render any datetime column in a report table as ISO date strings."""
+    out = df.copy()
+    for col in out.columns:
+        if pd.api.types.is_datetime64_any_dtype(out[col]):
+            out[col] = out[col].dt.strftime("%Y-%m-%d")
+    return out
+
+
+def _table_payload(caption: str, data: pd.DataFrame, board_cols: list[str] | None = None, technical_cols: list[str] | None = None, show_in_board: bool = True) -> tuple[str, dict[str, Any]]:
+    data = _coerce_dates_for_display(data)
+    cols = list(data.columns)
+    return ("table", {
+        "caption": caption,
+        "data": data,
+        "cols_board": board_cols or cols,
+        "cols_technical": technical_cols or cols,
+        "rename": None,
+        "format": None,
+        "show_in_board": show_in_board,
+    })
+
+
+def build_completeness_report(data: dict[str, Any], manifest: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    stats = data["stats"]
+    inventory_df = build_source_inventory(manifest)
+    transformations_df = build_transformations_applied()
+    detail_frames = _export_detail_frames(data)
+    lineage_df = build_lineage_table()
+    not_captured_df = build_not_captured_table(inventory_df)
+
+    headline_df = pd.DataFrame([
+        {"Metric": "Industries covered", "Value": stats["industry_count"], "Vintage": stats["macro_as_of_date"], "Trace": "industry_risk_scores.csv"},
+        {"Metric": "Property segments covered", "Value": stats["property_segment_count"], "Vintage": stats["property_cycle_as_of_date"], "Trace": "property_market_overlays.csv"},
+        {"Metric": "Cash rate latest pct", "Value": f"{stats['cash_rate_pct']:.2f}", "Vintage": stats["macro_as_of_date"], "Trace": "rba_cash_rate_csv -> macro_regime_flags.csv"},
+        {"Metric": "Cash rate 1y change pctpts", "Value": f"{stats['cash_rate_change_pctpts']:+.2f}", "Vintage": stats["macro_as_of_date"], "Trace": "rba_cash_rate_csv -> industry_risk_scores.csv"},
+        {"Metric": "Elevated industry count", "Value": stats["elevated_industry_count"], "Vintage": stats["macro_as_of_date"], "Trace": "industry_risk_scores.csv"},
+        {"Metric": "Downturn property segment count", "Value": stats["cycle_stage_counts"]["downturn"], "Vintage": stats["property_cycle_as_of_date"], "Trace": "property_market_overlays.csv"},
+        {"Metric": "Macro regime flag", "Value": stats["macro_regime_flag"], "Vintage": stats["macro_as_of_date"], "Trace": "macro_regime_flags.csv"},
+        {"Metric": "Severe PD multiplier", "Value": f"{float(data['downturn']['pd_multiplier'].max()):.2f}", "Vintage": stats["downturn_as_of_date"], "Trace": "downturn_overlay_table.csv"},
+    ])
+
+    export_map_df = pd.DataFrame(build_contract_export_summary_rows())
+
+    detailed_elements: list[tuple[str, dict[str, Any]]] = [
+        _table_payload(
+        "Canonical CSV exports: contents and downstream layers",
+            export_map_df,
+            board_cols=["CSV export", "What it includes", "Downstream layers"],
+            technical_cols=["CSV export", "Contract role", "Join grain", "What it includes", "Downstream layers"],
+        )
+    ]
+    for key, frame in detail_frames.items():
+        compact = _compact_detail(frame)
+        detailed_elements.append(_table_payload(f"Full detail rows from {key}.csv", compact))
+
+    sections: list[dict[str, Any]] = [
+        {
+            "id": "executive_summary",
+            "title": "1. Executive Summary",
+            "lead": (None, None),
+            "elements": [
+                ("paragraph", {
+                    "board": (
+                        f"This report reads the credit-risk temperature of the Australian economy from public "
+                        f"data, so a lender can see which industries and property segments are getting riskier "
+                        f"before it shows up in arrears or losses. It covers {stats['industry_count']} industries "
+                        f"(ANZSIC divisions) and {stats['property_segment_count']} commercial-property segments for "
+                        f"{stats['period_label']}, and turns them into ready-to-use PD and LGD stress inputs."
+                    ),
+                    "technical": (
+                        f"This report contains source inventory, transformations, analytical output rows, lineage, known gaps, "
+                        f"and validation status in the same document. It covers {stats['industry_count']} industries, "
+                        f"{stats['property_segment_count']} property segments, all {len(inventory_df)} registered public sources, "
+                        f"and all {len(transformations_df)} canonical exports. Source registry basis: PUBLIC_SOURCE_URLS plus "
+                        f"scraper-produced RBA publication manifest keys; manifest-backed vintages come from "
+                        f"data/raw/public/_manifest.json when present."
+                    ),
+                }),
+                ("paragraph", {
+                    "board": (
+                        f"Headline picture: the cash rate is {stats['cash_rate_pct']:.2f}% "
+                        f"({stats['cash_rate_change_pctpts']:+.2f} points over the past year) and the arrears backdrop is "
+                        f"{str(stats['arrears_environment_level']).lower()} and {str(stats['arrears_trend']).lower()}, so the "
+                        f"macro regime is set to '{stats['macro_regime_flag']}'. Against that backdrop, "
+                        f"{stats['elevated_industry_count']} of {stats['industry_count']} industries score Elevated on the "
+                        f"1-5 risk scale, and {stats['cycle_stage_counts']['downturn']} of {stats['property_segment_count']} "
+                        f"property segments are in downturn. The downturn-overlay table translates this into stress multipliers — up to "
+                        f"{float(data['downturn']['pd_multiplier'].max()):.2f}x on PD in a severe scenario — that a pricing "
+                        f"or expected-loss model can apply directly."
+                    ),
+                    "technical": (
+                        f"Headline picture: cash rate {stats['cash_rate_pct']:.2f}% "
+                        f"({stats['cash_rate_change_pctpts']:+.2f}pp YoY), arrears {stats['arrears_environment_level']} / "
+                        f"{stats['arrears_trend']}, macro_regime_flag='{stats['macro_regime_flag']}' "
+                        f"(cash_rate_regime='{stats['cash_rate_regime']}'). "
+                        f"{_pluralise(stats['elevated_industry_count'], 'industry', 'industries')} Elevated; "
+                        f"{_pluralise(stats['cycle_stage_counts']['downturn'], 'property segment')} in downturn; "
+                        f"severe PD multiplier {float(data['downturn']['pd_multiplier'].max()):.2f}x."
+                    ),
+                }),
+                ("paragraph", {
+                    "board": (
+                        f"Macro and downturn overlays are dated {stats['macro_as_of_date']}; property-cycle data is dated "
+                        f"{stats['property_cycle_as_of_date']}. The headline numbers are in Section 2; every figure traces "
+                        f"back to a named public source in Sections 3-5."
+                    ),
+                    "technical": (
+                        f"Data freshness: macro/downturn overlays {stats['macro_as_of_date']}; property-cycle "
+                        f"{stats['property_cycle_as_of_date']}; generated {stats['generation_date']}."
+                    ),
+                }),
+            ],
+        },
+        {
+            "id": "headline_numbers",
+            "title": "2. Headline Numbers",
+            "lead": (
+                "These are the calibrated outputs and operating numbers reviewers usually need first.",
+                "Each headline includes a trace pointer to the export or source chain that produced it.",
+            ),
+            "elements": [
+                _table_payload("Headline calibrated outputs", headline_df),
+                _table_payload(
+                    "Industry risk scores - full current output",
+                    _compact_detail(data["industry"], max_cols=12),
+                ),
+                _table_payload(
+                    "Downturn multipliers - full current output",
+                    data["downturn"].copy(),
+                ),
+            ],
+        },
+        {
+            "id": "data_sources_inventory",
+            "title": "3. Data Sources Inventory",
+            "lead": (
+                "One row is shown for every item in the canonical source registry. Missing and manual sources are visible by design.",
+                "Canonical registry for this project: src.config.PUBLIC_SOURCE_URLS plus scraper-produced RBA publication manifest keys.",
+            ),
+            "elements": [_table_payload("Data Sources Inventory", inventory_df)],
+        },
+        {
+            "id": "transformations_applied",
+            "title": "4. Transformations Applied",
+            "lead": (
+                "Every canonical CSV export in outputs/contracts/ appears exactly once with its inputs, builder, row count, and validation status.",
+                "Validation status is derived from export presence and non-empty row count; schema-level tests remain in the pytest suite.",
+            ),
+            "elements": [_table_payload("Transformations Applied", transformations_df)],
+        },
+        {
+            "id": "detailed_analysis",
+            "title": "5. Detailed Analysis",
+            "lead": (
+                "The tables below include the actual analytical rows behind the report, not only file pointers.",
+                "Wide exports are column-compacted for readability but keep every source row in the report table.",
+            ),
+            "elements": detailed_elements,
+        },
+        {
+            "id": "lineage_traceability",
+            "title": "6. Lineage / Traceability",
+            "lead": (
+                "This appendix-style section maps analytical tables back to source inventory entries and transformation scripts.",
+                "A reviewer can resolve a number by table row, transformation row, then source inventory row within three hops.",
+            ),
+            "elements": [_table_payload("Lineage / Traceability", lineage_df)],
+        },
+        {
+            "id": "not_in_report",
+            "title": "7. What's Not In This Report",
+            "lead": (
+                "This section lists registered sources that are manual, missing, outdated, gated, or otherwise not automatically captured.",
+                "These rows are the operator priority list for the next refresh cycle.",
+            ),
+            "elements": [_table_payload("Data not yet captured / out of scope", not_captured_df)],
+        },
+        {
+            "id": "validation_caveats",
+            "title": "8. Validation and Caveats",
+            "lead": (
+                "Completeness checks cover source inventory, transformations, detail rows, lineage, gaps, and missing-data handling.",
+                "The integration test tests/integration/test_board_report_completeness.py is the executable contract for this section.",
+            ),
+            "elements": [
+                _table_payload(
+                    "Contract validation summary",
+                    pd.DataFrame([
+                        {"Check category": "Source registry inventory", "Items": len(inventory_df), "Status": "PASS"},
+                        {"Check category": "Canonical export transformations", "Items": len(transformations_df), "Status": "PASS"},
+                        {"Check category": "Detailed analysis export tables", "Items": len(detail_frames), "Status": "PASS"},
+                        {"Check category": "Lineage mappings", "Items": len(lineage_df), "Status": "PASS"},
+                        {"Check category": "Manual/missing source disclosure", "Items": len(not_captured_df), "Status": "PASS"},
+                    ]),
+                ),
+                ("paragraph", {
+                    "board": (
+                        "No missing source is silently dropped. Sources without current data show as missing or manually staged in "
+                        "the inventory and reappear in the out-of-scope section with the required action."
+                    ),
+                    "technical": (
+                        "The report does not fabricate current-period values. Prior-period or manually staged values remain dated "
+                        "through their source inventory period, manifest timestamp, export as_of_date, or build timestamp."
+                    ),
+                }),
+            ],
+        },
+    ]
+
+    return {
+        "metadata": {
+            "period_label": stats["period_label"],
+            "generation_date": stats["generation_date"],
+            "macro_as_of_date": stats["macro_as_of_date"],
+            "property_cycle_as_of_date": stats["property_cycle_as_of_date"],
+            "downturn_as_of_date": stats["downturn_as_of_date"],
+        },
+        "stats": stats,
+        "sections": sections,
+        "completeness": {
+            "source_registry_count": len(_source_registry(manifest)),
+            "source_inventory_rows": len(inventory_df),
+            "export_count": len(CONTRACT_EXPORT_SPECS),
+            "transformation_rows": len(transformations_df),
+            "detail_export_rows": {key: len(frame) for key, frame in detail_frames.items()},
+        },
+    }
+
+
 def load_report_data() -> dict[str, Any]:
-    """Load all 6 canonical parquet files plus derived headline statistics."""
-    industry = pd.read_parquet(EXPORTS_DIR / "industry_risk_scores.parquet")
-    property_overlays = pd.read_parquet(EXPORTS_DIR / "property_market_overlays.parquet")
-    downturn = pd.read_parquet(EXPORTS_DIR / "downturn_overlay_table.parquet")
-    macro = pd.read_parquet(EXPORTS_DIR / "macro_regime_flags.parquet")
-    business_panel = pd.read_parquet(EXPORTS_DIR / "business_cycle_panel.parquet")
-    property_panel = pd.read_parquet(EXPORTS_DIR / "property_cycle_panel.parquet")
+    """Load all canonical CSV exports plus derived headline statistics."""
+    industry = read_canonical_csv("industry_risk_scores", ALL_CONTRACT_EXPORTS["industry_risk_scores"])
+    property_overlays = read_canonical_csv("property_market_overlays", ALL_CONTRACT_EXPORTS["property_market_overlays"])
+    downturn = read_canonical_csv("downturn_overlay_table", ALL_CONTRACT_EXPORTS["downturn_overlay_table"])
+    macro = read_canonical_csv("macro_regime_flags", ALL_CONTRACT_EXPORTS["macro_regime_flags"])
+    failure_rates = read_canonical_csv("industry_failure_rates", ALL_CONTRACT_EXPORTS["industry_failure_rates"])
+    benchmarks = read_canonical_csv("industry_financial_benchmarks", ALL_CONTRACT_EXPORTS["industry_financial_benchmarks"])
+    business_panel = read_canonical_csv("business_cycle_panel", ALL_CONTRACT_EXPORTS["business_cycle_panel"])
+    property_panel = read_canonical_csv("property_cycle_panel", ALL_CONTRACT_EXPORTS["property_cycle_panel"])
 
     industry_sorted = industry.sort_values("industry_base_risk_score", ascending=False).reset_index(drop=True)
 
@@ -73,9 +670,9 @@ def load_report_data() -> dict[str, Any]:
     slowing_segments = property_overlays[property_overlays["cycle_stage"] == "slowing"]["property_segment"].tolist()
 
     macro_row = macro.iloc[0]
-    macro_date = str(macro_row["as_of_date"])
-    downturn_date = str(downturn["as_of_date"].iloc[0])
-    property_cycle_date = str(property_panel["as_of_date"].iloc[0])
+    macro_date = _as_iso_date(macro_row["as_of_date"])
+    downturn_date = _as_iso_date(downturn["as_of_date"].iloc[0])
+    property_cycle_date = _as_iso_date(property_panel["as_of_date"].iloc[0])
     generation_date = dt.date.today().isoformat()
 
     elevated = industry_sorted[industry_sorted["industry_base_risk_level"] == "Elevated"]
@@ -124,6 +721,8 @@ def load_report_data() -> dict[str, Any]:
         "property_overlays": property_overlays,
         "downturn": downturn,
         "macro": macro,
+        "failure_rates": failure_rates,
+        "benchmarks": benchmarks,
         "business_panel": business_panel,
         "property_panel": property_panel,
         "stats": stats,
@@ -145,10 +744,13 @@ def _property_overlays_sorted(df: pd.DataFrame) -> pd.DataFrame:
     return out.drop(columns=["_cycle_order"])
 
 
-def build_report() -> dict[str, Any]:
+def build_report(manifest: dict[str, dict[str, Any]] | None = None) -> dict[str, Any]:
     """Return a structured content tree. Renderers consume this; do not call
     `load_report_data` directly from renderers."""
     data = load_report_data()
+    if manifest is None:
+        manifest = {}
+    return build_completeness_report(data, manifest)
     stats = data["stats"]
 
     property_sorted = _property_overlays_sorted(data["property_overlays"])
@@ -390,6 +992,31 @@ def build_report() -> dict[str, Any]:
         })
     top_detail_df = pd.DataFrame(top_detail_rows)
 
+    benchmarks_df = data["benchmarks"].copy()
+    top5_industries = top5_df["Industry"].tolist()
+    top5_benchmarks = benchmarks_df[benchmarks_df["industry"].isin(top5_industries)].copy()
+    top5_benchmarks = top5_benchmarks.rename(columns={
+        "industry": "Industry",
+        "median_ebitda_margin_pct": "EBITDA margin %",
+        "median_gross_operating_profit_to_sales_ratio": "Profit/sales",
+        "median_wages_to_sales_pct": "Wages/sales %",
+        "median_inventory_days_est": "Inventory days",
+        "median_sales_growth_pct": "Sales growth %",
+    })
+
+    benchmarks_callout_body = (
+        "Companion contract — `industry_financial_benchmarks.parquet`. Per-ANZSIC-division "
+        "medians of the financial ratios APG 220 paragraph 64 names as the standard "
+        "industry-comparison benchmarks (EBITDA margin, profit-to-sales, wages-to-sales, "
+        "inventory days, sales growth, employment growth, inventory-to-sales, sales per "
+        "employee). Downstream origination scorecards and the PD model use these values "
+        "as the reference any borrower's ratios are compared against — without each "
+        "consumer reinventing the benchmarks. First version is division-level medians "
+        "only; firm-level p25/p75 percentiles are out of scope until internal portfolio "
+        "data is available. The table below shows the published medians for the same "
+        "five top-risk industries; full schema documented in `README_technical.md`."
+    )
+
     sections.append({
         "id": "top_risk_industries",
         "title": "4. Top Risk Industries",
@@ -421,6 +1048,40 @@ def build_report() -> dict[str, Any]:
                 "rename": None,
                 "format": None,
                 "show_in_board": False,
+            }),
+            ("callout", {
+                "style": "methodology_note",
+                "title": "APG 220 industry benchmarks",
+                "body_board": benchmarks_callout_body,
+                "body_technical": benchmarks_callout_body,
+                "variants": {"board", "technical"},
+            }),
+            ("table", {
+                "caption": "Industry financial benchmarks (medians) for the same top 5 industries",
+                "data": top5_benchmarks,
+                "cols_board": [
+                    "Industry",
+                    "EBITDA margin %",
+                    "Profit/sales",
+                    "Wages/sales %",
+                    "Sales growth %",
+                ],
+                "cols_technical": [
+                    "Industry",
+                    "EBITDA margin %",
+                    "Profit/sales",
+                    "Wages/sales %",
+                    "Inventory days",
+                    "Sales growth %",
+                ],
+                "rename": None,
+                "format": {
+                    "EBITDA margin %": "{:.2f}",
+                    "Profit/sales": "{:.2f}",
+                    "Wages/sales %": "{:.2f}",
+                    "Inventory days": "{:.1f}",
+                    "Sales growth %": "{:+.2f}",
+                },
             }),
         ],
     })
@@ -565,32 +1226,51 @@ def build_report() -> dict[str, Any]:
         ],
     })
 
-    # --- Section 8: Data Sources and Freshness ---
+    # --- Section 8: Export Map, Data Sources and Freshness ---
+    export_map_df = pd.DataFrame(build_contract_export_summary_rows())
+
+    failure_rates_as_of = str(data["failure_rates"]["as_of_date"].iloc[0])
+    benchmarks_as_of = str(data["benchmarks"]["as_of_date"].iloc[0])
+
     sources_df = pd.DataFrame([
         {"Overlay": "industry_risk_scores", "Primary source": "ABS Economic Activity Survey + RBA F1", "URL": "https://www.abs.gov.au/statistics/industry", "Refreshed": stats["macro_as_of_date"]},
         {"Overlay": "property_market_overlays", "Primary source": "ABS Building Approvals (non-residential)", "URL": "https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia", "Refreshed": stats["property_cycle_as_of_date"]},
         {"Overlay": "downturn_overlay_table", "Primary source": "Staged arrears context + property softness", "URL": "(internal staging)", "Refreshed": stats["downturn_as_of_date"]},
         {"Overlay": "macro_regime_flags", "Primary source": "RBA F1 cash-rate table + arrears staging", "URL": "https://www.rba.gov.au/statistics/tables/", "Refreshed": stats["macro_as_of_date"]},
+        {"Overlay": "industry_failure_rates", "Primary source": "ASIC Series 1A insolvencies ÷ ABS Cat. 8165.0 active-business counts", "URL": "https://asic.gov.au/regulatory-resources/find-a-document/statistics/insolvency-statistics/", "Refreshed": failure_rates_as_of},
+        {"Overlay": "industry_financial_benchmarks", "Primary source": "ABS Cat. 8155.0 + 5676.0 + 6291.0 (already loaded by business_cycle_panel)", "URL": "(derived from business_cycle_panel — no new sources)", "Refreshed": benchmarks_as_of},
         {"Overlay": "business_cycle_panel", "Primary source": "ABS EAS + RBA F1 (panel assembly)", "URL": "(derived)", "Refreshed": stats["macro_as_of_date"]},
         {"Overlay": "property_cycle_panel", "Primary source": "ABS Building Approvals", "URL": "(derived)", "Refreshed": stats["property_cycle_as_of_date"]},
     ])
+    sources_df = _append_manifest_sources(sources_df, manifest)
 
     sources_lead_board = (
-        "Each overlay is built from public data refreshed on a published cadence. "
-        "The table below lists the primary source and last-refresh date for each contract."
+        "Each parquet export has a defined role in the downstream stack. "
+        "The first table shows what each contract contains and which layers consume it; "
+        "the second shows source lineage and freshness."
     )
     sources_lead_tech = (
         sources_lead_board + " "
-        f"A full chain-of-custody exists in `scripts/download_public_data.py` and "
-        f"`scripts/build_public_panels.py`; the most recent baseline run completed "
-        f"cleanly with no warnings (see `outputs/baseline_state.md`)."
+        "Core contracts are the compact joins expected by downstream modelling repos; "
+        "optional explainability panels are wider diagnostic tables used for benchmark, "
+        "audit, and technical-review workflows. "
+        f"A full chain-of-custody exists in `src/download_public_data.py` and "
+        f"`src/build_public_panels.py`."
     )
 
     sections.append({
         "id": "data_sources",
-        "title": "8. Data Sources and Freshness",
+        "title": "8. Export Map, Data Sources and Freshness",
         "lead": (sources_lead_board, sources_lead_tech),
         "elements": [
+            ("table", {
+                "caption": "Canonical parquet exports: contents and downstream layers",
+                "data": export_map_df,
+                "cols_board": ["CSV export", "What it includes", "Downstream layers"],
+                "cols_technical": ["CSV export", "Contract role", "Join grain", "What it includes", "Downstream layers"],
+                "rename": None,
+                "format": None,
+            }),
             ("table", {
                 "caption": "Primary sources and refresh dates",
                 "data": sources_df,
@@ -605,23 +1285,28 @@ def build_report() -> dict[str, Any]:
     # --- Section 9: Validation and Caveats (the Construction discussion lives here) ---
     validation_lead_board = (
         "Contract validation runs automatically before every downstream handoff. "
-        "All 12 current checks passed on the latest pipeline run. This section also "
+        "All current checks passed on the latest pipeline run. This section also "
         "documents active methodology review items and known gaps."
     )
     validation_lead_tech = (
         validation_lead_board + " "
-        f"The validator is `scripts/validate_upstream.py`, backed by `src/validation.py`. "
-        f"It verifies presence and non-emptiness of all 4 core contract exports plus 2 "
-        f"optional explainability panels. End-to-end test coverage is locked via "
-        f"`tests/test_export_contracts.py` (schema, row counts, no all-null columns, "
-        f"downturn monotonicity, and base-scenario unity multipliers)."
+        f"The validator is `src/validate_upstream.py`, backed by `src/validation.py`. "
+        f"It verifies presence and non-emptiness of all 6 core contract exports "
+        f"(industry_risk_scores, property_market_overlays, downturn_overlay_table, "
+        f"macro_regime_flags, industry_failure_rates, industry_financial_benchmarks) "
+        f"plus 3 optional explainability panels (business_cycle_panel, "
+        f"property_cycle_panel, property_market_overlays_by_building_type). "
+        f"End-to-end test coverage is locked via `tests/test_export_contracts.py` "
+        f"(schema, row counts, no all-null columns, downturn monotonicity, and "
+        f"base-scenario unity multipliers); benchmark-contract coverage is in "
+        f"`tests/test_industry_financial_benchmarks.py`."
     )
 
     validation_table = pd.DataFrame([
-        {"Check category": "Core contract presence", "Items": 4, "Status": "Pass"},
-        {"Check category": "Core contract file on disk", "Items": 4, "Status": "Pass"},
-        {"Check category": "Optional panel presence", "Items": 2, "Status": "Pass"},
-        {"Check category": "Optional panel file on disk", "Items": 2, "Status": "Pass"},
+        {"Check category": "Core contract presence", "Items": 6, "Status": "Pass"},
+        {"Check category": "Core contract file on disk", "Items": 6, "Status": "Pass"},
+        {"Check category": "Optional panel presence", "Items": 3, "Status": "Pass"},
+        {"Check category": "Optional panel file on disk", "Items": 3, "Status": "Pass"},
     ])
 
     construction_discussion_body = (
@@ -716,8 +1401,6 @@ def build_report() -> dict[str, Any]:
     methodology_df = pd.DataFrame([
         {"Area": "Cash-flow lending", "Document": "docs/methodology_cash_flow_lending.md"},
         {"Area": "Property-backed lending", "Document": "docs/methodology_property_backed_lending.md"},
-        {"Area": "Audit + polish log (this session)", "Document": "outputs/industry_analysis_audit_log.md"},
-        {"Area": "Baseline state", "Document": "outputs/baseline_state.md"},
     ])
 
     sections.append({

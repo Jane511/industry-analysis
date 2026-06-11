@@ -10,14 +10,31 @@ from src.public_data.load_abs_manual_exports import (
     parse_building_approvals,
     parse_labour_force,
 )
+from src.public_data.staged_files import resolve_staged_file
 from src.output import save_csv
-from src.utils import normalise_text, score_employment_growth, score_margin_level, score_margin_trend, score_demand_growth, risk_band
+from src.overlays.build_industry_risk_scores import score_to_risk_level
+from src.utils import normalise_text, score_employment_growth, score_margin_level, score_margin_trend, score_demand_growth
+
+
+# ABS Australian Industry reports Health, Public Administration, and
+# Education with a "(private)" suffix. After normalisation those keys become
+# "... private"; these aliases strip the suffix so the join into the
+# foundation table succeeds.
+PRIVATE_ALIASES = {
+    'health care and social assistance private': 'health care and social assistance',
+    'public administration and safety private': 'public administration and safety',
+    'education and training private': 'education and training',
+}
 
 
 def _sector_key(value: str) -> str:
     key = normalise_text(value)
-    if key == 'health care and social assistance private':
-        return 'health care and social assistance'
+    if key in PRIVATE_ALIASES:
+        return PRIVATE_ALIASES[key]
+    if key.endswith(' private'):
+        stripped = key[: -len(' private')].strip()
+        if stripped in PRIVATE_ALIASES.values():
+            return stripped
     return key
 
 
@@ -52,21 +69,40 @@ def _resolve_public_file(public_dir: Path, filename: str) -> Path:
 
 
 DEMAND_PROXY_MAP = {
+    'agriculture forestry and fishing': 'Agricultural and aquacultural buildings',
+    'mining': 'Other industrial buildings n.e.c.',
+    'manufacturing': 'Industrial Buildings - Total',
+    'electricity gas water and waste services': 'Total Non-residential',
     'construction': 'Total Non-residential',
+    'wholesale trade': 'Warehouses',
     'retail trade': 'Retail and wholesale trade buildings',
     'accommodation and food services': 'Short term accommodation buildings',
-    'health care and social assistance': 'Health buildings',
-    'transport postal and warehousing': 'Warehouses',
+    'transport postal and warehousing': 'Transport buildings',
+    'information media and telecommunications': 'Offices',
+    'rental hiring and real estate services': 'Commercial Buildings - Total',
     'professional scientific and technical services': 'Offices',
-    'manufacturing': 'Industrial Buildings - Total',
-    'agriculture forestry and fishing': 'Agricultural and aquacultural buildings',
-    'wholesale trade': 'Warehouses',
+    'administrative and support services': 'Offices',
+    'public administration and safety': 'Total Non-residential',
+    'education and training': 'Education buildings',
+    'health care and social assistance': 'Health buildings',
+    'arts and recreation services': 'Entertainment and recreation buildings',
+    'other services': 'Total Non-residential',
 }
 
 
+# Sectors where the building-approvals proxy is a weak or indirect reflector
+# of business activity. For these sectors demand_score falls back to the
+# neutral 3 rather than using the (unreliable) approvals growth number.
 LOW_RELIABILITY_DEMAND_PROXY_SECTORS = {
-    'health care and social assistance',
+    'mining',
+    'electricity gas water and waste services',
+    'information media and telecommunications',
+    'rental hiring and real estate services',
     'professional scientific and technical services',
+    'administrative and support services',
+    'public administration and safety',
+    'health care and social assistance',
+    'other services',
 }
 
 
@@ -278,7 +314,7 @@ def _score_inventory_risk(row: pd.Series) -> int:
     return int(np.clip(round(0.7 * level_score + 0.3 * build_score), 1, 5))
 
 def build_macro_view(classification_df: pd.DataFrame, public_dir: Path, processed_dir: Path) -> pd.DataFrame:
-    ai = parse_australian_industry_totals(public_dir / '81550DO001_202324.xlsx')
+    ai = parse_australian_industry_totals(resolve_staged_file('australian_industry_xlsx'))
     ai['sector_key'] = ai['sector'].map(_sector_key)
     ai_latest = ai[ai['year'] == '2023-24'].copy()
     ai_prev = ai[ai['year'] == '2022-23'].copy()
@@ -289,14 +325,20 @@ def build_macro_view(classification_df: pd.DataFrame, public_dir: Path, processe
     ai_summary['ebitda_margin_change_pctpts'] = ai_summary['ebitda_margin_pct_latest'] - ai_summary['ebitda_margin_pct_prev']
     ai_summary = ai_summary.rename(columns={'wages_to_sales_pct': 'wages_to_sales_pct_latest'})
 
-    profit = parse_abs_timeseries_xlsx(public_dir / '56760022_dec2025_profit_ratio.xlsx', 'gross_operating_profit_to_sales_ratio')
-    inventory = parse_abs_timeseries_xlsx(public_dir / '56760023_dec2025_inventory_ratio.xlsx', 'inventories_to_sales_ratio')
+    profit = parse_abs_timeseries_xlsx(
+        resolve_staged_file('business_indicators_profit_ratio_xlsx'),
+        'gross_operating_profit_to_sales_ratio',
+    )
+    inventory = parse_abs_timeseries_xlsx(
+        resolve_staged_file('business_indicators_inventory_ratio_xlsx'),
+        'inventories_to_sales_ratio',
+    )
     profit_summary = _latest_and_yoy(profit)
     inventory_summary = _latest_and_yoy(inventory)
     profit_summary['sector_key'] = profit_summary['industry'].map(_sector_key)
     inventory_summary['sector_key'] = inventory_summary['industry'].map(_sector_key)
 
-    labour = parse_labour_force(public_dir / '6291004_feb2026_labour_force_industry.xlsx')
+    labour = parse_labour_force(resolve_staged_file('labour_force_industry_xlsx'))
     labour = labour[labour['series_type'] == 'Trend'].copy()
     labour_rows = []
     for industry, g in labour.groupby('industry'):
@@ -313,7 +355,7 @@ def build_macro_view(classification_df: pd.DataFrame, public_dir: Path, processe
     labour_summary = pd.DataFrame(labour_rows)
     labour_summary['sector_key'] = labour_summary['industry'].map(_sector_key)
 
-    approvals = parse_building_approvals(public_dir / '87310051_feb2026_building_approvals_nonres.xlsx')
+    approvals = parse_building_approvals(resolve_staged_file('building_approvals_nonres_xlsx'))
     approvals = approvals[approvals['sector_group'] == 'Total Sectors'].copy()
     approval_rows = []
     for building_type, g in approvals.groupby('building_type'):
@@ -334,19 +376,21 @@ def build_macro_view(classification_df: pd.DataFrame, public_dir: Path, processe
         row = approval_summary[approval_summary['building_type'] == building_type]
         if not row.empty:
             demand_growth = row.iloc[0]['building_yoy_growth_pct']
-            if sector_key in LOW_RELIABILITY_DEMAND_PROXY_SECTORS:
+            is_reliable = sector_key not in LOW_RELIABILITY_DEMAND_PROXY_SECTORS
+            if not is_reliable:
                 demand_growth = np.nan
             demand_rows.append({
                 'sector_key': sector_key,
                 'demand_proxy_building_type': building_type,
+                'demand_proxy_reliable': is_reliable,
                 'demand_yoy_growth_pct': demand_growth,
             })
     demand_proxy = pd.DataFrame(demand_rows)
 
     cash = load_rba_cash_rate(_resolve_public_file(public_dir, 'rba_f1_data.csv')).sort_values('date')
-    cash_latest = float(cash.iloc[-1]['Cash Rate Target'])
-    cash_prev = float(cash[cash['date'] <= cash['date'].max() - pd.DateOffset(years=1)].iloc[-1]['Cash Rate Target'])
-    cash_change_1y = cash_latest - cash_prev
+    cash_latest = round(float(cash.iloc[-1]['Cash Rate Target']), 4)
+    cash_prev = round(float(cash[cash['date'] <= cash['date'].max() - pd.DateOffset(years=1)].iloc[-1]['Cash Rate Target']), 4)
+    cash_change_1y = round(cash_latest - cash_prev, 4)
 
     public = classification_df[['sector_key','anzsic_division_code','industry','internal_grouping_example','classification_risk_score']].copy()
     public = public.merge(
@@ -369,6 +413,7 @@ def build_macro_view(classification_df: pd.DataFrame, public_dir: Path, processe
     public = public.merge(inventory_summary[['sector_key','inventories_to_sales_ratio_latest','inventories_to_sales_ratio_yoy_change']], on='sector_key', how='left')
     public = public.merge(labour_summary[['sector_key','employment_yoy_growth_pct']], on='sector_key', how='left')
     public = public.merge(demand_proxy, on='sector_key', how='left')
+    public['demand_proxy_reliable'] = public['demand_proxy_reliable'].fillna(False).astype(bool)
     public['cash_rate_latest_pct'] = cash_latest
     public['cash_rate_change_1y_pctpts'] = cash_change_1y
     public['inventory_days_est'] = public.apply(_derive_inventory_days_est, axis=1)
@@ -384,7 +429,7 @@ def build_macro_view(classification_df: pd.DataFrame, public_dir: Path, processe
     public['demand_score'] = public['demand_yoy_growth_pct'].apply(score_demand_growth)
     public['macro_risk_score'] = public[['employment_score','margin_level_score','margin_trend_score','inventory_score','demand_score']].mean(axis=1).round(2)
     public['industry_base_risk_score'] = (0.55 * public['classification_risk_score'] + 0.45 * public['macro_risk_score']).round(2)
-    public['industry_base_risk_level'] = public['industry_base_risk_score'].apply(risk_band)
+    public['industry_base_risk_level'] = public['industry_base_risk_score'].apply(score_to_risk_level)
     public = public.drop(columns=['inventory_days_prev_est'])
 
     save_csv(public, processed_dir / 'industry_macro_view_public_signals.csv')

@@ -94,325 +94,3543 @@
 </head>
 <body>
 <h1>Industry Analysis Report — Q1 2026</h1>
-<p><em>Board Summary variant. Generated 2026-04-23.</em></p>
+<p><em>Board Summary variant. Generated 2026-06-11.</em></p>
 <div class="summary-box">
 <p>Macro and downturn overlays as of 2026-03-16. Property cycle data as of 2026-02-01.</p>
-<p>This is a summary view for non-technical reviewers. Every table traces back to the canonical parquet contracts in <code>data/exports/</code>. For full per-column detail, methodology references, and the audit-log appendix, see the Technical variant.</p>
+<p>This is a summary view for non-technical reviewers. Every table traces back to the canonical CSV contracts in <code>outputs/contracts/</code>. For full per-column detail, methodology references, and the audit-log appendix, see the Technical variant.</p>
 </div>
 <h2>1. Executive Summary</h2>
-<p>This report summarises the current state of Australian industry and property market risk using public macro, industry, and property data. Overlays cover 9 industries and 11 property segments. Cash rate sits at 3.85%, 0.25pp lower than a year ago; arrears environment is Low and improving. 4 of 9 industries currently score Elevated on the base risk scale. 1 property segment is in downturn, 1 is slowing, and 3 are in growth.</p>
-<div class="flag flag-blue"><div class="flag-title">How to read this report</div><p>This report uses a 1–5 risk-score scale with four bands:</p>
-<ul>
-<li>Low (&lt; 2.0) — defensive, structurally resilient</li>
-<li>Medium (2.0 – 2.75) — neutral, typical business-cycle exposure</li>
-<li>Elevated (2.75 – 3.5) — cyclical or rate-sensitive; monitor closely</li>
-<li>High (&gt; 3.5) — stressed or structurally vulnerable</li>
-</ul></div>
-<h2>2. Macro Regime</h2>
-<p>Macro conditions shape how every industry and property segment is stressed. The cash rate is the dominant conditioning variable; the arrears backdrop confirms whether rate moves are already showing in borrower behaviour.</p>
-<p class="caption">Macro regime snapshot as of 2026-03-16</p>
+<p>This report reads the credit-risk temperature of the Australian economy from public data, so a lender can see which industries and property segments are getting riskier before it shows up in arrears or losses. It covers 18 industries (ANZSIC divisions) and 5 commercial-property segments for Q1 2026, and turns them into ready-to-use PD and LGD stress inputs.</p>
+<p>Headline picture: the cash rate is 3.85% (-0.25 points over the past year) and the arrears backdrop is low and improving, so the macro regime is set to &#x27;base&#x27;. Against that backdrop, 4 of 18 industries score Elevated on the 1-5 risk scale, and 0 of 5 property segments are in downturn. The downturn-overlay table translates this into stress multipliers — up to 2.00x on PD in a severe scenario — that a pricing or expected-loss model can apply directly.</p>
+<p>Macro and downturn overlays are dated 2026-03-16; property-cycle data is dated 2026-02-01. The headline numbers are in Section 2; every figure traces back to a named public source in Sections 3-5.</p>
+<h2>2. Headline Numbers</h2>
+<p>These are the calibrated outputs and operating numbers reviewers usually need first.</p>
+<p class="caption">Headline calibrated outputs</p>
 <table>
 <thead><tr>
 <th>Metric</th>
 <th>Value</th>
+<th>Vintage</th>
+<th>Trace</th>
 </tr></thead>
 <tbody>
 <tr>
-<td>Cash rate (latest)</td>
-<td>3.85%</td>
+<td>Industries covered</td>
+<td>18</td>
+<td>2026-03-16</td>
+<td>industry_risk_scores.csv</td>
 </tr>
 <tr>
-<td>Cash rate 1y change</td>
-<td>-0.25pp</td>
+<td>Property segments covered</td>
+<td>5</td>
+<td>2026-02-01</td>
+<td>property_market_overlays.csv</td>
 </tr>
 <tr>
-<td>Cash rate regime</td>
-<td>neutral_easing</td>
+<td>Cash rate latest pct</td>
+<td>3.85</td>
+<td>2026-03-16</td>
+<td>rba_cash_rate_csv -&gt; macro_regime_flags.csv</td>
 </tr>
 <tr>
-<td>Arrears environment</td>
-<td>Low</td>
+<td>Cash rate 1y change pctpts</td>
+<td>-0.25</td>
+<td>2026-03-16</td>
+<td>rba_cash_rate_csv -&gt; industry_risk_scores.csv</td>
 </tr>
 <tr>
-<td>Arrears trend</td>
-<td>Improving</td>
+<td>Elevated industry count</td>
+<td>4</td>
+<td>2026-03-16</td>
+<td>industry_risk_scores.csv</td>
+</tr>
+<tr>
+<td>Downturn property segment count</td>
+<td>0</td>
+<td>2026-02-01</td>
+<td>property_market_overlays.csv</td>
 </tr>
 <tr>
 <td>Macro regime flag</td>
 <td>base</td>
+<td>2026-03-16</td>
+<td>macro_regime_flags.csv</td>
+</tr>
+<tr>
+<td>Severe PD multiplier</td>
+<td>2.00</td>
+<td>2026-03-16</td>
+<td>downturn_overlay_table.csv</td>
 </tr>
 </tbody></table>
-<p>Combined with a low arrears backdrop, this suggests borrowers are absorbing rate pressure; credit models should weight structural over cyclical factors in current calibration. The downturn overlays currently apply the &#x27;base&#x27; scenario (no uplift to PD/LGD/CCF).</p>
-<h2>3. Industry Risk Rankings</h2>
-<p>Industries are ranked by a combined base risk score that blends structural classification risk (cyclicality, concentration, capital intensity) with current macro sensitivity. The table below is ordered highest-risk first.</p>
-<p class="caption">All 9 industries ranked by base risk score</p>
+<p class="caption">Industry risk scores - full current output</p>
 <table>
 <thead><tr>
-<th>Rank</th>
-<th>Industry</th>
-<th>Base score</th>
-<th>Level</th>
+<th>as_of_date</th>
+<th>anzsic_division_code</th>
+<th>industry</th>
+<th>classification_risk_score</th>
+<th>macro_risk_score</th>
+<th>industry_base_risk_score</th>
+<th>industry_base_risk_level</th>
+<th>pd_multiplier</th>
+<th>cash_rate_latest_pct</th>
+<th>cash_rate_change_1y_pctpts</th>
 </tr></thead>
 <tbody>
 <tr>
-<td>1</td>
-<td>Agriculture, Forestry And Fishing</td>
-<td>3.50</td>
+<td>2026-04-29</td>
+<td>A</td>
+<td>Agriculture, Forestry and Fishing</td>
+<td>4.12</td>
+<td>3.2</td>
+<td>3.71</td>
 <td>Elevated</td>
+<td>1.15</td>
+<td>3.85</td>
+<td>-0.25</td>
 </tr>
 <tr>
-<td>2</td>
+<td>2026-04-29</td>
+<td>B</td>
+<td>Mining</td>
+<td>3.88</td>
+<td>2.8</td>
+<td>3.39</td>
+<td>Elevated</td>
+<td>1.15</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>C</td>
 <td>Manufacturing</td>
-<td>3.50</td>
+<td>3.5</td>
+<td>3.2</td>
+<td>3.36</td>
 <td>Elevated</td>
+<td>1.15</td>
+<td>3.85</td>
+<td>-0.25</td>
 </tr>
 <tr>
-<td>3</td>
-<td>Wholesale Trade</td>
-<td>3.23</td>
-<td>Elevated</td>
-</tr>
-<tr>
-<td>4</td>
+<td>2026-04-29</td>
+<td>G</td>
 <td>Retail Trade</td>
+<td>3.25</td>
+<td>3.2</td>
 <td>3.23</td>
 <td>Elevated</td>
+<td>1.15</td>
+<td>3.85</td>
+<td>-0.25</td>
 </tr>
 <tr>
-<td>5</td>
-<td>Accommodation And Food Services</td>
+<td>2026-04-29</td>
+<td>F</td>
+<td>Wholesale Trade</td>
+<td>3.12</td>
+<td>3.2</td>
+<td>3.16</td>
+<td>Moderate-high</td>
+<td>1.1</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>R</td>
+<td>Arts and Recreation Services</td>
+<td>2.38</td>
+<td>3.8</td>
+<td>3.02</td>
+<td>Moderate-high</td>
+<td>1.1</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>H</td>
+<td>Accommodation and Food Services</td>
+<td>2.75</td>
+<td>2.6</td>
 <td>2.68</td>
 <td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
 </tr>
 <tr>
-<td>6</td>
+<td>2026-04-29</td>
+<td>E</td>
 <td>Construction</td>
+<td>2.75</td>
+<td>2.6</td>
 <td>2.68</td>
 <td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
 </tr>
 <tr>
-<td>7</td>
-<td>Health Care and Social Assistance</td>
-<td>2.22</td>
+<td>2026-04-29</td>
+<td>I</td>
+<td>Transport, Postal and Warehousing</td>
+<td>2.5</td>
+<td>2.8</td>
+<td>2.64</td>
 <td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
 </tr>
 <tr>
-<td>8</td>
-<td>Professional, Scientific And Technical Services</td>
-<td>2.18</td>
+<td>2026-04-29</td>
+<td>J</td>
+<td>Information Media and Telecommunications</td>
+<td>2.12</td>
+<td>3.0</td>
+<td>2.52</td>
 <td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
 </tr>
 <tr>
-<td>9</td>
-<td>Transport, Postal And Warehousing</td>
+<td>2026-04-29</td>
+<td>O</td>
+<td>Public Administration and Safety</td>
+<td>1.62</td>
+<td>3.6</td>
+<td>2.51</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>P</td>
+<td>Education and Training</td>
+<td>1.75</td>
+<td>3.4</td>
+<td>2.49</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>L</td>
+<td>Rental, Hiring and Real Estate Services</td>
+<td>2.38</td>
+<td>2.6</td>
+<td>2.48</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>N</td>
+<td>Administrative and Support Services</td>
+<td>2.12</td>
+<td>2.8</td>
+<td>2.43</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>S</td>
+<td>Other Services</td>
+<td>2.38</td>
+<td>2.2</td>
+<td>2.3</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>D</td>
+<td>Electricity, Gas, Water and Waste Services</td>
+<td>2.25</td>
+<td>2.0</td>
 <td>2.14</td>
 <td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Q</td>
+<td>Health Care and Social Assistance</td>
+<td>1.5</td>
+<td>2.8</td>
+<td>2.08</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>M</td>
+<td>Professional, Scientific and Technical Services</td>
+<td>1.75</td>
+<td>2.4</td>
+<td>2.04</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
 </tr>
 </tbody></table>
-<div class="flag flag-orange"><div class="flag-title">Construction ranking</div><p><strong>Methodology note.</strong> Construction base risk score (2.68, &#x27;Medium&#x27;) reflects structural classification risk only, not current insolvency pressure. See Section 9 for methodology context and the active review item.</p></div>
-<p>The top 4 industries all sit in the &#x27;Elevated&#x27; band, driven by structural cyclicality and current rate sensitivity. Defensive sectors (Health Care; Professional, Scientific and Technical) sit at the lower end, as expected.</p>
-<h2>4. Top Risk Industries</h2>
-<p>These are the five industries with the highest combined base risk score in the current environment. Review these first when calibrating portfolio concentration limits or sector caps.</p>
-<p class="caption">Top 5 industries by base risk score</p>
+<p class="caption">Downturn multipliers - full current output</p>
 <table>
 <thead><tr>
-<th>Industry</th>
-<th>Base score</th>
-<th>Level</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>Agriculture, Forestry And Fishing</td>
-<td>3.50</td>
-<td>Elevated</td>
-</tr>
-<tr>
-<td>Manufacturing</td>
-<td>3.50</td>
-<td>Elevated</td>
-</tr>
-<tr>
-<td>Wholesale Trade</td>
-<td>3.23</td>
-<td>Elevated</td>
-</tr>
-<tr>
-<td>Retail Trade</td>
-<td>3.23</td>
-<td>Elevated</td>
-</tr>
-<tr>
-<td>Accommodation And Food Services</td>
-<td>2.68</td>
-<td>Medium</td>
-</tr>
-</tbody></table>
-<h2>5. Property Market Overlays</h2>
-<p>Property overlays track 11 commercial and non-residential segments through the cycle. Each segment is classified into one of four cycle stages (downturn, slowing, neutral, growth) using approvals momentum as the primary signal.</p>
-<p class="caption">All 11 segments grouped by cycle stage (as of 2026-02-01)</p>
-<table>
-<thead><tr>
-<th>Segment</th>
-<th>Cycle</th>
-<th>Softness score</th>
-<th>Region band</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>Offices</td>
-<td>downturn</td>
-<td>4.30</td>
-<td>High</td>
-</tr>
-<tr>
-<td>Education buildings</td>
-<td>slowing</td>
-<td>3.25</td>
-<td>Elevated</td>
-</tr>
-<tr>
-<td>Retail and wholesale trade buildings</td>
-<td>neutral</td>
-<td>3.15</td>
-<td>Medium</td>
-</tr>
-<tr>
-<td>Aged care facilities</td>
-<td>neutral</td>
-<td>2.70</td>
-<td>Medium</td>
-</tr>
-<tr>
-<td>Agricultural and aquacultural buildings</td>
-<td>neutral</td>
-<td>2.65</td>
-<td>Medium</td>
-</tr>
-<tr>
-<td>Total Non-residential</td>
-<td>neutral</td>
-<td>2.60</td>
-<td>Medium</td>
-</tr>
-<tr>
-<td>Industrial Buildings - Total</td>
-<td>neutral</td>
-<td>2.40</td>
-<td>Medium</td>
-</tr>
-<tr>
-<td>Warehouses</td>
-<td>neutral</td>
-<td>2.20</td>
-<td>Medium</td>
-</tr>
-<tr>
-<td>Short term accommodation buildings</td>
-<td>growth</td>
-<td>2.85</td>
-<td>Medium</td>
-</tr>
-<tr>
-<td>Commercial Buildings - Total</td>
-<td>growth</td>
-<td>2.30</td>
-<td>Medium</td>
-</tr>
-<tr>
-<td>Health buildings</td>
-<td>growth</td>
-<td>1.65</td>
-<td>Low</td>
-</tr>
-</tbody></table>
-<p>Segments are grouped with downturn first, then slowing, neutral, and growth. Offices is the only segment flagged in downturn; Health buildings, Commercial Buildings Total, and Short-term accommodation are the three segments in growth.</p>
-<h2>6. Property Cycle Interpretation</h2>
-<p>1 segment is currently in downturn (Offices). 1 is slowing (Education buildings). 6 segments sit in neutral, and 3 are in growth (Short term accommodation buildings, Commercial Buildings - Total, Health buildings). For property-backed lending, Offices warrants elevated caution; the growth-stage segments look supportive but should be read alongside the approvals-base-effect caveat below.</p>
-<h2>7. Downturn Scenarios</h2>
-<p>Downturn overlays provide illustrative multipliers for PD, LGD, and CCF, plus property value haircuts, under four scenarios. These support scenario analysis and conservative pricing; they are not calibrated regulatory stress parameters.</p>
-<p class="caption">Illustrative downturn multipliers (as of 2026-03-16)</p>
-<table>
-<thead><tr>
-<th>Scenario</th>
-<th>PD ×</th>
-<th>LGD ×</th>
-<th>CCF ×</th>
-<th>Property haircut</th>
+<th>scenario</th>
+<th>pd_multiplier</th>
+<th>lgd_multiplier</th>
+<th>ccf_multiplier</th>
+<th>property_value_haircut</th>
+<th>notes</th>
+<th>as_of_date</th>
 </tr></thead>
 <tbody>
 <tr>
 <td>base</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>1.00</td>
-<td>0.00</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>Current staged environment. Anchored to a low / improving arrears backdrop and an average property-cycle softness score of 2.73.</td>
+<td>2026-03-16</td>
 </tr>
 <tr>
 <td>mild</td>
-<td>1.20</td>
-<td>1.10</td>
+<td>1.2</td>
+<td>1.1</td>
 <td>1.05</td>
 <td>0.05</td>
+<td>Illustrative mild downturn overlay for conservative portfolio calibration.</td>
+<td>2026-03-16</td>
 </tr>
 <tr>
 <td>moderate</td>
-<td>1.50</td>
-<td>1.20</td>
-<td>1.10</td>
-<td>0.10</td>
+<td>1.5</td>
+<td>1.2</td>
+<td>1.1</td>
+<td>0.1</td>
+<td>Illustrative moderate downturn overlay for stressed pricing and EL scenario analysis.</td>
+<td>2026-03-16</td>
 </tr>
 <tr>
 <td>severe</td>
-<td>2.00</td>
-<td>1.30</td>
-<td>1.20</td>
-<td>0.20</td>
+<td>2.0</td>
+<td>1.3</td>
+<td>1.2</td>
+<td>0.2</td>
+<td>Illustrative severe downturn overlay. Not a calibrated regulatory stress parameter.</td>
+<td>2026-03-16</td>
 </tr>
 </tbody></table>
-<p>Apply multiplicatively to modelled PD/LGD/CCF; haircut applies to property valuations in collateral-backed lines. The severe scenario doubles PD; mild and moderate are graduated. Current environment selects the &#x27;base&#x27; row (see Section 2).</p>
-<h2>8. Data Sources and Freshness</h2>
-<p>Each overlay is built from public data refreshed on a published cadence. The table below lists the primary source and last-refresh date for each contract.</p>
-<p class="caption">Primary sources and refresh dates</p>
+<h2>3. Data Sources Inventory</h2>
+<p>One row is shown for every item in the canonical source registry. Missing and manual sources are visible by design.</p>
+<p class="caption">Data Sources Inventory</p>
 <table>
 <thead><tr>
-<th>Overlay</th>
-<th>Primary source</th>
-<th>Refreshed</th>
+<th>Source key</th>
+<th>Publisher / origin</th>
+<th>URL or landing page</th>
+<th>File type</th>
+<th>Period or vintage</th>
+<th>Retrieved / fetched timestamp</th>
+<th>File size or row count</th>
+<th>Status</th>
+<th>Hash / version identifier</th>
 </tr></thead>
 <tbody>
 <tr>
-<td>industry_risk_scores</td>
-<td>ABS Economic Activity Survey + RBA F1</td>
-<td>2026-03-16</td>
+<td>anzsic_classification_page</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/latest-release</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
 </tr>
 <tr>
-<td>property_market_overlays</td>
-<td>ABS Building Approvals (non-residential)</td>
-<td>2026-02-01</td>
+<td>anzsic_division_codes_page</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/2006-revision-2-0/numbering-system-and-titles/division-codes-and-titles</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
 </tr>
 <tr>
-<td>downturn_overlay_table</td>
-<td>Staged arrears context + property softness</td>
-<td>2026-03-16</td>
+<td>anzsic_division_subdivision_class_page</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/2006-revision-2-0/numbering-system-and-titles/division-subdivision-group-and-class-codes-and-titles</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
 </tr>
 <tr>
-<td>macro_regime_flags</td>
-<td>RBA F1 cash-rate table + arrears staging</td>
-<td>2026-03-16</td>
+<td>australian_industry_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/industry/industry-overview/australian-industry/2023-24/81550DO001_202324.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td>2026-04-04T00:14:08+00:00</td>
+<td>597090</td>
+<td>manually staged</td>
+<td></td>
 </tr>
 <tr>
-<td>business_cycle_panel</td>
-<td>ABS EAS + RBA F1 (panel assembly)</td>
-<td>2026-03-16</td>
+<td>building_approvals_nonres_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/87310051.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td>2026-04-04T00:14:08+00:00</td>
+<td>185814</td>
+<td>manually staged</td>
+<td></td>
 </tr>
 <tr>
-<td>property_cycle_panel</td>
-<td>ABS Building Approvals</td>
-<td>2026-02-01</td>
+<td>business_indicators_consumer_sales_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760024.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>business_indicators_inventory_ratio_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760023.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td>2026-04-04T00:14:08+00:00</td>
+<td>51783</td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>business_indicators_profit_ratio_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760022.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td>2026-04-04T00:14:08+00:00</td>
+<td>56253</td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>cotality_auction_clearance_page</td>
+<td>Cotality</td>
+<td>https://www.cotality.com/au/our-data/auction-results</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>cotality_hvi_page</td>
+<td>Cotality</td>
+<td>https://www.cotality.com/au/news-research/insights/home-value-index/</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>cpi_all_groups_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640101.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>cpi_subgroups_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640107.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>domain_quarterly_page</td>
+<td>Domain</td>
+<td>https://www.domain.com.au/research/house-price-report/</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>dwelling_approvals_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/875206.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>dwelling_value_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/875211.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>labour_force_industry_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia-detailed/feb-2026/6291004.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td>2026-04-04T00:14:08+00:00</td>
+<td>160939</td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>lending_indicators_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/finance/lending-indicators/feb-2026/560101.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>nsw_rental_bonds_page</td>
+<td>State rental bond authorities</td>
+<td>https://www.fairtrading.nsw.gov.au/</td>
+<td>AU</td>
+<td></td>
+<td></td>
+<td></td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>ppi_construction_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642713.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>ppi_manufacturing_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642712.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>property_price_capitals_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/residential-property-price-indexes-eight-capital-cities/dec-2025/641602.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>property_price_index_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/residential-property-price-indexes-eight-capital-cities/dec-2025/641601.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>ptrs_cycle_8_pdf</td>
+<td>Payment Times Reporting Scheme</td>
+<td>https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2025-07/reg-update-july-2025.pdf</td>
+<td>PDF</td>
+<td></td>
+<td>2026-04-07T01:41:27+00:00</td>
+<td>2055606</td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>ptrs_cycle_9_pdf</td>
+<td>Payment Times Reporting Scheme</td>
+<td>https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2026-01/regulators-update-202601.pdf</td>
+<td>PDF</td>
+<td></td>
+<td>2026-04-07T01:41:27+00:00</td>
+<td>3629142</td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>ptrs_guidance</td>
+<td>Payment Times Reporting Scheme</td>
+<td>https://paymenttimes.gov.au/sites/ptrs.gov.au/files/regulatory-resource/ptrs-guidance-materials-march2025.pdf</td>
+<td>PDF</td>
+<td></td>
+<td>2026-04-07T01:41:27+00:00</td>
+<td>947450</td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>qld_median_rents_page</td>
+<td>Public source</td>
+<td>https://www.rta.qld.gov.au/about-the-rta/research-and-reports/median-rents-quarterly-data</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>rba_cash_rate_csv</td>
+<td>Reserve Bank of Australia</td>
+<td>https://www.rba.gov.au/statistics/tables/csv/f1-data.csv</td>
+<td>CSV</td>
+<td></td>
+<td>2026-04-04T00:14:08+00:00</td>
+<td>298051</td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>rba_chart_pack_page</td>
+<td>Reserve Bank of Australia</td>
+<td>https://www.rba.gov.au/chart-pack/</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>rba_chart_pack_pdf</td>
+<td>Reserve Bank of Australia</td>
+<td>https://www.rba.gov.au/chart-pack/</td>
+<td>PDF</td>
+<td>March 2026</td>
+<td>2026-04-28T08:01:43+00:00</td>
+<td>5434746</td>
+<td>auto-downloaded</td>
+<td>66945f0e420217b86069e72880c20b4670f17a2ff52e6e0de9c9d13a174364d9</td>
+</tr>
+<tr>
+<td>rba_fsr_page</td>
+<td>Reserve Bank of Australia</td>
+<td>https://www.rba.gov.au/publications/fsr/</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>rba_fsr_pdf</td>
+<td>Reserve Bank of Australia</td>
+<td>https://www.rba.gov.au/publications/fsr/</td>
+<td>PDF</td>
+<td>March 2026</td>
+<td>2026-04-28T08:01:42+00:00</td>
+<td>3272062</td>
+<td>auto-downloaded</td>
+<td>342ec105f1c623e507ef4e8434ade6f0788ef58ed26b2accaa8ec7df04acc13e</td>
+</tr>
+<tr>
+<td>rba_smp_page</td>
+<td>Reserve Bank of Australia</td>
+<td>https://www.rba.gov.au/publications/smp/</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>rba_smp_pdf</td>
+<td>Reserve Bank of Australia</td>
+<td>https://www.rba.gov.au/publications/smp/</td>
+<td>PDF</td>
+<td>February 2026</td>
+<td>2026-04-28T08:01:42+00:00</td>
+<td>4201271</td>
+<td>auto-downloaded</td>
+<td>db42f94329b6c229844fb8da8cbc4308d707af57b3d5ba90d0aaa9bd7e21ca89</td>
+</tr>
+<tr>
+<td>rba_table_e2_xls</td>
+<td>Reserve Bank of Australia</td>
+<td>https://www.rba.gov.au/statistics/tables/xls/e02hist.xls</td>
+<td>XLS</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>sqm_headline_page</td>
+<td>SQM Research</td>
+<td>https://sqmresearch.com.au/</td>
+<td>AU</td>
+<td></td>
+<td></td>
+<td></td>
+<td>manually staged</td>
+<td></td>
+</tr>
+<tr>
+<td>total_value_dwellings_xlsx</td>
+<td>Australian Bureau of Statistics</td>
+<td>https://www.abs.gov.au/statistics/economy/finance/total-value-dwellings/dec-2025/643201.xlsx</td>
+<td>XLSX</td>
+<td></td>
+<td></td>
+<td></td>
+<td>missing</td>
+<td></td>
+</tr>
+<tr>
+<td>vic_rental_report_page</td>
+<td>State rental bond authorities</td>
+<td>https://www.dffh.vic.gov.au/publications/rental-report</td>
+<td>landing page</td>
+<td></td>
+<td></td>
+<td></td>
+<td>manually staged</td>
+<td></td>
 </tr>
 </tbody></table>
-<h2>9. Validation and Caveats</h2>
-<p>Contract validation runs automatically before every downstream handoff. All 12 current checks passed on the latest pipeline run. This section also documents active methodology review items and known gaps.</p>
+<h2>4. Transformations Applied</h2>
+<p>Every canonical CSV export in outputs/contracts/ appears exactly once with its inputs, builder, row count, and validation status.</p>
+<p class="caption">Transformations Applied</p>
+<table>
+<thead><tr>
+<th>Output filename</th>
+<th>Input source(s)</th>
+<th>Transformation script</th>
+<th>Row count of output</th>
+<th>Last build timestamp</th>
+<th>Validation status</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>industry_risk_scores.csv</td>
+<td>australian_industry_xlsx; business_indicators_profit_ratio_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv</td>
+<td>src/overlays/build_industry_risk_scores.py</td>
+<td>18</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+<tr>
+<td>property_market_overlays.csv</td>
+<td>building_approvals_nonres_xlsx; property_market_detail; property_cycle_panel</td>
+<td>src/overlays/build_property_market_overlays.py</td>
+<td>5</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+<tr>
+<td>downturn_overlay_table.csv</td>
+<td>property_cycle_panel; rba_fsr_page; staged arrears context</td>
+<td>src/overlays/build_downturn_overlay_tables.py</td>
+<td>4</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+<tr>
+<td>macro_regime_flags.csv</td>
+<td>rba_cash_rate_csv; staged arrears context</td>
+<td>src/panels/build_macro_regime_flags.py</td>
+<td>1</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+<tr>
+<td>industry_failure_rates.csv</td>
+<td>asic insolvency public extracts; ABS active-business counts</td>
+<td>src/panels/build_industry_failure_rates.py</td>
+<td>18</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+<tr>
+<td>industry_financial_benchmarks.csv</td>
+<td>australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; labour_force_industry_xlsx</td>
+<td>src/panels/build_industry_financial_benchmarks.py</td>
+<td>18</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+<tr>
+<td>business_cycle_panel.csv</td>
+<td>australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; business_indicators_consumer_sales_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv</td>
+<td>src/panels/build_business_cycle_panel.py</td>
+<td>18</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+<tr>
+<td>property_cycle_panel.csv</td>
+<td>building_approvals_nonres_xlsx; property reference staged sources</td>
+<td>src/panels/build_property_cycle_panel.py</td>
+<td>11</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+<tr>
+<td>macro_context.csv</td>
+<td>cpi_all_groups_xlsx; cpi_subgroups_xlsx; ppi_manufacturing_xlsx; ppi_construction_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv; rba_fsr_page</td>
+<td>src/panels/build_macro_context_panel.py</td>
+<td>8</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+<tr>
+<td>property_market_detail.csv</td>
+<td>property_price_index_xlsx; property_price_capitals_xlsx; total_value_dwellings_xlsx; lending_indicators_xlsx; rba_table_e2_xls; cotality_hvi_page; domain_quarterly_page; sqm_headline_page; state rental bond pages</td>
+<td>src/panels/build_property_reference_panel.py</td>
+<td>68</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+<tr>
+<td>property_market_overlays_by_building_type.csv</td>
+<td>building_approvals_nonres_xlsx; property_cycle_panel</td>
+<td>src/overlays/build_property_market_overlays.py</td>
+<td>11</td>
+<td>2026-04-29T10:00:55</td>
+<td>PASS: present_nonempty</td>
+</tr>
+</tbody></table>
+<h2>5. Detailed Analysis</h2>
+<p>The tables below include the actual analytical rows behind the report, not only file pointers.</p>
+<p class="caption">Canonical CSV exports: contents and downstream layers</p>
+<table>
+<thead><tr>
+<th>CSV export</th>
+<th>What it includes</th>
+<th>Downstream layers</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>industry_risk_scores.csv</td>
+<td>Compact industry overlay: classification score, macro score, base risk score/level, and shared cash-rate backdrop fields.</td>
+<td>PD overlays / scorecards; EL and pricing overlays; External sector benchmarks; Board reporting</td>
+</tr>
+<tr>
+<td>property_market_overlays.csv</td>
+<td>Compact property overlay: cycle stage, softness score/band, region risk, approvals change, and approvals-proxy activity signals.</td>
+<td>LGD and collateral overlays; Property-backed PD context; Pricing and policy overlays; Board reporting</td>
+</tr>
+<tr>
+<td>downturn_overlay_table.csv</td>
+<td>Scenario multipliers for PD, LGD, and CCF plus property haircuts and scenario notes.</td>
+<td>PD scenario layer; LGD scenario layer; CCF / EAD scenario layer; Stress testing and pricing what-if views</td>
+</tr>
+<tr>
+<td>macro_regime_flags.csv</td>
+<td>Environment selector: cash-rate regime, arrears level/trend, macro regime flag, and source dataset.</td>
+<td>PD regime conditioning; LGD / EL regime conditioning; Scenario-row selection; Portfolio and board reporting</td>
+</tr>
+<tr>
+<td>industry_failure_rates.csv</td>
+<td>Realised insolvency counts (ASIC Series 1A) divided by ABS active-business counts per ANZSIC division, plus YoY change in the rate.</td>
+<td>PD backtest and validation; ECL current-state anchoring; Governance concentration reporting; External sector benchmarks</td>
+</tr>
+<tr>
+<td>industry_financial_benchmarks.csv</td>
+<td>Per-ANZSIC-division medians of the financial ratios APG 220 paragraph 64 calls out as standard credit-assessment benchmarks: EBITDA margin, gross operating profit-to-sales, wages-to-sales, inventory days, sales growth, employment growth, inventory-to-sales, and sales per employee.</td>
+<td>Origination scorecard industry-relative ratios; PD model industry-comparison features; ECL borrower-vs-industry signals; External sector benchmarks</td>
+</tr>
+<tr>
+<td>business_cycle_panel.csv</td>
+<td>Wide industry diagnostics: structural factors, public benchmark metrics, macro factor scores, demand proxies, inventory flags, and explainability fields behind the industry overlay.</td>
+<td>PD explainability; External benchmark diagnostics; Challenger overlay analysis; Technical report detail</td>
+</tr>
+<tr>
+<td>property_cycle_panel.csv</td>
+<td>Wide property diagnostics: approvals trend, cycle stage, softness band, region risk, as-of-date, and per-row source/proxy notes.</td>
+<td>LGD explainability; Collateral benchmark diagnostics; Property stress interpretation; Technical report detail</td>
+</tr>
+<tr>
+<td>macro_context.csv</td>
+<td>Macro context per quarter — CPI all-groups + housing/food/transport subgroup YoY/QoQ change, PPI manufacturing &amp; construction YoY, headline labour proxy, RBA cash rate, RBA FSR aggregates (household debt ratio, national arrears rate).</td>
+<td>PD macro context features; Scenario / stress testing macro overlay; Board reporting headline cycle commentary; External macro benchmarks</td>
+</tr>
+<tr>
+<td>property_market_detail.csv</td>
+<td>Multi-source free property panel — capital city + suburb rows. ABS Cat. 6416.0 / 6432.0 / 5601.0, Cotality HVI + auction clearance, Domain Quarterly capitals + top suburbs, SQM headline, RBA Table E2, and 8-state rental bond medians, with a data_completeness_pct flag and a contributing_sources column on every row.</td>
+<td>Property-backed PD context (richer than 5-row overlay); LGD collateral-region sensitivity; Scenario builder property inputs; Board reporting property deep-dives</td>
+</tr>
+<tr>
+<td>property_market_overlays_by_building_type.csv</td>
+<td>One row per ABS non-residential building-approval category — the pre-aggregation input to the five-row property_market_overlays contract. Shows each category&#x27;s softness, region risk, approvals change, and the property_segment_code it rolls up into.</td>
+<td>Property overlay explainability; Reviewer drilldown into CRE / IND / RET / CON aggregation; Technical report detail</td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from industry_risk_scores.csv</p>
+<table>
+<thead><tr>
+<th>as_of_date</th>
+<th>anzsic_division_code</th>
+<th>industry</th>
+<th>classification_risk_score</th>
+<th>macro_risk_score</th>
+<th>industry_base_risk_score</th>
+<th>industry_base_risk_level</th>
+<th>pd_multiplier</th>
+<th>cash_rate_latest_pct</th>
+<th>cash_rate_change_1y_pctpts</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2026-04-29</td>
+<td>A</td>
+<td>Agriculture, Forestry and Fishing</td>
+<td>4.12</td>
+<td>3.2</td>
+<td>3.71</td>
+<td>Elevated</td>
+<td>1.15</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>B</td>
+<td>Mining</td>
+<td>3.88</td>
+<td>2.8</td>
+<td>3.39</td>
+<td>Elevated</td>
+<td>1.15</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>C</td>
+<td>Manufacturing</td>
+<td>3.5</td>
+<td>3.2</td>
+<td>3.36</td>
+<td>Elevated</td>
+<td>1.15</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>G</td>
+<td>Retail Trade</td>
+<td>3.25</td>
+<td>3.2</td>
+<td>3.23</td>
+<td>Elevated</td>
+<td>1.15</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>F</td>
+<td>Wholesale Trade</td>
+<td>3.12</td>
+<td>3.2</td>
+<td>3.16</td>
+<td>Moderate-high</td>
+<td>1.1</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>R</td>
+<td>Arts and Recreation Services</td>
+<td>2.38</td>
+<td>3.8</td>
+<td>3.02</td>
+<td>Moderate-high</td>
+<td>1.1</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>H</td>
+<td>Accommodation and Food Services</td>
+<td>2.75</td>
+<td>2.6</td>
+<td>2.68</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>E</td>
+<td>Construction</td>
+<td>2.75</td>
+<td>2.6</td>
+<td>2.68</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>I</td>
+<td>Transport, Postal and Warehousing</td>
+<td>2.5</td>
+<td>2.8</td>
+<td>2.64</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>J</td>
+<td>Information Media and Telecommunications</td>
+<td>2.12</td>
+<td>3.0</td>
+<td>2.52</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>O</td>
+<td>Public Administration and Safety</td>
+<td>1.62</td>
+<td>3.6</td>
+<td>2.51</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>P</td>
+<td>Education and Training</td>
+<td>1.75</td>
+<td>3.4</td>
+<td>2.49</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>L</td>
+<td>Rental, Hiring and Real Estate Services</td>
+<td>2.38</td>
+<td>2.6</td>
+<td>2.48</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>N</td>
+<td>Administrative and Support Services</td>
+<td>2.12</td>
+<td>2.8</td>
+<td>2.43</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>S</td>
+<td>Other Services</td>
+<td>2.38</td>
+<td>2.2</td>
+<td>2.3</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>D</td>
+<td>Electricity, Gas, Water and Waste Services</td>
+<td>2.25</td>
+<td>2.0</td>
+<td>2.14</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Q</td>
+<td>Health Care and Social Assistance</td>
+<td>1.5</td>
+<td>2.8</td>
+<td>2.08</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>M</td>
+<td>Professional, Scientific and Technical Services</td>
+<td>1.75</td>
+<td>2.4</td>
+<td>2.04</td>
+<td>Medium</td>
+<td>1.0</td>
+<td>3.85</td>
+<td>-0.25</td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from property_market_overlays.csv</p>
+<table>
+<thead><tr>
+<th>as_of_date</th>
+<th>property_segment</th>
+<th>property_segment_code</th>
+<th>pd_multiplier</th>
+<th>market_softness_score</th>
+<th>region_risk_score</th>
+<th>cycle_stage</th>
+<th>source_note</th>
+<th>market_softness_band</th>
+<th>market_softness_level</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2026-04-29</td>
+<td>Residential</td>
+<td>RES</td>
+<td>1.0</td>
+<td>2.5</td>
+<td>2.69</td>
+<td>neutral</td>
+<td>Residential placeholder — ABS Cat. 8752.0 residential dwelling-approvals file not yet staged; RES row uses a neutral composite pending that upgrade.</td>
+<td>normal</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Commercial (office, health, education, accommodation)</td>
+<td>CRE</td>
+<td>1.1</td>
+<td>3.06</td>
+<td>3.03</td>
+<td>slowing</td>
+<td>Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Aged care facilities, Education buildings, Health buildings, Offices, Short term accommodation buildings</td>
+<td>softening</td>
+<td>Moderate-high</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Industrial / Warehouse</td>
+<td>IND</td>
+<td>1.0</td>
+<td>2.23</td>
+<td>2.37</td>
+<td>neutral</td>
+<td>Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Agricultural and aquacultural buildings, Warehouses</td>
+<td>normal</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Retail Property</td>
+<td>RET</td>
+<td>1.1</td>
+<td>3.15</td>
+<td>2.95</td>
+<td>slowing</td>
+<td>Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Retail and wholesale trade buildings</td>
+<td>softening</td>
+<td>Moderate-high</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Construction (non-residential development)</td>
+<td>CON</td>
+<td>1.1</td>
+<td>2.92</td>
+<td>2.9</td>
+<td>slowing</td>
+<td>Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Aged care facilities, Agricultural and aquacultural buildings, Education buildings, Health buildings, Offices, Retail and wholesale trade buildings, Short term accommodation buildings, Warehouses</td>
+<td>softening</td>
+<td>Moderate-high</td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from downturn_overlay_table.csv</p>
+<table>
+<thead><tr>
+<th>as_of_date</th>
+<th>scenario</th>
+<th>pd_multiplier</th>
+<th>lgd_multiplier</th>
+<th>ccf_multiplier</th>
+<th>property_value_haircut</th>
+<th>notes</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2026-03-16</td>
+<td>base</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>Current staged environment. Anchored to a low / improving arrears backdrop and an average property-cycle softness score of 2.73.</td>
+</tr>
+<tr>
+<td>2026-03-16</td>
+<td>mild</td>
+<td>1.2</td>
+<td>1.1</td>
+<td>1.05</td>
+<td>0.05</td>
+<td>Illustrative mild downturn overlay for conservative portfolio calibration.</td>
+</tr>
+<tr>
+<td>2026-03-16</td>
+<td>moderate</td>
+<td>1.5</td>
+<td>1.2</td>
+<td>1.1</td>
+<td>0.1</td>
+<td>Illustrative moderate downturn overlay for stressed pricing and EL scenario analysis.</td>
+</tr>
+<tr>
+<td>2026-03-16</td>
+<td>severe</td>
+<td>2.0</td>
+<td>1.3</td>
+<td>1.2</td>
+<td>0.2</td>
+<td>Illustrative severe downturn overlay. Not a calibrated regulatory stress parameter.</td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from macro_regime_flags.csv</p>
+<table>
+<thead><tr>
+<th>as_of_date</th>
+<th>cash_rate_regime</th>
+<th>arrears_environment_level</th>
+<th>arrears_trend</th>
+<th>macro_regime_flag</th>
+<th>source_dataset</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2026-03-16</td>
+<td>neutral_easing</td>
+<td>Low</td>
+<td>Improving</td>
+<td>base</td>
+<td>RBA F1 cash-rate table + staged arrears context</td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from industry_failure_rates.csv</p>
+<table>
+<thead><tr>
+<th>as_of_date</th>
+<th>anzsic_division_code</th>
+<th>industry</th>
+<th>failure_rate_pct</th>
+<th>source_note</th>
+<th>insolvency_count_ttm</th>
+<th>active_businesses</th>
+<th>failure_rate_yoy_change_pctpts</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2026-04-29</td>
+<td>A</td>
+<td>Agriculture Forestry And Fishing</td>
+<td>0.177</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>203</td>
+<td>115000</td>
+<td>0.02</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>B</td>
+<td>Mining</td>
+<td>1.059</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>108</td>
+<td>10200</td>
+<td>0.157</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>C</td>
+<td>Manufacturing</td>
+<td>0.891</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>731</td>
+<td>82000</td>
+<td>0.141</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>D</td>
+<td>Electricity Gas Water And Waste Services</td>
+<td>1.0</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>65</td>
+<td>6500</td>
+<td>0.169</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>E</td>
+<td>Construction</td>
+<td>0.969</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>4166</td>
+<td>430000</td>
+<td>0.162</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>F</td>
+<td>Wholesale Trade</td>
+<td>0.753</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>452</td>
+<td>60000</td>
+<td>0.123</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>G</td>
+<td>Retail Trade</td>
+<td>0.841</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>1009</td>
+<td>120000</td>
+<td>0.123</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>H</td>
+<td>Accommodation And Food Services</td>
+<td>1.96</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>1862</td>
+<td>95000</td>
+<td>0.341</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>I</td>
+<td>Transport Postal And Warehousing</td>
+<td>0.556</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>528</td>
+<td>95000</td>
+<td>0.089</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>J</td>
+<td>Information Media And Telecommunications</td>
+<td>1.136</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>284</td>
+<td>25000</td>
+<td>0.196</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>L</td>
+<td>Rental Hiring And Real Estate Services</td>
+<td>0.173</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>451</td>
+<td>260000</td>
+<td>0.033</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>M</td>
+<td>Professional Scientific And Technical Services</td>
+<td>0.242</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>921</td>
+<td>380000</td>
+<td>0.037</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>N</td>
+<td>Administrative And Support Services</td>
+<td>0.339</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>407</td>
+<td>120000</td>
+<td>0.059</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>O</td>
+<td>Public Administration And Safety</td>
+<td>0.733</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>22</td>
+<td>3000</td>
+<td>0.2</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>P</td>
+<td>Education And Training</td>
+<td>0.584</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>146</td>
+<td>25000</td>
+<td>0.136</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Q</td>
+<td>Health Care And Social Assistance</td>
+<td>0.3</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>465</td>
+<td>155000</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>R</td>
+<td>Arts And Recreation Services</td>
+<td>1.14</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>342</td>
+<td>30000</td>
+<td>0.203</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>S</td>
+<td>Other Services</td>
+<td>1.525</td>
+<td>SYNTHETIC DEVELOPMENT STUB — Synthetic stub reflecting ASIC Series 1A FY23-FY25 approximate proportions | Fallback active-business counts derived from ABS Cat. 8165.0 summary release (June 2024) plus ABS 81550DO001 cross-checks. Replace with a live 8165.0 extract in data/raw/public/abs/ when available.</td>
+<td>1525</td>
+<td>100000</td>
+<td>0.242</td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from industry_financial_benchmarks.csv</p>
+<table>
+<thead><tr>
+<th>as_of_date</th>
+<th>anzsic_division_code</th>
+<th>industry</th>
+<th>median_ebitda_margin_pct</th>
+<th>source_note</th>
+<th>median_gross_operating_profit_to_sales_ratio</th>
+<th>median_wages_to_sales_pct</th>
+<th>median_inventory_days_est</th>
+<th>median_sales_growth_pct</th>
+<th>median_employment_yoy_growth_pct</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2026-04-29</td>
+<td>A</td>
+<td>Agriculture, Forestry and Fishing</td>
+<td>14.58</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td></td>
+<td>9.75</td>
+<td>31.7</td>
+<td>-11.05</td>
+<td>-5.11</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>B</td>
+<td>Mining</td>
+<td>47.33</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.48</td>
+<td>7.8</td>
+<td>43.9</td>
+<td>-6.26</td>
+<td>-5.09</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>C</td>
+<td>Manufacturing</td>
+<td>9.15</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.1</td>
+<td>14.3</td>
+<td>52.7</td>
+<td>1.34</td>
+<td>-0.93</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>D</td>
+<td>Electricity, Gas, Water and Waste Services</td>
+<td>20.95</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.2</td>
+<td>9.93</td>
+<td>9.1</td>
+<td>3.6</td>
+<td>12.29</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>E</td>
+<td>Construction</td>
+<td>10.15</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.08</td>
+<td>15.04</td>
+<td>20.0</td>
+<td>10.54</td>
+<td>1.47</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>F</td>
+<td>Wholesale Trade</td>
+<td>6.12</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.07</td>
+<td>6.77</td>
+<td>46.1</td>
+<td>2.54</td>
+<td>-8.74</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>G</td>
+<td>Retail Trade</td>
+<td>7.8</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.07</td>
+<td>10.28</td>
+<td>30.4</td>
+<td>4.82</td>
+<td>-0.46</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>H</td>
+<td>Accommodation and Food Services</td>
+<td>11.38</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.1</td>
+<td>25.54</td>
+<td>6.1</td>
+<td>8.6</td>
+<td>0.72</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>I</td>
+<td>Transport, Postal and Warehousing</td>
+<td>17.72</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.21</td>
+<td>19.69</td>
+<td>25.4</td>
+<td>3.46</td>
+<td>2.79</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>J</td>
+<td>Information Media and Telecommunications</td>
+<td>20.02</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.19</td>
+<td>20.01</td>
+<td>8.0</td>
+<td>5.95</td>
+<td>-4.77</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>L</td>
+<td>Rental, Hiring and Real Estate Services</td>
+<td>40.88</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.37</td>
+<td>13.0</td>
+<td>8.0</td>
+<td>7.72</td>
+<td>-15.06</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>M</td>
+<td>Professional, Scientific and Technical Services</td>
+<td>12.99</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.13</td>
+<td>35.33</td>
+<td>6.0</td>
+<td>8.68</td>
+<td>5.5</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>N</td>
+<td>Administrative and Support Services</td>
+<td>9.27</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.07</td>
+<td>47.45</td>
+<td>8.0</td>
+<td>6.17</td>
+<td>3.07</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>O</td>
+<td>Public Administration and Safety</td>
+<td>9.6</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td></td>
+<td>42.36</td>
+<td>8.0</td>
+<td>11.69</td>
+<td>-1.17</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>P</td>
+<td>Education and Training</td>
+<td>11.73</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td></td>
+<td>50.88</td>
+<td>10.7</td>
+<td>10.67</td>
+<td>5.63</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Q</td>
+<td>Health Care and Social Assistance</td>
+<td>16.65</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td></td>
+<td>43.29</td>
+<td>6.0</td>
+<td>7.54</td>
+<td>3.74</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>R</td>
+<td>Arts and Recreation Services</td>
+<td>13.45</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.12</td>
+<td>22.55</td>
+<td>15.0</td>
+<td>6.38</td>
+<td>-5.79</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>S</td>
+<td>Other Services</td>
+<td>5.28</td>
+<td>Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only.</td>
+<td>0.14</td>
+<td>31.62</td>
+<td>10.0</td>
+<td>13.2</td>
+<td>7.12</td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from business_cycle_panel.csv</p>
+<table>
+<thead><tr>
+<th>anzsic_division_code</th>
+<th>industry</th>
+<th>classification_risk_score</th>
+<th>macro_risk_score</th>
+<th>industry_base_risk_score</th>
+<th>industry_base_risk_level</th>
+<th>sector_key</th>
+<th>internal_grouping_example</th>
+<th>sales_m_latest</th>
+<th>employment_000_latest</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>H</td>
+<td>Accommodation and Food Services</td>
+<td>2.75</td>
+<td>2.6</td>
+<td>2.68</td>
+<td>Medium</td>
+<td>accommodation and food services</td>
+<td>Hospitality and leisure</td>
+<td>152965</td>
+<td>1217.9</td>
+</tr>
+<tr>
+<td>N</td>
+<td>Administrative and Support Services</td>
+<td>2.12</td>
+<td>2.8</td>
+<td>2.43</td>
+<td>Medium</td>
+<td>administrative and support services</td>
+<td>Administrative and support services</td>
+<td>144266</td>
+<td>1006.4</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Agriculture, Forestry and Fishing</td>
+<td>4.12</td>
+<td>3.2</td>
+<td>3.71</td>
+<td>Elevated</td>
+<td>agriculture forestry and fishing</td>
+<td>Primary production and agribusiness</td>
+<td>119772</td>
+<td>411.0</td>
+</tr>
+<tr>
+<td>R</td>
+<td>Arts and Recreation Services</td>
+<td>2.38</td>
+<td>3.8</td>
+<td>3.02</td>
+<td>Moderate-high</td>
+<td>arts and recreation services</td>
+<td>Arts and recreation services</td>
+<td>49985</td>
+<td>277.3</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Construction</td>
+<td>2.75</td>
+<td>2.6</td>
+<td>2.68</td>
+<td>Medium</td>
+<td>construction</td>
+<td>Building, civil and trade services</td>
+<td>624590</td>
+<td>1290.7</td>
+</tr>
+<tr>
+<td>P</td>
+<td>Education and Training</td>
+<td>1.75</td>
+<td>3.4</td>
+<td>2.49</td>
+<td>Medium</td>
+<td>education and training</td>
+<td>Education and training</td>
+<td>62221</td>
+<td>515.8</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Electricity, Gas, Water and Waste Services</td>
+<td>2.25</td>
+<td>2.0</td>
+<td>2.14</td>
+<td>Medium</td>
+<td>electricity gas water and waste services</td>
+<td>Utilities and infrastructure</td>
+<td>166688</td>
+<td>142.5</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>Health Care and Social Assistance</td>
+<td>1.5</td>
+<td>2.8</td>
+<td>2.08</td>
+<td>Medium</td>
+<td>health care and social assistance</td>
+<td>Health and care services</td>
+<td>224001</td>
+<td>1796.9</td>
+</tr>
+<tr>
+<td>J</td>
+<td>Information Media and Telecommunications</td>
+<td>2.12</td>
+<td>3.0</td>
+<td>2.52</td>
+<td>Medium</td>
+<td>information media and telecommunications</td>
+<td>Media, telco and information services</td>
+<td>117894</td>
+<td>188.3</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Manufacturing</td>
+<td>3.5</td>
+<td>3.2</td>
+<td>3.36</td>
+<td>Elevated</td>
+<td>manufacturing</td>
+<td>Industrial and manufacturing</td>
+<td>514199</td>
+<td>901.7</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Mining</td>
+<td>3.88</td>
+<td>2.8</td>
+<td>3.39</td>
+<td>Elevated</td>
+<td>mining</td>
+<td>Mining and resources</td>
+<td>492161</td>
+<td>234.7</td>
+</tr>
+<tr>
+<td>S</td>
+<td>Other Services</td>
+<td>2.38</td>
+<td>2.2</td>
+<td>2.3</td>
+<td>Medium</td>
+<td>other services</td>
+<td>Other services</td>
+<td>100042</td>
+<td>583.2</td>
+</tr>
+<tr>
+<td>M</td>
+<td>Professional, Scientific and Technical Services</td>
+<td>1.75</td>
+<td>2.4</td>
+<td>2.04</td>
+<td>Medium</td>
+<td>professional scientific and technical services</td>
+<td>Professional and technical services</td>
+<td>353044</td>
+<td>1317.4</td>
+</tr>
+<tr>
+<td>O</td>
+<td>Public Administration and Safety</td>
+<td>1.62</td>
+<td>3.6</td>
+<td>2.51</td>
+<td>Medium</td>
+<td>public administration and safety</td>
+<td>Public administration and safety</td>
+<td>15351</td>
+<td>106.8</td>
+</tr>
+<tr>
+<td>L</td>
+<td>Rental, Hiring and Real Estate Services</td>
+<td>2.38</td>
+<td>2.6</td>
+<td>2.48</td>
+<td>Medium</td>
+<td>rental hiring and real estate services</td>
+<td>Real estate and rental services</td>
+<td>185285</td>
+<td>420.9</td>
+</tr>
+<tr>
+<td>G</td>
+<td>Retail Trade</td>
+<td>3.25</td>
+<td>3.2</td>
+<td>3.23</td>
+<td>Elevated</td>
+<td>retail trade</td>
+<td>Consumer retail and discretionary</td>
+<td>643421</td>
+<td>1509.6</td>
+</tr>
+<tr>
+<td>I</td>
+<td>Transport, Postal and Warehousing</td>
+<td>2.5</td>
+<td>2.8</td>
+<td>2.64</td>
+<td>Medium</td>
+<td>transport postal and warehousing</td>
+<td>Freight, logistics and storage</td>
+<td>244980</td>
+<td>670.6</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Wholesale Trade</td>
+<td>3.12</td>
+<td>3.2</td>
+<td>3.16</td>
+<td>Moderate-high</td>
+<td>wholesale trade</td>
+<td>Wholesale and distribution</td>
+<td>772255</td>
+<td>604.2</td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from property_cycle_panel.csv</p>
+<table>
+<thead><tr>
+<th>as_of_date</th>
+<th>property_segment</th>
+<th>region</th>
+<th>market_softness_score</th>
+<th>region_risk_score</th>
+<th>cycle_stage</th>
+<th>source_note</th>
+<th>approvals_change_pct</th>
+<th>commencements_signal</th>
+<th>completions_signal</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2026-02-01</td>
+<td>Offices</td>
+<td>Australia</td>
+<td>4.3</td>
+<td>4.03</td>
+<td>downturn</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>-35.72</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+<tr>
+<td>2026-02-01</td>
+<td>Education buildings</td>
+<td>Australia</td>
+<td>3.25</td>
+<td>3.38</td>
+<td>slowing</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>-21.37</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+<tr>
+<td>2026-02-01</td>
+<td>Retail and wholesale trade buildings</td>
+<td>Australia</td>
+<td>3.15</td>
+<td>2.95</td>
+<td>neutral</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>68.47</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+<tr>
+<td>2026-02-01</td>
+<td>Short term accommodation buildings</td>
+<td>Australia</td>
+<td>2.85</td>
+<td>2.55</td>
+<td>growth</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>113.7</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+<tr>
+<td>2026-02-01</td>
+<td>Aged care facilities</td>
+<td>Australia</td>
+<td>2.7</td>
+<td>2.73</td>
+<td>neutral</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>219.88</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+<tr>
+<td>2026-02-01</td>
+<td>Agricultural and aquacultural buildings</td>
+<td>Australia</td>
+<td>2.65</td>
+<td>2.58</td>
+<td>neutral</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>58.37</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+<tr>
+<td>2026-02-01</td>
+<td>Total Non-residential</td>
+<td>Australia</td>
+<td>2.6</td>
+<td>2.55</td>
+<td>neutral</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>71.46</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+<tr>
+<td>2026-02-01</td>
+<td>Industrial Buildings - Total</td>
+<td>Australia</td>
+<td>2.4</td>
+<td>2.45</td>
+<td>neutral</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>55.53</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+<tr>
+<td>2026-02-01</td>
+<td>Commercial Buildings - Total</td>
+<td>Australia</td>
+<td>2.3</td>
+<td>2.15</td>
+<td>growth</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>165.42</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+<tr>
+<td>2026-02-01</td>
+<td>Warehouses</td>
+<td>Australia</td>
+<td>2.2</td>
+<td>2.35</td>
+<td>neutral</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>69.32</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+<tr>
+<td>2026-02-01</td>
+<td>Health buildings</td>
+<td>Australia</td>
+<td>1.65</td>
+<td>1.82</td>
+<td>growth</td>
+<td>ABS Building Approvals - Non-residential; building activity not staged; commencements and completions proxied from approvals trend</td>
+<td>355.03</td>
+<td>Proxy from approvals trend</td>
+<td>Proxy from approvals trend</td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from macro_context.csv</p>
+<table>
+<thead><tr>
+<th>as_of_date</th>
+<th>period_label</th>
+<th>cash_rate_pct</th>
+<th>source_note</th>
+<th>cpi_yoy_pct</th>
+<th>cpi_qoq_pct</th>
+<th>cpi_housing_yoy_pct</th>
+<th>cpi_food_yoy_pct</th>
+<th>cpi_transport_yoy_pct</th>
+<th>ppi_manufacturing_yoy_pct</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2024-06-30</td>
+<td>2024Q2</td>
+<td>3.85</td>
+<td>Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2024-09-30</td>
+<td>2024Q3</td>
+<td>3.85</td>
+<td>Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2024-12-31</td>
+<td>2024Q4</td>
+<td>3.85</td>
+<td>Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-03-31</td>
+<td>2025Q1</td>
+<td>3.85</td>
+<td>Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-06-30</td>
+<td>2025Q2</td>
+<td>3.85</td>
+<td>Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-09-30</td>
+<td>2025Q3</td>
+<td>3.85</td>
+<td>Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>2025Q4</td>
+<td>3.85</td>
+<td>Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2026-03-31</td>
+<td>2026Q1</td>
+<td>3.85</td>
+<td>Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from property_market_detail.csv</p>
+<table>
+<thead><tr>
+<th>as_of_date</th>
+<th>region_name</th>
+<th>data_completeness_pct</th>
+<th>source_note</th>
+<th>region_id</th>
+<th>region_type</th>
+<th>state</th>
+<th>property_type</th>
+<th>abs_price_index_value</th>
+<th>abs_price_index_yoy_pct</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2025-12-31</td>
+<td>Canberra</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>canberra|combined|2025-12-31</td>
+<td>capital</td>
+<td>ACT</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Canberra</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>canberra|house|2025-12-31</td>
+<td>capital</td>
+<td>ACT</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Canberra</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>canberra|unit|2025-12-31</td>
+<td>capital</td>
+<td>ACT</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Sydney</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>sydney|combined|2025-12-31</td>
+<td>capital</td>
+<td>NSW</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Sydney</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>sydney|house|2025-12-31</td>
+<td>capital</td>
+<td>NSW</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Sydney</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>sydney|houses|2025-12-31</td>
+<td>capital</td>
+<td>NSW</td>
+<td>houses</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Sydney</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>sydney|unit|2025-12-31</td>
+<td>capital</td>
+<td>NSW</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Sydney</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>sydney|units|2025-12-31</td>
+<td>capital</td>
+<td>NSW</td>
+<td>units</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Darwin</td>
+<td>25.0</td>
+<td>Capital-city aggregation</td>
+<td>darwin|combined|2025-12-31</td>
+<td>capital</td>
+<td>NT</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Darwin</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>darwin|house|2025-12-31</td>
+<td>capital</td>
+<td>NT</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Darwin</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>darwin|unit|2025-12-31</td>
+<td>capital</td>
+<td>NT</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Brisbane</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>brisbane|combined|2025-12-31</td>
+<td>capital</td>
+<td>QLD</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Brisbane</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>brisbane|house|2025-12-31</td>
+<td>capital</td>
+<td>QLD</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Brisbane</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>brisbane|houses|2025-12-31</td>
+<td>capital</td>
+<td>QLD</td>
+<td>houses</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Brisbane</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>brisbane|unit|2025-12-31</td>
+<td>capital</td>
+<td>QLD</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Brisbane</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>brisbane|units|2025-12-31</td>
+<td>capital</td>
+<td>QLD</td>
+<td>units</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Adelaide</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>adelaide|combined|2025-12-31</td>
+<td>capital</td>
+<td>SA</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Adelaide</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>adelaide|house|2025-12-31</td>
+<td>capital</td>
+<td>SA</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Adelaide</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>adelaide|unit|2025-12-31</td>
+<td>capital</td>
+<td>SA</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Hobart</td>
+<td>25.0</td>
+<td>Capital-city aggregation</td>
+<td>hobart|combined|2025-12-31</td>
+<td>capital</td>
+<td>TAS</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Hobart</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>hobart|house|2025-12-31</td>
+<td>capital</td>
+<td>TAS</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Hobart</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>hobart|unit|2025-12-31</td>
+<td>capital</td>
+<td>TAS</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Melbourne</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>melbourne|combined|2025-12-31</td>
+<td>capital</td>
+<td>VIC</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Melbourne</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>melbourne|house|2025-12-31</td>
+<td>capital</td>
+<td>VIC</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Melbourne</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>melbourne|houses|2025-12-31</td>
+<td>capital</td>
+<td>VIC</td>
+<td>houses</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Melbourne</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>melbourne|unit|2025-12-31</td>
+<td>capital</td>
+<td>VIC</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Melbourne</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>melbourne|units|2025-12-31</td>
+<td>capital</td>
+<td>VIC</td>
+<td>units</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Perth</td>
+<td>37.5</td>
+<td>Capital-city aggregation</td>
+<td>perth|combined|2025-12-31</td>
+<td>capital</td>
+<td>WA</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Perth</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>perth|house|2025-12-31</td>
+<td>capital</td>
+<td>WA</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Perth</td>
+<td>50.0</td>
+<td>Capital-city aggregation</td>
+<td>perth|unit|2025-12-31</td>
+<td>capital</td>
+<td>WA</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Australian Capital Territory</td>
+<td>12.5</td>
+<td>ACAT ACT Rental Q4 2025 (development stub)</td>
+<td>australian_capital_territory|combined|2025-12-31</td>
+<td>sa4</td>
+<td>ACT</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Hunter Valley Exc Newcastle</td>
+<td>12.5</td>
+<td>NSW Fair Trading Rental Bond Board Q4 2025 (development stub)</td>
+<td>hunter_valley_exc_newcastle|combined|2025-12-31</td>
+<td>sa4</td>
+<td>NSW</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Sydney - Inner West</td>
+<td>12.5</td>
+<td>NSW Fair Trading Rental Bond Board Q4 2025 (development stub)</td>
+<td>sydney_-_inner_west|combined|2025-12-31</td>
+<td>sa4</td>
+<td>NSW</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Sydney - Outer West And Blue Mountains</td>
+<td>12.5</td>
+<td>NSW Fair Trading Rental Bond Board Q4 2025 (development stub)</td>
+<td>sydney_-_outer_west_and_blue_mountains|combined|2025-12-31</td>
+<td>sa4</td>
+<td>NSW</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Darwin</td>
+<td>12.5</td>
+<td>NT Consumer Affairs Q4 2025 (development stub)</td>
+<td>darwin|combined|2025-12-31</td>
+<td>sa4</td>
+<td>NT</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Brisbane - Inner City</td>
+<td>12.5</td>
+<td>RTA Median Rents Q4 2025 (development stub)</td>
+<td>brisbane_-_inner_city|combined|2025-12-31</td>
+<td>sa4</td>
+<td>QLD</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Gold Coast</td>
+<td>12.5</td>
+<td>RTA Median Rents Q4 2025 (development stub)</td>
+<td>gold_coast|combined|2025-12-31</td>
+<td>sa4</td>
+<td>QLD</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Adelaide - Central And Hills</td>
+<td>12.5</td>
+<td>SA Consumer &amp; Business Services Q4 2025 (development stub)</td>
+<td>adelaide_-_central_and_hills|combined|2025-12-31</td>
+<td>sa4</td>
+<td>SA</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Hobart</td>
+<td>12.5</td>
+<td>TAS CBOS Q4 2025 (development stub)</td>
+<td>hobart|combined|2025-12-31</td>
+<td>sa4</td>
+<td>TAS</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Geelong</td>
+<td>12.5</td>
+<td>Victorian Rental Report Q4 2025 (development stub)</td>
+<td>geelong|combined|2025-12-31</td>
+<td>sa4</td>
+<td>VIC</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Melbourne - Inner</td>
+<td>12.5</td>
+<td>Victorian Rental Report Q4 2025 (development stub)</td>
+<td>melbourne_-_inner|combined|2025-12-31</td>
+<td>sa4</td>
+<td>VIC</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Melbourne - West</td>
+<td>12.5</td>
+<td>Victorian Rental Report Q4 2025 (development stub)</td>
+<td>melbourne_-_west|combined|2025-12-31</td>
+<td>sa4</td>
+<td>VIC</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Perth - Inner</td>
+<td>12.5</td>
+<td>WA DMIRS Q4 2025 (development stub)</td>
+<td>perth_-_inner|combined|2025-12-31</td>
+<td>sa4</td>
+<td>WA</td>
+<td>combined</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Canberra Central</td>
+<td>12.5</td>
+<td>ACAT ACT Rental Q4 2025 (development stub)</td>
+<td>canberra_central|unit|2025-12-31</td>
+<td>suburb</td>
+<td>ACT</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Yarralumla</td>
+<td>12.5</td>
+<td>ACAT ACT Rental Q4 2025 (development stub)</td>
+<td>yarralumla|house|2025-12-31</td>
+<td>suburb</td>
+<td>ACT</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Mosman</td>
+<td>25.0</td>
+<td>Domain top-suburb row</td>
+<td>mosman|house|2025-12-31</td>
+<td>suburb</td>
+<td>NSW</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Newcastle</td>
+<td>12.5</td>
+<td>NSW Fair Trading Rental Bond Board Q4 2025 (development stub)</td>
+<td>newcastle|house|2025-12-31</td>
+<td>suburb</td>
+<td>NSW</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Parramatta</td>
+<td>25.0</td>
+<td>Domain top-suburb row</td>
+<td>parramatta|unit|2025-12-31</td>
+<td>suburb</td>
+<td>NSW</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Sydney Cbd</td>
+<td>12.5</td>
+<td>NSW Fair Trading Rental Bond Board Q4 2025 (development stub)</td>
+<td>sydney_cbd|unit|2025-12-31</td>
+<td>suburb</td>
+<td>NSW</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Darwin Cbd</td>
+<td>12.5</td>
+<td>NT Consumer Affairs Q4 2025 (development stub; bedrooms not broken out)</td>
+<td>darwin_cbd|unit|2025-12-31</td>
+<td>suburb</td>
+<td>NT</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Palmerston</td>
+<td>12.5</td>
+<td>NT Consumer Affairs Q4 2025 (development stub)</td>
+<td>palmerston|house|2025-12-31</td>
+<td>suburb</td>
+<td>NT</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Brisbane City</td>
+<td>12.5</td>
+<td>RTA Median Rents Q4 2025 (development stub)</td>
+<td>brisbane_city|unit|2025-12-31</td>
+<td>suburb</td>
+<td>QLD</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Cairns</td>
+<td>12.5</td>
+<td>RTA Median Rents Q4 2025 (development stub)</td>
+<td>cairns|house|2025-12-31</td>
+<td>suburb</td>
+<td>QLD</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>New Farm</td>
+<td>25.0</td>
+<td>Domain top-suburb row</td>
+<td>new_farm|house|2025-12-31</td>
+<td>suburb</td>
+<td>QLD</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>South Brisbane</td>
+<td>25.0</td>
+<td>Domain top-suburb row</td>
+<td>south_brisbane|unit|2025-12-31</td>
+<td>suburb</td>
+<td>QLD</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Surfers Paradise</td>
+<td>12.5</td>
+<td>RTA Median Rents Q4 2025 (development stub)</td>
+<td>surfers_paradise|unit|2025-12-31</td>
+<td>suburb</td>
+<td>QLD</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Adelaide Cbd</td>
+<td>12.5</td>
+<td>SA Consumer &amp; Business Services Q4 2025 (development stub)</td>
+<td>adelaide_cbd|unit|2025-12-31</td>
+<td>suburb</td>
+<td>SA</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Unley</td>
+<td>25.0</td>
+<td>Domain top-suburb row</td>
+<td>unley|house|2025-12-31</td>
+<td>suburb</td>
+<td>SA</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Hobart Cbd</td>
+<td>12.5</td>
+<td>TAS Consumer Building &amp; Occupational Services Q4 2025 (development stub)</td>
+<td>hobart_cbd|unit|2025-12-31</td>
+<td>suburb</td>
+<td>TAS</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Launceston</td>
+<td>12.5</td>
+<td>TAS CBOS Q4 2025 (development stub)</td>
+<td>launceston|house|2025-12-31</td>
+<td>suburb</td>
+<td>TAS</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Sandy Bay</td>
+<td>12.5</td>
+<td>TAS CBOS Q4 2025 (development stub)</td>
+<td>sandy_bay|house|2025-12-31</td>
+<td>suburb</td>
+<td>TAS</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Footscray</td>
+<td>25.0</td>
+<td>Domain top-suburb row</td>
+<td>footscray|unit|2025-12-31</td>
+<td>suburb</td>
+<td>VIC</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Geelong</td>
+<td>12.5</td>
+<td>Victorian Rental Report Q4 2025 (development stub)</td>
+<td>geelong|house|2025-12-31</td>
+<td>suburb</td>
+<td>VIC</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Melbourne Cbd</td>
+<td>12.5</td>
+<td>Victorian Rental Report Q4 2025 (development stub)</td>
+<td>melbourne_cbd|unit|2025-12-31</td>
+<td>suburb</td>
+<td>VIC</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Toorak</td>
+<td>25.0</td>
+<td>Domain top-suburb row</td>
+<td>toorak|house|2025-12-31</td>
+<td>suburb</td>
+<td>VIC</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Cottesloe</td>
+<td>25.0</td>
+<td>Domain top-suburb row</td>
+<td>cottesloe|house|2025-12-31</td>
+<td>suburb</td>
+<td>WA</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Fremantle</td>
+<td>12.5</td>
+<td>WA DMIRS Q4 2025 (development stub)</td>
+<td>fremantle|house|2025-12-31</td>
+<td>suburb</td>
+<td>WA</td>
+<td>house</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2025-12-31</td>
+<td>Perth Cbd</td>
+<td>12.5</td>
+<td>WA DMIRS Q4 2025 (development stub)</td>
+<td>perth_cbd|unit|2025-12-31</td>
+<td>suburb</td>
+<td>WA</td>
+<td>unit</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p class="caption">Full detail rows from property_market_overlays_by_building_type.csv</p>
+<table>
+<thead><tr>
+<th>as_of_date</th>
+<th>property_segment</th>
+<th>property_segment_code</th>
+<th>market_softness_score</th>
+<th>region_risk_score</th>
+<th>cycle_stage</th>
+<th>aggregate_role</th>
+<th>market_softness_band</th>
+<th>region_risk_band</th>
+<th>approvals_change_pct</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>2026-04-29</td>
+<td>Offices</td>
+<td>CRE</td>
+<td>4.3</td>
+<td>4.03</td>
+<td>downturn</td>
+<td>specific</td>
+<td>soft</td>
+<td>High</td>
+<td>-35.72</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Education buildings</td>
+<td>CRE</td>
+<td>3.25</td>
+<td>3.38</td>
+<td>slowing</td>
+<td>specific</td>
+<td>softening</td>
+<td>Elevated</td>
+<td>-21.37</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Retail and wholesale trade buildings</td>
+<td>RET</td>
+<td>3.15</td>
+<td>2.95</td>
+<td>neutral</td>
+<td>specific</td>
+<td>normal</td>
+<td>Medium</td>
+<td>68.47</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Short term accommodation buildings</td>
+<td>CRE</td>
+<td>2.85</td>
+<td>2.55</td>
+<td>growth</td>
+<td>specific</td>
+<td>supportive</td>
+<td>Medium</td>
+<td>113.7</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Aged care facilities</td>
+<td>CRE</td>
+<td>2.7</td>
+<td>2.73</td>
+<td>neutral</td>
+<td>specific</td>
+<td>normal</td>
+<td>Medium</td>
+<td>219.88</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Agricultural and aquacultural buildings</td>
+<td>IND</td>
+<td>2.65</td>
+<td>2.58</td>
+<td>neutral</td>
+<td>specific</td>
+<td>normal</td>
+<td>Medium</td>
+<td>58.37</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Total Non-residential</td>
+<td>CON</td>
+<td>2.6</td>
+<td>2.55</td>
+<td>neutral</td>
+<td>aggregate (reviewer reference only)</td>
+<td>normal</td>
+<td>Medium</td>
+<td>71.46</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Industrial Buildings - Total</td>
+<td>CON</td>
+<td>2.4</td>
+<td>2.45</td>
+<td>neutral</td>
+<td>aggregate (reviewer reference only)</td>
+<td>normal</td>
+<td>Medium</td>
+<td>55.53</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Commercial Buildings - Total</td>
+<td>CON</td>
+<td>2.3</td>
+<td>2.15</td>
+<td>growth</td>
+<td>aggregate (reviewer reference only)</td>
+<td>supportive</td>
+<td>Medium</td>
+<td>165.42</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Warehouses</td>
+<td>IND</td>
+<td>2.2</td>
+<td>2.35</td>
+<td>neutral</td>
+<td>specific</td>
+<td>normal</td>
+<td>Medium</td>
+<td>69.32</td>
+</tr>
+<tr>
+<td>2026-04-29</td>
+<td>Health buildings</td>
+<td>CRE</td>
+<td>1.65</td>
+<td>1.82</td>
+<td>growth</td>
+<td>specific</td>
+<td>supportive</td>
+<td>Low</td>
+<td>355.03</td>
+</tr>
+</tbody></table>
+<h2>6. Lineage / Traceability</h2>
+<p>This appendix-style section maps analytical tables back to source inventory entries and transformation scripts.</p>
+<p class="caption">Lineage / Traceability</p>
+<table>
+<thead><tr>
+<th>Analytical table</th>
+<th>Number fields</th>
+<th>Source row reference</th>
+<th>Transformation script</th>
+<th>Version / vintage</th>
+<th>Reference hops</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>industry_risk_scores.csv</td>
+<td>numeric columns in export</td>
+<td>australian_industry_xlsx; business_indicators_profit_ratio_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv</td>
+<td>src/overlays/build_industry_risk_scores.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+<tr>
+<td>property_market_overlays.csv</td>
+<td>numeric columns in export</td>
+<td>building_approvals_nonres_xlsx; property_market_detail; property_cycle_panel</td>
+<td>src/overlays/build_property_market_overlays.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+<tr>
+<td>downturn_overlay_table.csv</td>
+<td>numeric columns in export</td>
+<td>property_cycle_panel; rba_fsr_page; staged arrears context</td>
+<td>src/overlays/build_downturn_overlay_tables.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+<tr>
+<td>macro_regime_flags.csv</td>
+<td>numeric columns in export</td>
+<td>rba_cash_rate_csv; staged arrears context</td>
+<td>src/panels/build_macro_regime_flags.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+<tr>
+<td>industry_failure_rates.csv</td>
+<td>numeric columns in export</td>
+<td>asic insolvency public extracts; ABS active-business counts</td>
+<td>src/panels/build_industry_failure_rates.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+<tr>
+<td>industry_financial_benchmarks.csv</td>
+<td>numeric columns in export</td>
+<td>australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; labour_force_industry_xlsx</td>
+<td>src/panels/build_industry_financial_benchmarks.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+<tr>
+<td>business_cycle_panel.csv</td>
+<td>numeric columns in export</td>
+<td>australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; business_indicators_consumer_sales_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv</td>
+<td>src/panels/build_business_cycle_panel.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+<tr>
+<td>property_cycle_panel.csv</td>
+<td>numeric columns in export</td>
+<td>building_approvals_nonres_xlsx; property reference staged sources</td>
+<td>src/panels/build_property_cycle_panel.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+<tr>
+<td>macro_context.csv</td>
+<td>numeric columns in export</td>
+<td>cpi_all_groups_xlsx; cpi_subgroups_xlsx; ppi_manufacturing_xlsx; ppi_construction_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv; rba_fsr_page</td>
+<td>src/panels/build_macro_context_panel.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+<tr>
+<td>property_market_detail.csv</td>
+<td>numeric columns in export</td>
+<td>property_price_index_xlsx; property_price_capitals_xlsx; total_value_dwellings_xlsx; lending_indicators_xlsx; rba_table_e2_xls; cotality_hvi_page; domain_quarterly_page; sqm_headline_page; state rental bond pages</td>
+<td>src/panels/build_property_reference_panel.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+<tr>
+<td>property_market_overlays_by_building_type.csv</td>
+<td>numeric columns in export</td>
+<td>building_approvals_nonres_xlsx; property_cycle_panel</td>
+<td>src/overlays/build_property_market_overlays.py</td>
+<td>Data Sources Inventory period/hash plus Transformations Applied build timestamp</td>
+<td>number -&gt; table row -&gt; transformation row -&gt; source inventory row</td>
+</tr>
+</tbody></table>
+<h2>7. What&#x27;s Not In This Report</h2>
+<p>This section lists registered sources that are manual, missing, outdated, gated, or otherwise not automatically captured.</p>
+<p class="caption">Data not yet captured / out of scope</p>
+<table>
+<thead><tr>
+<th>Source key</th>
+<th>Reason</th>
+<th>Required action</th>
+<th>Target / next date</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>anzsic_classification_page</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>anzsic_division_codes_page</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>anzsic_division_subdivision_class_page</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>australian_industry_xlsx</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>building_approvals_nonres_xlsx</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>business_indicators_consumer_sales_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>business_indicators_inventory_ratio_xlsx</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>business_indicators_profit_ratio_xlsx</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>cotality_auction_clearance_page</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>cotality_hvi_page</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>cpi_all_groups_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>cpi_subgroups_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>domain_quarterly_page</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>dwelling_approvals_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>dwelling_value_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>labour_force_industry_xlsx</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>lending_indicators_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>nsw_rental_bonds_page</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>ppi_construction_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>ppi_manufacturing_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>property_price_capitals_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>property_price_index_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>ptrs_cycle_8_pdf</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>ptrs_cycle_9_pdf</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>ptrs_guidance</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>qld_median_rents_page</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>rba_cash_rate_csv</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>rba_chart_pack_page</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>rba_fsr_page</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>rba_smp_page</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>rba_table_e2_xls</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>sqm_headline_page</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>total_value_dwellings_xlsx</td>
+<td>No successful manifest entry for this registry item</td>
+<td>Awaiting next release or implement downloader/scraper</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+<tr>
+<td>vic_rental_report_page</td>
+<td>Paid, gated, or manually extracted source</td>
+<td>Manual staging required - see data/raw/manual or source-specific raw-public directory</td>
+<td>Next scheduled refresh cycle</td>
+</tr>
+</tbody></table>
+<h2>8. Validation and Caveats</h2>
+<p>Completeness checks cover source inventory, transformations, detail rows, lineage, gaps, and missing-data handling.</p>
 <p class="caption">Contract validation summary</p>
 <table>
 <thead><tr>
@@ -422,54 +3640,32 @@
 </tr></thead>
 <tbody>
 <tr>
-<td>Core contract presence</td>
-<td>4</td>
-<td>Pass</td>
+<td>Source registry inventory</td>
+<td>37</td>
+<td>PASS</td>
 </tr>
 <tr>
-<td>Core contract file on disk</td>
-<td>4</td>
-<td>Pass</td>
+<td>Canonical export transformations</td>
+<td>11</td>
+<td>PASS</td>
 </tr>
 <tr>
-<td>Optional panel presence</td>
-<td>2</td>
-<td>Pass</td>
+<td>Detailed analysis export tables</td>
+<td>11</td>
+<td>PASS</td>
 </tr>
 <tr>
-<td>Optional panel file on disk</td>
-<td>2</td>
-<td>Pass</td>
+<td>Lineage mappings</td>
+<td>11</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Manual/missing source disclosure</td>
+<td>34</td>
+<td>PASS</td>
 </tr>
 </tbody></table>
-<p>Two caveats to flag: (1) Construction&#x27;s &#x27;Medium&#x27; rating reflects structural factors only, not current insolvency pressure — see the callout below. (2) Property overlay commencements and completions are proxied from approvals in this cycle, not directly observed.</p>
-<div class="flag flag-orange"><div class="flag-title">Methodology review item: Construction ranking</div><p>Construction scores 2.68 (&#x27;Medium&#x27;). Market narrative (builder insolvencies, subcontractor arrears, fixed-price-contract pressure) suggests this understates near-term credit risk. The Australian construction sector has seen three major builder collapses (Porter Davis, Probuild, Clough) over 2024-2026; this sector-specific stress isn&#x27;t captured in structural risk scoring. Logged as an active methodology review item; this session did not apply a fix — the Technical variant of this report documents the full discussion and three review options.</p></div>
-<h2>10. Methodology References</h2>
-<p>Full methodology manuals are maintained in the repo <code>docs/</code> folder. These describe how each overlay is constructed from raw inputs.</p>
-<p class="caption">Methodology documents</p>
-<table>
-<thead><tr>
-<th>Area</th>
-<th>Document</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>Cash-flow lending</td>
-<td>docs/methodology_cash_flow_lending.md</td>
-</tr>
-<tr>
-<td>Property-backed lending</td>
-<td>docs/methodology_property_backed_lending.md</td>
-</tr>
-<tr>
-<td>Audit + polish log (this session)</td>
-<td>outputs/industry_analysis_audit_log.md</td>
-</tr>
-<tr>
-<td>Baseline state</td>
-<td>outputs/baseline_state.md</td>
-</tr>
-</tbody></table>
+<p>No missing source is silently dropped. Sources without current data show as missing or manually staged in the inventory and reappear in the out-of-scope section with the required action.</p>
 <footer>END OF REPORT</footer>
 </body>
 </html>

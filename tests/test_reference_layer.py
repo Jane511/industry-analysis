@@ -158,3 +158,61 @@ def test_canonical_panel_overlay_builders_are_importable() -> None:
     assert callable(build_industry_risk_scores)
     assert callable(build_property_market_overlays)
     assert callable(build_downturn_overlay_tables)
+
+
+def test_industry_base_risk_level_matches_pd_multiplier() -> None:
+    """Every published row's risk-level label and pd_multiplier must come
+    from the same band in ``SCORE_TO_MULTIPLIER_LADDER``.
+
+    This invariant catches the regression class that the original Issue 7
+    found by manual inspection: if ``score_to_risk_level`` and
+    ``score_to_pd_multiplier`` ever drift apart (e.g. one is updated
+    without the other), the contract starts publishing a label that
+    contradicts the multiplier in the same row.
+    """
+    from src.overlays.build_industry_risk_scores import (
+        SCORE_TO_MULTIPLIER_LADDER,
+        build_industry_risk_scores,
+    )
+
+    scores = build_industry_risk_scores()
+    expected = {label: multiplier for _lower, _upper, label, multiplier in SCORE_TO_MULTIPLIER_LADDER}
+
+    for _, row in scores.iterrows():
+        label = row["industry_base_risk_level"]
+        multiplier = row["pd_multiplier"]
+        assert label in expected, f"Unknown band label on row {row['anzsic_division_code']}: {label!r}"
+        assert multiplier == expected[label], (
+            f"Row {row['anzsic_division_code']}: label={label!r} implies "
+            f"multiplier {expected[label]} but row carries {multiplier}. "
+            "score_to_risk_level and score_to_pd_multiplier are out of sync."
+        )
+
+
+def test_property_market_overlays_publishes_pd_multiplier_and_segment_code() -> None:
+    overlays = build_property_market_overlays()
+
+    assert "pd_multiplier" in overlays.columns
+    assert "property_segment_code" in overlays.columns
+
+    multiplier_values = set(overlays["pd_multiplier"].dropna().unique().tolist())
+    assert multiplier_values.issubset({0.90, 0.95, 1.00, 1.10, 1.15}), (
+        f"pd_multiplier contains values outside the published ladder: {multiplier_values}"
+    )
+
+    # The contract is exactly five rows — one per segment code. The PD
+    # workbook's lookup is ``df[df['property_segment_code'] == code].iloc[0]``
+    # so duplicate codes would make the lookup ambiguous.
+    assert overlays["property_segment_code"].is_unique, (
+        f"property_segment_code must be unique across rows; "
+        f"found duplicates: {overlays['property_segment_code'].value_counts().to_dict()}"
+    )
+    assert len(overlays) == 5, (
+        f"property_market_overlays must have exactly 5 rows (one per segment code); "
+        f"found {len(overlays)}"
+    )
+    expected_codes = {"RES", "CRE", "IND", "RET", "CON"}
+    actual_codes = set(overlays["property_segment_code"])
+    assert actual_codes == expected_codes, (
+        f"Expected exactly the codes {expected_codes}, got {actual_codes}"
+    )

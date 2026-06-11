@@ -25,12 +25,18 @@ CONTRACT_SCHEMAS = {
         ],
     },
     "property_market_overlays": {
-        "min_rows": 9,
+        # Issue 1 (remediation): contract is now exactly one row per canonical
+        # property_segment_code (RES, CRE, IND, RET, CON). The per-building-type
+        # detail moved to the explainability export
+        # property_market_overlays_by_building_type.csv.
+        "min_rows": 5,
         "required_cols": [
             "property_segment",
+            "property_segment_code",
             "cycle_stage",
             "market_softness_score",
             "region_risk_score",
+            "pd_multiplier",
         ],
     },
     "downturn_overlay_table": {
@@ -59,6 +65,7 @@ def exports() -> dict[str, pd.DataFrame]:
 @pytest.mark.parametrize("key,spec", CONTRACT_SCHEMAS.items())
 def test_export_file_exists_on_disk(exports, key, spec):
     path = ALL_CONTRACT_EXPORTS[key]
+    assert path.suffix == ".csv"
     assert path.exists(), f"Required contract export missing on disk: {path}"
 
 

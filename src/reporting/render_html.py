@@ -329,7 +329,7 @@ def render(report: dict[str, Any], variant: str) -> str:
     if variant == "board":
         intro = (
             "This is a summary view for non-technical reviewers. Every table traces "
-            "back to the canonical parquet contracts in <code>data/exports/</code>. "
+            "back to the canonical CSV contracts in <code>outputs/contracts/</code>. "
             "For full per-column detail, methodology references, and the audit-log "
             "appendix, see the Technical variant."
         )

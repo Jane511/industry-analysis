@@ -48,6 +48,306 @@ def parse_labour_force(path: Path) -> pd.DataFrame:
         out.append(tmp)
     return pd.concat(out, ignore_index=True)
 
+def _read_abs_data1(path: Path) -> pd.DataFrame:
+    """Return the canonical ABS time-series dataframe with header rows intact."""
+    return pd.read_excel(path, sheet_name="Data1", header=None)
+
+
+def _abs_dates(df: pd.DataFrame) -> pd.Series:
+    return pd.to_datetime(df.iloc[9:, 0], format="mixed", errors="coerce")
+
+
+def _abs_long_series(df: pd.DataFrame, header_part_index: int = 0) -> pd.DataFrame:
+    """Melt an ABS Data1 sheet into a long ``date | series_label | value`` frame.
+
+    Each ABS series header is a semicolon-delimited label such as
+    "Index Numbers ; All groups CPI ; Australia ;". ``header_part_index``
+    selects which segment becomes ``series_label``.
+    """
+    dates = _abs_dates(df)
+    out = []
+    for j in range(1, df.shape[1]):
+        header = df.iloc[0, j]
+        if pd.isna(header):
+            continue
+        parts = [p.strip() for p in str(header).split(";") if p.strip()]
+        if not parts:
+            continue
+        label = parts[header_part_index] if header_part_index < len(parts) else parts[-1]
+        values = pd.to_numeric(df.iloc[9:, j], errors="coerce")
+        tmp = pd.DataFrame({"date": dates, "value": values}).dropna(subset=["date"])
+        tmp["series_label"] = label
+        out.append(tmp)
+    if not out:
+        return pd.DataFrame(columns=["date", "value", "series_label"])
+    return pd.concat(out, ignore_index=True)
+
+
+def _yoy_qoq(series: pd.Series) -> tuple[float, float]:
+    """Compute YoY (4-period) and QoQ (1-period) % change for an index series."""
+    series = series.dropna()
+    if len(series) < 2:
+        return float("nan"), float("nan")
+    latest = float(series.iloc[-1])
+    qoq = (latest / float(series.iloc[-2]) - 1) * 100 if series.iloc[-2] else float("nan")
+    if len(series) >= 5:
+        yoy = (latest / float(series.iloc[-5]) - 1) * 100 if series.iloc[-5] else float("nan")
+    else:
+        yoy = float("nan")
+    return yoy, qoq
+
+
+def _empty_cpi_frame() -> pd.DataFrame:
+    return pd.DataFrame(
+        columns=[
+            "as_of_date",
+            "period_label",
+            "all_groups_index",
+            "all_groups_yoy_pct",
+            "all_groups_qoq_pct",
+            "housing_index",
+            "housing_yoy_pct",
+            "housing_qoq_pct",
+            "transport_index",
+            "transport_yoy_pct",
+            "transport_qoq_pct",
+            "food_index",
+            "food_yoy_pct",
+            "food_qoq_pct",
+            "source_note",
+        ]
+    )
+
+
+def parse_cpi(all_groups_path: Path, subgroups_path: Path) -> pd.DataFrame:
+    """Parse ABS Cat. 6401.0 CPI quarterly data.
+
+    Returns one row per quarter with all-groups + housing/transport/food
+    subgroup index levels and their YoY/QoQ % change. Both files are required
+    inputs; if either is absent an empty DataFrame with the canonical schema
+    is returned (graceful-degradation contract).
+    """
+    if not all_groups_path.exists() or not subgroups_path.exists():
+        return _empty_cpi_frame()
+
+    all_groups = _abs_long_series(_read_abs_data1(all_groups_path))
+    subgroups = _abs_long_series(_read_abs_data1(subgroups_path), header_part_index=1)
+
+    if all_groups.empty:
+        return _empty_cpi_frame()
+
+    # All-groups national series — first non-null series is "All groups CPI".
+    ag_series = (
+        all_groups[all_groups["series_label"].str.contains("All groups", case=False, na=False)]
+        .sort_values("date")
+        .drop_duplicates(subset=["date"], keep="last")
+    )
+    if ag_series.empty:
+        ag_series = all_groups.sort_values("date").groupby("date", as_index=False)["value"].mean()
+        ag_series["series_label"] = "All groups CPI"
+
+    rows = []
+    quarters = sorted(ag_series["date"].unique())[-8:]
+    label_to_field = {
+        "Housing": "housing",
+        "Transport": "transport",
+        "Food and non-alcoholic beverages": "food",
+    }
+
+    for q in quarters:
+        as_iso = pd.Timestamp(q).date().isoformat()
+        period_label = pd.Timestamp(q).strftime("%YQ%q") if hasattr(pd.Timestamp(q), "quarter") else as_iso
+        period_label = f"{pd.Timestamp(q).year}Q{pd.Timestamp(q).quarter}"
+
+        ag_until = ag_series[ag_series["date"] <= q].sort_values("date")["value"]
+        ag_yoy, ag_qoq = _yoy_qoq(ag_until)
+        ag_latest = float(ag_until.iloc[-1]) if not ag_until.empty else float("nan")
+
+        row = {
+            "as_of_date": as_iso,
+            "period_label": period_label,
+            "all_groups_index": ag_latest,
+            "all_groups_yoy_pct": round(ag_yoy, 2) if pd.notna(ag_yoy) else float("nan"),
+            "all_groups_qoq_pct": round(ag_qoq, 2) if pd.notna(ag_qoq) else float("nan"),
+        }
+        for label, field in label_to_field.items():
+            sg = subgroups[
+                subgroups["series_label"].str.contains(label, case=False, na=False)
+            ]
+            sg_until = sg[sg["date"] <= q].sort_values("date")["value"]
+            sg_yoy, sg_qoq = _yoy_qoq(sg_until)
+            sg_latest = float(sg_until.iloc[-1]) if not sg_until.empty else float("nan")
+            row[f"{field}_index"] = sg_latest
+            row[f"{field}_yoy_pct"] = round(sg_yoy, 2) if pd.notna(sg_yoy) else float("nan")
+            row[f"{field}_qoq_pct"] = round(sg_qoq, 2) if pd.notna(sg_qoq) else float("nan")
+        row["source_note"] = (
+            f"ABS Cat. 6401.0 CPI ({all_groups_path.name}, {subgroups_path.name})"
+        )
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def _empty_ppi_frame() -> pd.DataFrame:
+    return pd.DataFrame(
+        columns=[
+            "as_of_date",
+            "anzsic_division_code",
+            "industry",
+            "ppi_index",
+            "ppi_yoy_pct",
+            "ppi_qoq_pct",
+            "source_note",
+        ]
+    )
+
+
+def parse_ppi(manufacturing_path: Path, construction_path: Path) -> pd.DataFrame:
+    """Parse ABS Cat. 6427.0 Producer Price Index by industry.
+
+    Maps the manufacturing table to ANZSIC division C and the construction
+    table to division E. One row per (quarter, division). Returns the canonical
+    empty frame if either file is missing.
+    """
+    if not manufacturing_path.exists() or not construction_path.exists():
+        return _empty_ppi_frame()
+
+    sources = [
+        ("C", "Manufacturing", manufacturing_path),
+        ("E", "Construction", construction_path),
+    ]
+    frames = []
+    for code, name, path in sources:
+        long_df = _abs_long_series(_read_abs_data1(path))
+        if long_df.empty:
+            continue
+        # Aggregate across all sub-series to a single index level per quarter
+        # (the headline industry index is the first/total series in the table).
+        primary_label = long_df["series_label"].iloc[0]
+        primary = long_df[long_df["series_label"] == primary_label].sort_values("date")
+        for q in sorted(primary["date"].unique())[-8:]:
+            until = primary[primary["date"] <= q]["value"]
+            yoy, qoq = _yoy_qoq(until)
+            latest = float(until.iloc[-1]) if not until.empty else float("nan")
+            frames.append(
+                {
+                    "as_of_date": pd.Timestamp(q).date().isoformat(),
+                    "anzsic_division_code": code,
+                    "industry": name,
+                    "ppi_index": latest,
+                    "ppi_yoy_pct": round(yoy, 2) if pd.notna(yoy) else float("nan"),
+                    "ppi_qoq_pct": round(qoq, 2) if pd.notna(qoq) else float("nan"),
+                    "source_note": f"ABS Cat. 6427.0 PPI ({path.name})",
+                }
+            )
+    if not frames:
+        return _empty_ppi_frame()
+    return pd.DataFrame(frames)
+
+
+def _empty_dwelling_approvals_frame() -> pd.DataFrame:
+    return pd.DataFrame(
+        columns=[
+            "as_of_date",
+            "dwelling_type",
+            "approvals_count",
+            "value_aud_thousands",
+            "yoy_pct_change",
+            "trend_3m_yoy_pct",
+            "source_note",
+        ]
+    )
+
+
+def parse_dwelling_approvals(path: Path) -> pd.DataFrame:
+    """Parse ABS Cat. 8752.0 dwelling-unit residential building approvals.
+
+    Returns one row per (latest-month, dwelling_type). Three dwelling_type
+    values are emitted: ``houses``, ``units_apartments``, ``total``.
+    Closes the residential-approvals gap that left the RES row of
+    property_market_overlays as a placeholder.
+    """
+    if not path.exists():
+        return _empty_dwelling_approvals_frame()
+
+    long_df = _abs_long_series(_read_abs_data1(path))
+    if long_df.empty:
+        return _empty_dwelling_approvals_frame()
+
+    # ABS publishes "Houses", "Units (other than houses)", and "Total" series
+    # — case-insensitive match on the series label.
+    label_to_type = {
+        "houses": "houses",
+        "other residential": "units_apartments",
+        "units other than houses": "units_apartments",
+        "total dwellings": "total",
+        "total residential": "total",
+    }
+
+    rows: list[dict] = []
+    latest_date = long_df["date"].max()
+    cutoff_3m = latest_date - pd.DateOffset(months=3)
+
+    for series_label, group in long_df.groupby("series_label"):
+        key = series_label.lower()
+        dwelling_type = next(
+            (label_to_type[k] for k in label_to_type if k in key),
+            None,
+        )
+        if dwelling_type is None:
+            continue
+        ordered = group.sort_values("date").dropna(subset=["value"])
+        if ordered.empty:
+            continue
+        latest = ordered.iloc[-1]
+        prev_year = ordered[ordered["date"] <= latest["date"] - pd.DateOffset(years=1)]
+        prev = prev_year.iloc[-1] if not prev_year.empty else None
+        recent_3m = ordered[ordered["date"] > cutoff_3m]
+        prior_3m_window = ordered[
+            (ordered["date"] <= cutoff_3m)
+            & (ordered["date"] > cutoff_3m - pd.DateOffset(years=1))
+        ]
+        prior_3m_match = prior_3m_window.tail(len(recent_3m))
+
+        yoy = (
+            (float(latest["value"]) / float(prev["value"]) - 1) * 100
+            if prev is not None and prev["value"]
+            else float("nan")
+        )
+        trend_yoy = (
+            (recent_3m["value"].mean() / prior_3m_match["value"].mean() - 1) * 100
+            if not prior_3m_match.empty and prior_3m_match["value"].mean()
+            else float("nan")
+        )
+        rows.append(
+            {
+                "as_of_date": pd.Timestamp(latest["date"]).date().isoformat(),
+                "dwelling_type": dwelling_type,
+                "approvals_count": float(latest["value"]),
+                "value_aud_thousands": float("nan"),
+                "yoy_pct_change": round(yoy, 2) if pd.notna(yoy) else float("nan"),
+                "trend_3m_yoy_pct": round(trend_yoy, 2) if pd.notna(trend_yoy) else float("nan"),
+                "source_note": f"ABS Cat. 8752.0 dwelling approvals ({path.name})",
+            }
+        )
+
+    if not rows:
+        return _empty_dwelling_approvals_frame()
+
+    # Merge duplicate dwelling_types (e.g. multiple "total" series) by mean.
+    out = pd.DataFrame(rows)
+    out = (
+        out.groupby(["as_of_date", "dwelling_type"], as_index=False)
+        .agg(
+            approvals_count=("approvals_count", "sum"),
+            value_aud_thousands=("value_aud_thousands", "sum"),
+            yoy_pct_change=("yoy_pct_change", "mean"),
+            trend_3m_yoy_pct=("trend_3m_yoy_pct", "mean"),
+            source_note=("source_note", "first"),
+        )
+    )
+    return out
+
+
 def parse_building_approvals(path: Path) -> pd.DataFrame:
     df = pd.read_excel(path, sheet_name='Data1', header=None)
     dates = pd.to_datetime(df.iloc[9:,0], format='mixed', errors='coerce')
@@ -231,6 +531,9 @@ __all__ = [
     "parse_labour_force",
     "parse_building_approvals",
     "parse_australian_industry_totals",
+    "parse_cpi",
+    "parse_ppi",
+    "parse_dwelling_approvals",
     "parse_ptrs_ar_workbook",
     "BUILDING_APPROVALS_FILENAME",
     "OPTIONAL_BUILDING_ACTIVITY_FILES",

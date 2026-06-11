@@ -124,8 +124,8 @@ def render(report: dict[str, Any], variant: str) -> str:
     if variant == "board":
         header_lines.append(
             "This is a summary view for non-technical reviewers. Every table and chart "
-            "in this document traces back to the canonical parquet contracts in "
-            "`data/exports/`. For full per-column detail, methodology references, "
+            "in this document traces back to the canonical CSV contracts in "
+            "`outputs/contracts/`. For full per-column detail, methodology references, "
             "and the audit-log appendix, see the Technical variant."
         )
     else:
@@ -175,7 +175,7 @@ def _audit_log_appendix(report: dict[str, Any]) -> str:
         "",
         "### Phase 4a — Markdown board report",
         "- Added `reports/` package (`__init__.py`, `industry_analysis_report.py`, `render_markdown.py`).",
-        "- Added `scripts/build_board_report.py` CLI.",
+        "- Added `src/build_board_report.py` CLI.",
         "- Two markdown files generated per run: Board (summary) and Technical (full detail).",
         "- DOCX and HTML renderers deferred to Phase 4b.",
         "",

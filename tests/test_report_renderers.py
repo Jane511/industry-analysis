@@ -40,13 +40,32 @@ def test_markdown_output_deterministic(report):
     assert first_board != first_tech
 
 
+def test_markdown_includes_contract_export_map(report):
+    """Board and Technical markdown include the parquet export usage summary."""
+    board = render_markdown(report, "board")
+    technical = render_markdown(report, "technical")
+
+    assert "3. Data Sources Inventory" in board
+    assert "4. Transformations Applied" in board
+    assert "5. Detailed Analysis" in board
+    assert "6. Lineage / Traceability" in board
+    assert "Canonical CSV exports: contents and downstream layers" in board
+    assert "industry_risk_scores.csv" in board
+    assert "PD overlays / scorecards" in board
+
+    assert "Contract role" in technical
+    assert "Join grain" in technical
+    assert "property_cycle_panel.csv" in technical
+    assert "Collateral benchmark diagnostics" in technical
+
+
 def test_all_four_variants_produce_files(tmp_path, report):
     """`--format all` via CLI produces all six files; each is non-empty."""
     output_base = tmp_path / "Industry_Analysis_Test"
     result = subprocess.run(
         [
             sys.executable,
-            str(REPO_ROOT / "scripts" / "build_board_report.py"),
+            str(REPO_ROOT / "src" / "build_board_report.py"),
             "--format", "all",
             "--output", str(output_base),
         ],
@@ -70,8 +89,8 @@ def test_all_four_variants_produce_files(tmp_path, report):
         assert path.stat().st_size > 1024, f"Output too small: {name}"
 
 
-def test_docx_contains_construction_callout_in_section_3(tmp_path, report):
-    """Board DOCX has the Construction methodology note between §3 heading and §4."""
+def test_docx_contains_source_inventory_before_transformations(tmp_path, report):
+    """Board DOCX follows the completeness section order."""
     output_base = tmp_path / "Industry_Analysis_DocxTest"
     write_docx_variants(report, str(output_base))
 
@@ -81,11 +100,11 @@ def test_docx_contains_construction_callout_in_section_3(tmp_path, report):
     paragraphs = [p.text for p in doc.paragraphs]
 
     section3_idx = next(
-        (i for i, t in enumerate(paragraphs) if t.startswith("3. Industry Risk Rankings")),
+        (i for i, t in enumerate(paragraphs) if t.startswith("3. Data Sources Inventory")),
         None,
     )
     section4_idx = next(
-        (i for i, t in enumerate(paragraphs) if t.startswith("4. Top Risk Industries")),
+        (i for i, t in enumerate(paragraphs) if t.startswith("4. Transformations Applied")),
         None,
     )
     assert section3_idx is not None, "Section 3 heading missing"
@@ -95,8 +114,8 @@ def test_docx_contains_construction_callout_in_section_3(tmp_path, report):
     table_text = "\n".join(
         cell.text for table in doc.tables for row in table.rows for cell in row.cells
     )
-    assert "Methodology note" in table_text, "Construction callout title missing from DOCX"
-    assert "Construction base risk score" in table_text, "Construction callout body missing"
+    assert "Data Sources Inventory" in table_text
+    assert "Transformations Applied" in table_text
 
 
 def test_docx_technical_has_appendix(tmp_path, report):

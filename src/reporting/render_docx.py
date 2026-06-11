@@ -135,7 +135,7 @@ def _render_title_page(doc, report: dict[str, Any], variant: str) -> None:
     if variant == "board":
         prepared_for = (
             "This is a summary view for non-technical reviewers. Every table in this "
-            "document traces back to the canonical parquet contracts in data/exports/. "
+            "document traces back to the canonical CSV contracts in outputs/contracts/. "
             "For full per-column detail, methodology references, and the audit-log "
             "appendix, see the Technical variant."
         )
