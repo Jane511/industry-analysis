@@ -142,25 +142,28 @@ Two ideas hold the design together:
 
 ---
 
-## Running it
+## Running it — one command
+
+Clone, install, run. **`run_pipeline.py` auto-downloads the real public data
+(ABS/RBA/PTRS); if any source is unreachable it falls back to a committed
+real-data cache**, so it always produces the reports — online or offline.
 
 ```bash
-# 1. Install
 python -m venv .venv
 .venv\Scripts\activate                 # Windows; macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-
-# 2. Build panels, overlays, and the CSV contracts (from staged real data)
-python src/build_public_panels.py
-python src/export_contracts.py
-python src/validate_upstream.py
-
-# 3. Render the board + technical report (markdown / html / docx)
-python src/build_board_report.py --format all --output outputs/reports/Industry_Analysis_Q1_2026
-
-# 4. (optional) regenerate parquet mirrors + README charts
-python src/make_readme_assets.py
+python run_pipeline.py
 ```
+
+That runs the whole flow end to end: **fetch real data (live → cache fallback)
+→ build panels + overlays → export the 8 CSV contracts → validate → render the
+Board + Technical report** (md / html / docx). Outputs land in `outputs/`
+(contracts in `outputs/contracts/`, reports in `outputs/reports/`). The data
+vintage is pinned (`DATA_AS_OF = 2026-02-28`); the committed cache and its
+source attribution live in [`data/cache/`](data/cache/).
+
+Each run prints, per source, whether it came from the **live** download or the
+**cache**. To regenerate the parquet mirrors + README charts: `python src/make_readme_assets.py`.
 
 Methodology is documented in
 [`docs/methodology_cash_flow_lending.md`](docs/methodology_cash_flow_lending.md)
@@ -184,21 +187,27 @@ and
 
 ```text
 industry-analysis/
+├── run_pipeline.py             # ONE command: fetch -> build -> validate -> report
 ├── src/
-│   ├── public_data/            # Load ABS / RBA / PTRS inputs
+│   ├── public_data/
+│   │   ├── fetch_public_data.py   # Live download (ABS/RBA/PTRS) + cache fallback
+│   │   └── ...                    # Loaders for the ABS/RBA inputs
 │   ├── panels/                 # Business-cycle and property-cycle panels
 │   ├── overlays/               # Industry risk scores, downturn + property overlays
 │   ├── reporting/              # Report builder + markdown/html/docx renderers
-│   ├── export_contracts.py     # CLI: write the 8 CSV contracts
-│   ├── build_board_report.py   # CLI: render the report
+│   ├── export_contracts.py     # Write the 8 CSV contracts
+│   ├── build_board_report.py   # Render the report
 │   └── make_readme_assets.py   # Parquet mirrors + README charts
 ├── outputs/
 │   ├── contracts/              # The 8 model-ready CSV contracts
 │   └── reports/                # Board + Technical report (md / html / docx)
 ├── notebooks/                  # 00–05 guided walkthrough
 ├── docs/                       # Methodology notes + charts/
-├── data/                       # Staged + processed public data (raw is gitignored)
-└── tests/                      # 124 tests (unit + report-render integration)
+├── data/
+│   ├── cache/                  # Committed real-data snapshot (fallback) + ATTRIBUTION
+│   ├── raw/                    # Live-fetched inputs (gitignored)
+│   └── processed/              # Intermediate panels
+└── tests/                      # 124 tests (unit + report-render + fetch fallback)
 ```
 
 ---
