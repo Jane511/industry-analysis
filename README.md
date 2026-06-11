@@ -1,95 +1,144 @@
 # Australian Industry & Property Risk Reference Layer
 
-**A reproducible Python pipeline that turns public Australian macro, industry,
-and property data into credit-risk overlays — industry risk scores, property
-cycle signals, and PD/LGD downturn-stress multipliers — with a board-ready
-report.**
+**Turns real public Australian data (ABS / RBA / PTRS) into credit-risk
+overlays — industry risk scores, property-cycle signals, and downturn PD/LGD
+stress multipliers — with a board-ready report.**
 
-Lenders need to know which industries and property segments are getting
-riskier *before* it shows up in arrears. This project reads public data from
-the ABS, RBA, ASIC, and the Payment Times Reporting Scheme, scores all 18
-ANZSIC industry divisions and 5 commercial-property segments, and emits a set
-of model-ready CSV "contracts" plus a plain-English report a credit committee
-can read.
+> **Real public data only.** This repo uses only real public sources
+> (ABS, RBA, PTRS). All synthetic / staged / illustrative data has been
+> removed; the only non-data inputs are clearly-labelled methodology
+> *assumptions* (stress multipliers, scoring weights).
 
-Every figure traces back to a named public source and a reporting date, and
-the same inputs always produce the same outputs — the discipline a model-risk
-or credit-risk function expects.
+## See it in 30 seconds
+
+- **One export:** [`outputs/contracts/industry_risk_scores.csv`](outputs/contracts/industry_risk_scores.csv) — every ANZSIC industry scored 1–5 with a PD multiplier.
+- **One notebook:** [`notebooks/00_repo_overview.ipynb`](notebooks/00_repo_overview.ipynb) — the guided tour.
+- **One picture:**
+
+![Industry credit-risk scores](docs/charts/industry_risk_scores.png)
 
 ---
 
-## What this project demonstrates
+## Why this matters for credit risk
 
-A portfolio project for credit-risk / quantitative-modelling roles. What it shows:
+A lender's loss rate is driven as much by *where* it lends — which industries
+and property segments — as by individual borrowers. This engine reads public
+data and answers three questions a credit-risk team asks every cycle, in a
+form a PD/LGD/ECL model can consume directly:
+
+- **Industry / sector risk scoring** — which of the 18 ANZSIC divisions are
+  structurally or cyclically riskier right now, as a 1–5 score and a ready-to-use
+  `pd_multiplier` per division.
+- **Downturn / stress overlays** — base / mild / moderate / severe PD, LGD, and
+  CCF multipliers plus property-value haircuts for scenario and expected-loss
+  analysis.
+- **Macro-cycle positioning** — where the rate and arrears cycle sits, as a
+  single regime flag that conditions PD and LGD.
+
+Everything traces back to a named public source and reporting date, and the
+same inputs always produce the same outputs — the discipline a model-risk or
+validation function expects.
+
+---
+
+## What this produces
+
+**Eight CSV "contracts"** in [`outputs/contracts/`](outputs/contracts/) — the
+stable interface any downstream PD/LGD/ECL model reads. Live samples from the
+current real-data build:
+
+**`industry_risk_scores.csv`** — top 5 of 18 industries by risk:
+
+| ANZSIC | Industry | Base risk score | Band | PD multiplier |
+| --- | --- | --- | --- | --- |
+| A | Agriculture, Forestry and Fishing | 3.71 | Elevated | 1.15 |
+| B | Mining | 3.39 | Elevated | 1.15 |
+| C | Manufacturing | 3.36 | Elevated | 1.15 |
+| G | Retail Trade | 3.23 | Elevated | 1.15 |
+| F | Wholesale Trade | 3.16 | Moderate-high | 1.10 |
+
+**`downturn_overlay_table.csv`** — stress multipliers (methodology *assumptions*,
+nudged by real ABS property softness):
+
+| Scenario | PD × | LGD × | CCF × | Property haircut |
+| --- | --- | --- | --- | --- |
+| base | 1.0 | 1.0 | 1.00 | 0.00 |
+| mild | 1.2 | 1.1 | 1.05 | 0.05 |
+| moderate | 1.5 | 1.2 | 1.10 | 0.10 |
+| severe | 2.0 | 1.3 | 1.20 | 0.20 |
+
+![Downturn stress multipliers](docs/charts/downturn_multipliers.png)
+
+**`macro_regime_flags.csv`** — current cycle position (cash-rate regime is real
+RBA F1; arrears level/trend is a labelled qualitative assumption from the RBA FSR):
+`cash_rate_regime = neutral_easing`, `arrears = Low / Improving`,
+`macro_regime_flag = base` (as of 2026-03-16).
+
+**`property_market_overlays.csv`** — 5 segments (4 from real ABS Cat. 8731
+non-residential approvals; RES is a labelled placeholder pending ABS Cat. 8752):
+CRE / RET / CON are *slowing* (softness 2.9–3.2, PD ×1.1); IND and RES *neutral*.
+
+Plus **`industry_financial_benchmarks.csv`** (APG 220 §64 ratios per industry)
+and three explainability panels (`business_cycle_panel`, `property_cycle_panel`,
+`property_market_overlays_by_building_type`).
+
+**A two-variant report** in [`outputs/reports/`](outputs/reports/) —
+`Industry_Analysis_Q1_2026_Board` and `_Technical` in `.md` / `.html` / `.docx`.
+The **Board** variant opens with a plain-English executive summary; the
+**Technical** variant adds full source inventory, transformations, and validation.
+
+### Not included (pending real data)
+
+Three exports were **removed** because they could not be built from real public
+data without staging additional sources. They will return — with no synthetic
+fallback — once the real source is staged:
+
+| Removed export | Real source it needs |
+| --- | --- |
+| `industry_failure_rates` | ASIC Series 1A insolvency statistics ÷ ABS Counts of Australian Businesses (Cat. 8165.0) |
+| `property_market_detail` | ABS Residential Property Price Indexes (Cat. 6416.0 / 6432.0) + city/region series |
+| `macro_context` | ABS CPI (Cat. 6401.0) and PPI (Cat. 6427.0) |
+
+---
+
+## What this demonstrates (for a credit-risk role)
 
 | Area | In this project |
 | --- | --- |
-| **PD overlays** | Per-industry base risk scores (classification + macro) and a `pd_multiplier` per ANZSIC division, ready to condition a PD model or scorecard. |
-| **LGD / collateral** | Property-market overlays (cycle stage, softness, region risk) and property-value haircuts feeding LGD and collateral assumptions. |
-| **Stress testing** | A downturn-overlay table with base / mild / moderate / severe PD, LGD, and CCF multipliers and property haircuts for scenario and EL analysis. |
-| **IFRS 9 / ECL inputs** | Industry failure rates, financial benchmarks, and macro-context panels that anchor current-state ECL and challenger overlays. |
-| **Regulatory grounding (APRA APG 220)** | Per-industry medians of the financial ratios APG 220 §64 names as standard credit-assessment benchmarks (EBITDA margin, wages-to-sales, inventory days, sales/employment growth). |
-| **Australian regulatory landscape** | Works directly with ABS industry/building/CPI/labour releases, the RBA cash-rate table, FSR/SMP, ASIC insolvency series, and the Payment Times Reporting Scheme. |
-| **Data engineering & governance** | ETL from XLSX/CSV/PDF into validated CSV contracts; a full source inventory and lineage in every report; reproducible outputs; and a 148-test pytest suite. |
+| **PD overlays** | Per-industry base risk scores and a `pd_multiplier` per ANZSIC division, ready to condition a PD model or scorecard. |
+| **LGD / collateral** | Property-market overlays (cycle stage, softness, region risk) feeding LGD and collateral assumptions. |
+| **Stress testing** | Base / mild / moderate / severe PD, LGD, CCF multipliers + property haircuts for scenario and EL analysis. |
+| **APRA APG 220 grounding** | Per-industry medians of the financial ratios APG 220 §64 names as standard credit-assessment benchmarks. |
+| **Australian regulatory landscape** | Works directly with ABS industry/building-approval/labour releases, the RBA cash-rate table and FSR, and the Payment Times Reporting Scheme. |
+| **Data engineering & governance** | ETL from XLSX/CSV/PDF into validated CSV contracts; source inventory + lineage in every report; reproducible outputs; 124-test pytest suite; real-data-only discipline with assumptions labelled, never presented as data. |
 
-Written in **Python** (pandas, openpyxl, pdfplumber, python-docx). The skills
-transfer directly to SAS/SQL/R model-development and validation work.
-
----
-
-## What it produces
-
-**Eleven CSV "contracts"** in [`outputs/contracts/`](outputs/contracts/) — the
-stable interface any downstream PD/LGD/ECL model reads:
-
-| Contract | What it provides |
-| --- | --- |
-| `industry_risk_scores.csv` | Per-industry classification + macro + base risk score, band, and PD multiplier |
-| `property_market_overlays.csv` | Per-segment cycle stage, softness, region risk, PD multiplier |
-| `downturn_overlay_table.csv` | Base/mild/moderate/severe PD, LGD, CCF multipliers + property haircuts |
-| `macro_regime_flags.csv` | Cash-rate regime, arrears level/trend, macro regime flag |
-| `industry_failure_rates.csv` | Realised insolvency rate per ANZSIC division (ASIC ÷ ABS active businesses) |
-| `industry_financial_benchmarks.csv` | APG 220 §64 financial ratios per industry |
-| `business_cycle_panel.csv` / `property_cycle_panel.csv` | Wide diagnostics behind the overlays |
-| `macro_context.csv` | CPI/PPI/labour/cash-rate macro panel |
-| `property_market_detail.csv` / `..._by_building_type.csv` | Multi-source property panels |
-
-**A two-variant report** in [`outputs/reports/`](outputs/reports/) —
-`Industry_Analysis_Q1_2026_Board` and `_Technical`, each in `.md` / `.html` /
-`.docx`. The **Board** variant opens with a plain-English executive summary
-(what the numbers mean for credit risk) and headline figures; the **Technical**
-variant adds full source inventory, transformations, lineage, and validation.
-
-A sample of the headline picture this cycle: the cash rate is 3.85% (−0.25pp
-over the year) with a low/improving arrears backdrop, so the macro regime is
-`base`; **4 of 18 industries score Elevated**, **0 of 5 property segments are
-in downturn**, and the severe scenario applies **2.0× PD**.
+Written in **Python** (pandas, openpyxl, pdfplumber, python-docx, matplotlib).
+The skills transfer directly to SAS/SQL/R model-development and validation work.
 
 ---
 
 ## How it works
 
 ```text
-   Public sources                 This engine                    Outputs
+   Real public sources           This engine                    Outputs
  ┌──────────────────────┐   ┌────────────────────────────┐   ┌──────────────┐
- │ ABS industry / build │   │ public_data/  download+load │   │ 11 CSV       │
- │ approvals / CPI / PPI │──▶│ panels/       build panels  │──▶│ contracts    │
- │ RBA cash rate, FSR    │   │ overlays/     risk scores,  │   │              │
- │ ASIC insolvency       │   │               downturn,     │   │ Board +      │
- │ Payment Times (PTRS)  │   │               property      │   │ Technical    │
- │ Cotality/Domain/SQM   │   │ reporting/    render report │   │ md/html/docx │
+ │ ABS industry /       │   │ public_data/  load inputs   │   │ 8 CSV        │
+ │   building approvals │──▶│ panels/       build panels  │──▶│ contracts    │
+ │ RBA F1 cash rate,FSR │   │ overlays/     risk scores,  │   │              │
+ │ Payment Times (PTRS) │   │               downturn,     │   │ Board +      │
+ │                      │   │               property      │   │ Technical    │
+ │                      │   │ reporting/    render report │   │ md/html/docx │
  └──────────────────────┘   └────────────────────────────┘   └──────────────┘
 ```
 
 Two ideas hold the design together:
 
-- **Every number is traceable.** The report carries a full source inventory and
-  a transformation table — each contract lists its inputs, builder script, row
-  count, and validation status. Synthetic development stubs are labelled as
-  such, never silently presented as real data.
+- **Every number is traceable, and assumptions are labelled.** The report
+  carries a full source inventory and a transformation table. Methodology
+  assumptions (stress multipliers, the qualitative arrears baseline) are marked
+  `ASSUMPTION` in the data itself — never presented as observed data.
 - **The same inputs always produce the same outputs.** No randomness, no hidden
-  state; rerunning the pipeline on the same staged data yields identical
-  contracts, which is what makes the outputs auditable.
+  state; rerunning on the same real inputs yields identical contracts.
 
 ---
 
@@ -101,16 +150,16 @@ python -m venv .venv
 .venv\Scripts\activate                 # Windows; macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 
-# 2. Download / stage public inputs (network-dependent)
-python src/download_public_data.py
-
-# 3. Build panels, overlays, and the CSV contracts
+# 2. Build panels, overlays, and the CSV contracts (from staged real data)
 python src/build_public_panels.py
 python src/export_contracts.py
 python src/validate_upstream.py
 
-# 4. Render the board + technical report (markdown / html / docx)
+# 3. Render the board + technical report (markdown / html / docx)
 python src/build_board_report.py --format all --output outputs/reports/Industry_Analysis_Q1_2026
+
+# 4. (optional) regenerate parquet mirrors + README charts
+python src/make_readme_assets.py
 ```
 
 Methodology is documented in
@@ -120,17 +169,14 @@ and
 
 ---
 
-## Data sources
+## Data sources (all real, public)
 
 | Source | Provides |
 | --- | --- |
 | ABS — Australian Industry (8155.0), Business Indicators (5676.0), Labour Force (6291.0) | Industry financial ratios, activity, employment |
-| ABS — Building Approvals (8731.0), Property Price Indexes (6416.0/6432.0) | Property cycle and segment signals |
-| ABS — CPI (6401.0), PPI (6427.0) | Macro-context panel |
+| ABS — Building Approvals, non-residential (8731.0) | Property-cycle and segment signals |
 | RBA — F1 cash-rate table, Financial Stability Review, SMP, Chart Pack | Rate regime and stress context |
-| ASIC — insolvency series (Series 1A) | Realised industry failure rates |
-| Payment Times Reporting Scheme | Payment-stress signal |
-| Cotality, Domain, SQM, state rental bond authorities | Property detail panel |
+| Payment Times Reporting Scheme (PTRS) | Payment-stress signal |
 
 ---
 
@@ -139,22 +185,41 @@ and
 ```text
 industry-analysis/
 ├── src/
-│   ├── public_data/            # Download + load ABS / RBA / ASIC / PTRS inputs
-│   ├── panels/                 # Business-cycle, property-cycle, macro panels
+│   ├── public_data/            # Load ABS / RBA / PTRS inputs
+│   ├── panels/                 # Business-cycle and property-cycle panels
 │   ├── overlays/               # Industry risk scores, downturn + property overlays
 │   ├── reporting/              # Report builder + markdown/html/docx renderers
-│   ├── validation.py           # Risk bands + upstream validation
-│   ├── build_board_report.py   # CLI: render the report (entry point)
-│   ├── build_public_panels.py  # CLI: build panels
-│   ├── export_contracts.py     # CLI: write the 11 CSV contracts
-│   └── validate_upstream.py    # CLI: check inputs before a build
+│   ├── export_contracts.py     # CLI: write the 8 CSV contracts
+│   ├── build_board_report.py   # CLI: render the report
+│   └── make_readme_assets.py   # Parquet mirrors + README charts
 ├── outputs/
-│   ├── contracts/              # The 11 model-ready CSV contracts
+│   ├── contracts/              # The 8 model-ready CSV contracts
 │   └── reports/                # Board + Technical report (md / html / docx)
+├── notebooks/                  # 00–05 guided walkthrough
+├── docs/                       # Methodology notes + charts/
 ├── data/                       # Staged + processed public data (raw is gitignored)
-├── tests/                      # 148 tests (unit + report-render integration)
-└── docs/                       # Methodology notes
+└── tests/                      # 124 tests (unit + report-render integration)
 ```
+
+---
+
+## How this fits with my other projects
+
+This repo is the **macro / industry / property overlay** layer of a single
+commercial credit-risk stack — the upstream context a lender applies *before*
+modelling individual borrowers:
+
+| Layer | Repo | What it does |
+| --- | --- | --- |
+| **Macro & industry overlays** | **this repo** | ABS/RBA/PTRS → industry risk scores, property overlays, downturn stress |
+| **External benchmarks** | [external-benchmark](https://github.com/Jane511/external-benchmark) | Bank & regulator Pillar 3 disclosures → PD / LGD / EAD reference points |
+| **Consumer modelling** | [consumer-credit-pd-ead-scorecard](https://github.com/Jane511/consumer-credit-pd-ead-scorecard) | Borrower-level PD / EAD scorecards |
+| **Mortgage modelling** | mortgage PD/LGD/EAD repo *(link pending)* | Property-backed PD / LGD / EAD |
+
+The flow: **macro/industry overlays + external benchmarks → modelling →
+validation**. This repo and `external-benchmark` are complementary — this one is
+*top-down* (sector data from ABS/RBA/PTRS); `external-benchmark` is *bottom-up*
+(bank/regulator disclosures). The modelling repos consume both.
 
 ---
 
@@ -162,12 +227,12 @@ industry-analysis/
 
 The engine assembles and scores **public, sector-level** signals into reusable
 overlays. It deliberately does **not** set a borrower's final PD, an
-internal-portfolio LGD, or a regulatory capital number — those are calibration
-decisions that belong to the PD/LGD/ECL model that consumes these overlays.
-Keeping that boundary sharp — public reference data here, modelling judgement
-there — is what makes the outputs trustworthy as an industry benchmark.
+internal-portfolio LGD, a regulatory capital number, or any loan-level model —
+those belong to the modelling repos that consume these overlays. Keeping that
+boundary sharp — public reference data here, modelling judgement there — is what
+makes the outputs trustworthy as an industry benchmark.
 
 ---
 
-*Built by Jane Wu. Public data only; sector-level reference layer, not a
-firm-level credit model.*
+*Built by Jane Wu. Real public data only (ABS/RBA/PTRS); a sector-level
+reference layer, not a firm-level credit model.*

@@ -24,15 +24,10 @@ STRING_COLUMNS = {
         "commencements_signal",
         "completions_signal",
         "source_note",
-        "property_reference_status",
-        "contributing_sources",
     ],
     "downturn_overlay_table": ["scenario", "notes"],
     "macro_regime_flags": ["cash_rate_regime", "arrears_environment_level", "arrears_trend", "macro_regime_flag", "source_dataset"],
-    "industry_failure_rates": ["anzsic_division_code", "industry", "source_note"],
     "industry_financial_benchmarks": ["anzsic_division_code", "industry", "benchmark_method", "source_note"],
-    "macro_context": ["period_label", "source_note"],
-    "property_market_detail": ["region_id", "region_name", "region_type", "state", "property_type", "contributing_sources", "source_note"],
     "business_cycle_panel": [
         "sector_key",
         "anzsic_division_code",
@@ -65,20 +60,14 @@ STRING_COLUMNS = {
     ],
 }
 
-INTEGER_COLUMNS = {
-    "industry_failure_rates": ["insolvency_count_ttm", "active_businesses"],
-    "property_market_detail": ["rental_bond_sample_size_n", "sqm_stock_on_market"],
-}
+INTEGER_COLUMNS: dict[str, list[str]] = {}
 
 DATE_COLUMNS = {
     "industry_risk_scores": ["as_of_date"],
-    "property_market_overlays": ["as_of_date", "as_of_property_reference_date"],
+    "property_market_overlays": ["as_of_date"],
     "downturn_overlay_table": ["as_of_date"],
     "macro_regime_flags": ["as_of_date"],
-    "industry_failure_rates": ["as_of_date"],
     "industry_financial_benchmarks": ["as_of_date"],
-    "macro_context": ["as_of_date"],
-    "property_market_detail": ["as_of_date"],
     "property_cycle_panel": ["as_of_date"],
     "property_market_overlays_by_building_type": ["as_of_date"],
 }
@@ -110,20 +99,8 @@ def read_macro_regime_flags(path: Path) -> pd.DataFrame:
     return _read_export(path, "macro_regime_flags")
 
 
-def read_industry_failure_rates(path: Path) -> pd.DataFrame:
-    return _read_export(path, "industry_failure_rates")
-
-
 def read_industry_financial_benchmarks(path: Path) -> pd.DataFrame:
     return _read_export(path, "industry_financial_benchmarks")
-
-
-def read_macro_context(path: Path) -> pd.DataFrame:
-    return _read_export(path, "macro_context")
-
-
-def read_property_market_detail(path: Path) -> pd.DataFrame:
-    return _read_export(path, "property_market_detail")
 
 
 def read_business_cycle_panel(path: Path) -> pd.DataFrame:
@@ -143,10 +120,7 @@ READERS: dict[str, Callable[[Path], pd.DataFrame]] = {
     "property_market_overlays": read_property_market_overlays,
     "downturn_overlay_table": read_downturn_overlay_table,
     "macro_regime_flags": read_macro_regime_flags,
-    "industry_failure_rates": read_industry_failure_rates,
     "industry_financial_benchmarks": read_industry_financial_benchmarks,
-    "macro_context": read_macro_context,
-    "property_market_detail": read_property_market_detail,
     "business_cycle_panel": read_business_cycle_panel,
     "property_cycle_panel": read_property_cycle_panel,
     "property_market_overlays_by_building_type": read_property_market_overlays_by_building_type,

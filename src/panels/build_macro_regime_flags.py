@@ -41,7 +41,7 @@ def build_macro_regime_flags() -> pd.DataFrame:
                 "arrears_environment_level": arrears_environment["arrears_environment_level"].iloc[0],
                 "arrears_trend": arrears_environment["arrears_trend"].iloc[0],
                 "macro_regime_flag": "downturn_watch" if arrears_level in {"elevated", "high"} else "base",
-                "source_dataset": "RBA F1 cash-rate table + staged arrears context",
+                "source_dataset": "RBA F1 cash-rate table (real) + qualitative arrears baseline (assumption, RBA FSR Mar-2026)",
             }
         ]
     )

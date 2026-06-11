@@ -1,5 +1,7 @@
 # Methodology Manual — Cash Flow Lending Overlays
 
+> **Real-data-only update:** the engine runs on real public data only (ABS / RBA / PTRS); all synthetic/staged data has been removed. The `industry_failure_rates`, `property_market_detail`, and `macro_context` exports were **removed** because they cannot be built from real data without staging extra sources (ASIC Series 1A insolvencies + ABS Cat. 8165.0; ABS residential property price indexes; ABS CPI/PPI). Sections below describing those exports are retained as forward-looking methodology but are **not currently built** — see the README "Not included (pending real data)" note.
+
 ## 1) Purpose
 
 This manual explains how `industry-analysis` builds **public-data overlays** used to support credit decisions for **cash flow lending** (for example, SME and mid-market corporate lending where repayment capacity is mainly from business cash generation, not collateral sale).
@@ -270,6 +272,5 @@ What staff should check each run:
 
 - If download fails, check network policy first; this is expected in restricted environments.
 - If export fails, ensure parquet engine dependency is installed (`pyarrow` or `fastparquet`).
-- If ASIC Series 1A is not staged and `ASIC_USE_STUB` is unset, `export_contracts.py` will fail loud — this is intentional, do not bypass.
 - Always treat this repo as upstream context infrastructure, not final credit-decision logic.
 - `industry_financial_benchmarks` is APG 220 compliance scaffolding — use it as the authoritative industry comparison reference rather than recomputing benchmarks per downstream consumer.

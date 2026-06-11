@@ -8,10 +8,10 @@ from src.utils import clamp, risk_band
 
 
 DEFAULT_QUALITATIVE_NOTE = (
-    "No staged RBA housing-arrears or APRA property-context extract was found. "
-    "The qualitative baseline therefore follows the March 2026 Financial Stability Review summary referenced "
-    "in the local transformation instructions: housing arrears are low and have continued to decline, "
-    "with vulnerability still concentrated among more leveraged and lower-income borrowers."
+    "ASSUMPTION (qualitative baseline, not data): no machine-readable arrears extract is staged, "
+    "so the arrears level/trend follow the March 2026 RBA Financial Stability Review narrative — "
+    "housing arrears are low and have continued to decline, with vulnerability still concentrated "
+    "among more leveraged and lower-income borrowers. Replace with a real arrears extract when staged."
 )
 
 
@@ -71,7 +71,7 @@ def build_base_arrears_environment(
         level = "Low"
         trend = "Improving"
         notes = DEFAULT_QUALITATIVE_NOTE
-        source_note = "RBA F1 cash-rate table plus local transformation-instruction baseline"
+        source_note = "RBA F1 cash-rate table (real) + qualitative arrears baseline (assumption, RBA FSR Mar-2026)"
         as_of_date = str(cash_row["as_of_date"])
 
     if apra_row is not None:

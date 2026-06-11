@@ -45,24 +45,9 @@ from datetime import date
 import numpy as np
 import pandas as pd
 
+from src.config import ABS_MACRO_FILENAMES, RAW_PUBLIC_DIR_ABS
 from src.overlays.build_industry_risk_scores import score_to_pd_multiplier, score_to_risk_level
-from src.panels.build_macro_context_panel import residential_approvals_signal
-
-
-PROPERTY_REFERENCE_DERIVED_COLUMNS = (
-    "median_dwelling_price_aud",
-    "annual_price_change_pct",
-    "peak_to_trough_decline_pct",
-    "auction_clearance_rate_pct",
-    "median_days_on_market",
-    "median_vendor_discount_pct",
-    "vacancy_rate_pct",
-    "median_weekly_rent_aud",
-    "rental_yield_gross_pct",
-    "as_of_property_reference_date",
-    "property_reference_status",
-    "contributing_sources",
-)
+from src.public_data.load_abs_manual_exports import parse_dwelling_approvals
 
 
 # Maps each ABS building-approval category to the canonical property segment
@@ -123,7 +108,9 @@ def _residential_signal_from_approvals() -> dict | None:
     placeholder. When present, returns the softness/region-risk/approvals-
     change triplet plus a real source note.
     """
-    approvals = residential_approvals_signal()
+    approvals = parse_dwelling_approvals(
+        RAW_PUBLIC_DIR_ABS / ABS_MACRO_FILENAMES["dwelling_approvals"]
+    )
     if approvals.empty:
         return None
     total_row = approvals[approvals["dwelling_type"] == "total"]
@@ -491,91 +478,4 @@ def build_property_market_overlays(
         {code: index for index, code in enumerate(VALID_PROPERTY_SEGMENT_CODES)}
     )
     contract = contract.sort_values("_sort").drop(columns=["_sort"]).reset_index(drop=True)
-    contract = _enrich_with_property_reference(contract)
-    return contract
-
-
-def _enrich_with_property_reference(contract: pd.DataFrame) -> pd.DataFrame:
-    """Append property-reference-derived columns to the 5-row contract.
-
-    For RES: aggregate across the 8 capital cities (combined property type).
-    For CRE/IND/RET/CON: the property-reference panel covers residential only,
-    so these rows carry nulls in the new columns and a status flag.
-    """
-    from src.panels.build_property_reference_panel import build_property_reference_panel
-
-    try:
-        ref_panel = build_property_reference_panel()
-    except Exception as exc:  # noqa: BLE001 — degrade gracefully on any failure
-        ref_panel = pd.DataFrame()
-
-    contract = contract.copy()
-    for col in PROPERTY_REFERENCE_DERIVED_COLUMNS:
-        contract[col] = float("nan") if col not in {
-            "property_reference_status",
-            "contributing_sources",
-            "as_of_property_reference_date",
-        } else None
-
-    if ref_panel.empty:
-        contract["property_reference_status"] = "not_available"
-        contract["contributing_sources"] = "<none>"
-        contract["as_of_property_reference_date"] = ""
-        return contract
-
-    capitals = ref_panel[ref_panel["region_type"] == "capital"].copy()
-    suburbs = ref_panel[ref_panel["region_type"].isin({"suburb", "sa3", "sa4", "postcode"})]
-
-    # Use the latest as_of_date in the panel as the reference vintage.
-    if capitals.empty:
-        latest_iso = ref_panel["as_of_date"].max()
-    else:
-        latest_iso = capitals["as_of_date"].max()
-    capitals_latest = capitals[capitals["as_of_date"] == latest_iso]
-
-    res_metrics = {
-        "median_dwelling_price_aud": float(capitals_latest["cotality_median_value_aud"].mean(skipna=True)),
-        "annual_price_change_pct": float(capitals_latest["cotality_annual_change_pct"].mean(skipna=True)),
-        "peak_to_trough_decline_pct": float(capitals_latest["cotality_peak_to_trough_decline_pct"].mean(skipna=True)),
-        "auction_clearance_rate_pct": float(capitals_latest["cotality_auction_clearance_quarter_avg_pct"].mean(skipna=True)),
-        "median_days_on_market": float(capitals_latest["domain_median_dom"].mean(skipna=True)),
-        "median_vendor_discount_pct": float(capitals_latest["domain_vendor_discount_pct"].mean(skipna=True)),
-        "vacancy_rate_pct": float(capitals_latest["sqm_vacancy_rate_pct"].mean(skipna=True)),
-        "median_weekly_rent_aud": float(suburbs["rental_bond_median_weekly_rent_aud"].mean(skipna=True)) if not suburbs.empty else float("nan"),
-        "rental_yield_gross_pct": float(capitals_latest["domain_rental_yield_gross_pct"].mean(skipna=True)),
-    }
-    contributing = sorted(
-        {
-            piece.strip()
-            for entry in capitals_latest["contributing_sources"].dropna()
-            for piece in str(entry).split(";")
-            if piece.strip() and piece.strip() != "<none>"
-        }
-    )
-    if not suburbs.empty:
-        contributing.append("State rental bonds")
-
-    has_any = any(pd.notna(v) for v in res_metrics.values())
-    status = "available" if has_any else "not_available"
-    if status == "available":
-        # Per Task 12, the property-reference panel covers residential only;
-        # commercial segments carry nulls + an explicit flag.
-        for col, val in res_metrics.items():
-            contract.loc[contract["property_segment_code"] == "RES", col] = (
-                round(val, 2) if pd.notna(val) else float("nan")
-            )
-        contract.loc[contract["property_segment_code"] == "RES", "property_reference_status"] = "available"
-        contract.loc[contract["property_segment_code"] == "RES", "contributing_sources"] = "; ".join(contributing) or "<none>"
-        contract.loc[contract["property_segment_code"] == "RES", "as_of_property_reference_date"] = latest_iso
-
-        contract.loc[contract["property_segment_code"] != "RES", "property_reference_status"] = (
-            "residential_only_in_v1"
-        )
-        contract.loc[contract["property_segment_code"] != "RES", "contributing_sources"] = "<commercial coverage out of scope>"
-        contract.loc[contract["property_segment_code"] != "RES", "as_of_property_reference_date"] = latest_iso
-    else:
-        contract["property_reference_status"] = "not_available"
-        contract["contributing_sources"] = "<none>"
-        contract["as_of_property_reference_date"] = ""
-
     return contract

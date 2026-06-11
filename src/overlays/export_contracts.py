@@ -17,14 +17,11 @@ from src.overlays.build_property_market_overlays import (
     build_property_market_overlays_by_building_type,
 )
 from src.panels.build_business_cycle_panel import build_business_cycle_panel
-from src.panels.build_industry_failure_rates import build_industry_failure_rates
 from src.panels.build_industry_financial_benchmarks import (
     build_industry_financial_benchmarks,
 )
-from src.panels.build_macro_context_panel import build_macro_context_panel
 from src.panels.build_macro_regime_flags import build_macro_regime_flags
 from src.panels.build_property_cycle_panel import build_property_cycle_panel
-from src.panels.build_property_reference_panel import build_property_reference_panel
 
 
 def _prepare_directories() -> None:
@@ -43,22 +40,16 @@ def export_contracts() -> dict[str, pd.DataFrame]:
         panel=property_cycle_panel
     )
     downturn_overlay_table = build_downturn_overlay_tables(property_cycle_panel=property_cycle_panel)
-    industry_failure_rates = build_industry_failure_rates()
     industry_financial_benchmarks = build_industry_financial_benchmarks(
         panel=business_cycle_panel
     )
-    macro_context = build_macro_context_panel()
-    property_market_detail = build_property_reference_panel()
 
     outputs = {
         "industry_risk_scores": industry_risk_scores,
         "property_market_overlays": property_market_overlays,
         "downturn_overlay_table": downturn_overlay_table,
         "macro_regime_flags": macro_regime_flags,
-        "industry_failure_rates": industry_failure_rates,
         "industry_financial_benchmarks": industry_financial_benchmarks,
-        "macro_context": macro_context,
-        "property_market_detail": property_market_detail,
         "business_cycle_panel": business_cycle_panel,
         "property_cycle_panel": property_cycle_panel,
         "property_market_overlays_by_building_type": property_market_overlays_by_building_type,

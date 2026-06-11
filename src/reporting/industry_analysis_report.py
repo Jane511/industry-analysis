@@ -71,10 +71,7 @@ EXPORT_TRANSFORM_SCRIPTS = {
     "property_market_overlays": "src/overlays/build_property_market_overlays.py",
     "downturn_overlay_table": "src/overlays/build_downturn_overlay_tables.py",
     "macro_regime_flags": "src/panels/build_macro_regime_flags.py",
-    "industry_failure_rates": "src/panels/build_industry_failure_rates.py",
     "industry_financial_benchmarks": "src/panels/build_industry_financial_benchmarks.py",
-    "macro_context": "src/panels/build_macro_context_panel.py",
-    "property_market_detail": "src/panels/build_property_reference_panel.py",
     "business_cycle_panel": "src/panels/build_business_cycle_panel.py",
     "property_cycle_panel": "src/panels/build_property_cycle_panel.py",
     "property_market_overlays_by_building_type": "src/overlays/build_property_market_overlays.py",
@@ -82,15 +79,12 @@ EXPORT_TRANSFORM_SCRIPTS = {
 
 EXPORT_INPUT_SOURCES = {
     "industry_risk_scores": "australian_industry_xlsx; business_indicators_profit_ratio_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv",
-    "property_market_overlays": "building_approvals_nonres_xlsx; property_market_detail; property_cycle_panel",
-    "downturn_overlay_table": "property_cycle_panel; rba_fsr_page; staged arrears context",
-    "macro_regime_flags": "rba_cash_rate_csv; staged arrears context",
-    "industry_failure_rates": "asic insolvency public extracts; ABS active-business counts",
+    "property_market_overlays": "building_approvals_nonres_xlsx; property_cycle_panel",
+    "downturn_overlay_table": "property_cycle_panel; scenario multipliers (assumption); qualitative arrears baseline (assumption, RBA FSR Mar-2026)",
+    "macro_regime_flags": "rba_cash_rate_csv; qualitative arrears baseline (assumption, RBA FSR Mar-2026)",
     "industry_financial_benchmarks": "australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; labour_force_industry_xlsx",
-    "macro_context": "cpi_all_groups_xlsx; cpi_subgroups_xlsx; ppi_manufacturing_xlsx; ppi_construction_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv; rba_fsr_page",
-    "property_market_detail": "property_price_index_xlsx; property_price_capitals_xlsx; total_value_dwellings_xlsx; lending_indicators_xlsx; rba_table_e2_xls; cotality_hvi_page; domain_quarterly_page; sqm_headline_page; state rental bond pages",
     "business_cycle_panel": "australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; business_indicators_consumer_sales_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv",
-    "property_cycle_panel": "building_approvals_nonres_xlsx; property reference staged sources",
+    "property_cycle_panel": "building_approvals_nonres_xlsx",
     "property_market_overlays_by_building_type": "building_approvals_nonres_xlsx; property_cycle_panel",
 }
 
@@ -334,12 +328,9 @@ def _export_detail_frames(data: dict[str, Any]) -> dict[str, pd.DataFrame]:
         "property_market_overlays": data["property_overlays"],
         "downturn_overlay_table": data["downturn"],
         "macro_regime_flags": data["macro"],
-        "industry_failure_rates": data["failure_rates"],
         "industry_financial_benchmarks": data["benchmarks"],
         "business_cycle_panel": data["business_panel"],
         "property_cycle_panel": data["property_panel"],
-        "macro_context": read_canonical_csv("macro_context", ALL_CONTRACT_EXPORTS["macro_context"]),
-        "property_market_detail": read_canonical_csv("property_market_detail", ALL_CONTRACT_EXPORTS["property_market_detail"]),
         "property_market_overlays_by_building_type": read_canonical_csv("property_market_overlays_by_building_type", ALL_CONTRACT_EXPORTS["property_market_overlays_by_building_type"]),
     }
 
@@ -657,7 +648,6 @@ def load_report_data() -> dict[str, Any]:
     property_overlays = read_canonical_csv("property_market_overlays", ALL_CONTRACT_EXPORTS["property_market_overlays"])
     downturn = read_canonical_csv("downturn_overlay_table", ALL_CONTRACT_EXPORTS["downturn_overlay_table"])
     macro = read_canonical_csv("macro_regime_flags", ALL_CONTRACT_EXPORTS["macro_regime_flags"])
-    failure_rates = read_canonical_csv("industry_failure_rates", ALL_CONTRACT_EXPORTS["industry_failure_rates"])
     benchmarks = read_canonical_csv("industry_financial_benchmarks", ALL_CONTRACT_EXPORTS["industry_financial_benchmarks"])
     business_panel = read_canonical_csv("business_cycle_panel", ALL_CONTRACT_EXPORTS["business_cycle_panel"])
     property_panel = read_canonical_csv("property_cycle_panel", ALL_CONTRACT_EXPORTS["property_cycle_panel"])
@@ -721,7 +711,6 @@ def load_report_data() -> dict[str, Any]:
         "property_overlays": property_overlays,
         "downturn": downturn,
         "macro": macro,
-        "failure_rates": failure_rates,
         "benchmarks": benchmarks,
         "business_panel": business_panel,
         "property_panel": property_panel,
@@ -1229,15 +1218,13 @@ def build_report(manifest: dict[str, dict[str, Any]] | None = None) -> dict[str,
     # --- Section 8: Export Map, Data Sources and Freshness ---
     export_map_df = pd.DataFrame(build_contract_export_summary_rows())
 
-    failure_rates_as_of = str(data["failure_rates"]["as_of_date"].iloc[0])
     benchmarks_as_of = str(data["benchmarks"]["as_of_date"].iloc[0])
 
     sources_df = pd.DataFrame([
         {"Overlay": "industry_risk_scores", "Primary source": "ABS Economic Activity Survey + RBA F1", "URL": "https://www.abs.gov.au/statistics/industry", "Refreshed": stats["macro_as_of_date"]},
         {"Overlay": "property_market_overlays", "Primary source": "ABS Building Approvals (non-residential)", "URL": "https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia", "Refreshed": stats["property_cycle_as_of_date"]},
-        {"Overlay": "downturn_overlay_table", "Primary source": "Staged arrears context + property softness", "URL": "(internal staging)", "Refreshed": stats["downturn_as_of_date"]},
-        {"Overlay": "macro_regime_flags", "Primary source": "RBA F1 cash-rate table + arrears staging", "URL": "https://www.rba.gov.au/statistics/tables/", "Refreshed": stats["macro_as_of_date"]},
-        {"Overlay": "industry_failure_rates", "Primary source": "ASIC Series 1A insolvencies ÷ ABS Cat. 8165.0 active-business counts", "URL": "https://asic.gov.au/regulatory-resources/find-a-document/statistics/insolvency-statistics/", "Refreshed": failure_rates_as_of},
+        {"Overlay": "downturn_overlay_table", "Primary source": "Real property softness (ABS) + scenario multipliers (assumption) + qualitative arrears baseline (assumption, RBA FSR Mar-2026)", "URL": "https://www.rba.gov.au/publications/fsr/", "Refreshed": stats["downturn_as_of_date"]},
+        {"Overlay": "macro_regime_flags", "Primary source": "RBA F1 cash-rate table + qualitative arrears baseline (assumption, RBA FSR Mar-2026)", "URL": "https://www.rba.gov.au/statistics/tables/", "Refreshed": stats["macro_as_of_date"]},
         {"Overlay": "industry_financial_benchmarks", "Primary source": "ABS Cat. 8155.0 + 5676.0 + 6291.0 (already loaded by business_cycle_panel)", "URL": "(derived from business_cycle_panel — no new sources)", "Refreshed": benchmarks_as_of},
         {"Overlay": "business_cycle_panel", "Primary source": "ABS EAS + RBA F1 (panel assembly)", "URL": "(derived)", "Refreshed": stats["macro_as_of_date"]},
         {"Overlay": "property_cycle_panel", "Primary source": "ABS Building Approvals", "URL": "(derived)", "Refreshed": stats["property_cycle_as_of_date"]},
@@ -1291,9 +1278,9 @@ def build_report(manifest: dict[str, dict[str, Any]] | None = None) -> dict[str,
     validation_lead_tech = (
         validation_lead_board + " "
         f"The validator is `src/validate_upstream.py`, backed by `src/validation.py`. "
-        f"It verifies presence and non-emptiness of all 6 core contract exports "
+        f"It verifies presence and non-emptiness of all 5 core contract exports "
         f"(industry_risk_scores, property_market_overlays, downturn_overlay_table, "
-        f"macro_regime_flags, industry_failure_rates, industry_financial_benchmarks) "
+        f"macro_regime_flags, industry_financial_benchmarks) "
         f"plus 3 optional explainability panels (business_cycle_panel, "
         f"property_cycle_panel, property_market_overlays_by_building_type). "
         f"End-to-end test coverage is locked via `tests/test_export_contracts.py` "

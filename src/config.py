@@ -33,26 +33,10 @@ ABS_PROPERTY_REFERENCE_FILENAMES = {
     "total_value_dwellings": "64320001_dec2025_total_value_dwellings.xlsx",
     "lending_indicators": "56010001_feb2026_lending_indicators.xlsx",
 }
-RBA_PROPERTY_REFERENCE_FILENAMES = {
-    "table_e2_housing_loan_payments": "rba_e2_housing_loan_payments_feb2026.xls",
-    "fsr_aggregates": "rba_fsr_aggregates_oct2025.csv",
-}
-PROPERTY_REFERENCE_MANUAL_GLOBS = {
-    "cotality_hvi": "cotality_hvi_*.csv",
-    "cotality_auction_clearance": "cotality_auction_clearance_*.csv",
-    "domain_quarterly": "domain_quarterly_*.csv",
-    "sqm_headline": "sqm_headline_*.csv",
-}
-STATE_RENTAL_BOND_GLOBS = {
-    "nsw": "nsw_rental_bonds_*.csv",
-    "vic": "vic_rental_report_*.csv",
-    "qld": "qld_median_rents_*.csv",
-    "sa": "sa_rental_*.csv",
-    "wa": "wa_rental_*.csv",
-    "tas": "tas_rental_*.csv",
-    "nt": "nt_rental_*.csv",
-    "act": "act_rental_*.csv",
-}
+# NOTE: the property-detail panel (Cotality / Domain / SQM / state rental bonds
+# and the RBA FSR aggregate CSV) was removed when synthetic stubs were purged —
+# the engine runs on real ABS/RBA/PTRS data only. See the README
+# "Not included (pending real data)" note for the real sources those would need.
 
 # Processed directories
 PROCESSED_ROOT_DIR = REPO_ROOT / "data" / "processed"
@@ -86,23 +70,17 @@ EXPORT_PROPERTY_MARKET_OVERLAYS_BY_BUILDING_TYPE_CSV = (
     CONTRACTS_DIR / "property_market_overlays_by_building_type.csv"
 )
 EXPORT_DOWNTURN_OVERLAY_TABLE_CSV = CONTRACTS_DIR / "downturn_overlay_table.csv"
-EXPORT_INDUSTRY_FAILURE_RATES_CSV = CONTRACTS_DIR / "industry_failure_rates.csv"
 EXPORT_INDUSTRY_FINANCIAL_BENCHMARKS_CSV = (
     CONTRACTS_DIR / "industry_financial_benchmarks.csv"
 )
-EXPORT_MACRO_CONTEXT_CSV = CONTRACTS_DIR / "macro_context.csv"
-EXPORT_PROPERTY_MARKET_DETAIL_CSV = CONTRACTS_DIR / "property_market_detail.csv"
 
-# Canonical downstream contract (required)
+# Canonical downstream contract (required) — real public data only (ABS/RBA/PTRS)
 CORE_CONTRACT_EXPORTS = {
     "industry_risk_scores": EXPORT_INDUSTRY_RISK_SCORES_CSV,
     "property_market_overlays": EXPORT_PROPERTY_MARKET_OVERLAYS_CSV,
     "downturn_overlay_table": EXPORT_DOWNTURN_OVERLAY_TABLE_CSV,
     "macro_regime_flags": EXPORT_MACRO_REGIME_FLAGS_CSV,
-    "industry_failure_rates": EXPORT_INDUSTRY_FAILURE_RATES_CSV,
     "industry_financial_benchmarks": EXPORT_INDUSTRY_FINANCIAL_BENCHMARKS_CSV,
-    "macro_context": EXPORT_MACRO_CONTEXT_CSV,
-    "property_market_detail": EXPORT_PROPERTY_MARKET_DETAIL_CSV,
 }
 
 # Optional explainability panels (published with the contract)

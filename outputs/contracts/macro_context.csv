@@ -1,9 +1,0 @@
-as_of_date,period_label,cpi_yoy_pct,cpi_qoq_pct,cpi_housing_yoy_pct,cpi_food_yoy_pct,cpi_transport_yoy_pct,ppi_manufacturing_yoy_pct,ppi_construction_yoy_pct,unemployment_rate_pct,cash_rate_pct,household_debt_to_disposable_income_ratio,national_arrears_30d_pct,source_note
-2024-06-30,2024Q2,,,,,,,,,3.85,184.0,1.1,Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR
-2024-09-30,2024Q3,,,,,,,,,3.85,184.0,1.1,Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR
-2024-12-31,2024Q4,,,,,,,,,3.85,184.0,1.1,Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR
-2025-03-31,2025Q1,,,,,,,,,3.85,184.0,1.1,Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR
-2025-06-30,2025Q2,,,,,,,,,3.85,184.0,1.1,Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR
-2025-09-30,2025Q3,,,,,,,,,3.85,184.0,1.1,Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR
-2025-12-31,2025Q4,,,,,,,,,3.85,184.0,1.1,Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR
-2026-03-31,2026Q1,,,,,,,,,3.85,184.0,1.1,Skeleton panel — ABS Cat. 6401.0 / 6427.0 / 6202.0 not staged. Populated columns: RBA F1 cash rate; RBA FSR

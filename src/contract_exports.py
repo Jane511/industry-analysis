@@ -88,22 +88,6 @@ CONTRACT_EXPORT_SPECS: tuple[ContractExportSpec, ...] = (
         ),
     ),
     ContractExportSpec(
-        key="industry_failure_rates",
-        csv_path=ALL_CONTRACT_EXPORTS["industry_failure_rates"],
-        contract_role="Core downstream contract",
-        join_grain="ANZSIC-division snapshot",
-        includes=(
-            "Realised insolvency counts (ASIC Series 1A) divided by ABS active-business "
-            "counts per ANZSIC division, plus YoY change in the rate."
-        ),
-        downstream_layers=(
-            "PD backtest and validation",
-            "ECL current-state anchoring",
-            "Governance concentration reporting",
-            "External sector benchmarks",
-        ),
-    ),
-    ContractExportSpec(
         key="industry_financial_benchmarks",
         csv_path=ALL_CONTRACT_EXPORTS["industry_financial_benchmarks"],
         contract_role="Core downstream contract",
@@ -152,43 +136,6 @@ CONTRACT_EXPORT_SPECS: tuple[ContractExportSpec, ...] = (
             "Collateral benchmark diagnostics",
             "Property stress interpretation",
             "Technical report detail",
-        ),
-    ),
-    ContractExportSpec(
-        key="macro_context",
-        csv_path=ALL_CONTRACT_EXPORTS["macro_context"],
-        contract_role="Core downstream contract",
-        join_grain="Quarter snapshot (national)",
-        includes=(
-            "Macro context per quarter — CPI all-groups + housing/food/transport "
-            "subgroup YoY/QoQ change, PPI manufacturing & construction YoY, "
-            "headline labour proxy, RBA cash rate, RBA FSR aggregates "
-            "(household debt ratio, national arrears rate)."
-        ),
-        downstream_layers=(
-            "PD macro context features",
-            "Scenario / stress testing macro overlay",
-            "Board reporting headline cycle commentary",
-            "External macro benchmarks",
-        ),
-    ),
-    ContractExportSpec(
-        key="property_market_detail",
-        csv_path=ALL_CONTRACT_EXPORTS["property_market_detail"],
-        contract_role="Core downstream contract",
-        join_grain="(region_id, property_type, as_of_date)",
-        includes=(
-            "Multi-source free property panel — capital city + suburb rows. "
-            "ABS Cat. 6416.0 / 6432.0 / 5601.0, Cotality HVI + auction clearance, "
-            "Domain Quarterly capitals + top suburbs, SQM headline, RBA Table E2, "
-            "and 8-state rental bond medians, with a data_completeness_pct flag "
-            "and a contributing_sources column on every row."
-        ),
-        downstream_layers=(
-            "Property-backed PD context (richer than 5-row overlay)",
-            "LGD collateral-region sensitivity",
-            "Scenario builder property inputs",
-            "Board reporting property deep-dives",
         ),
     ),
     ContractExportSpec(

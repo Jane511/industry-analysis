@@ -1,5 +1,7 @@
 # Methodology Manual — Property-Backed Lending Overlays
 
+> **Real-data-only update:** the engine runs on real public data only (ABS / RBA / PTRS); all synthetic/staged data has been removed. The `industry_failure_rates`, `property_market_detail`, and `macro_context` exports were **removed** because they cannot be built from real data without staging extra sources (ASIC Series 1A insolvencies + ABS Cat. 8165.0; ABS residential property price indexes; ABS CPI/PPI). Sections below describing those exports are retained as forward-looking methodology but are **not currently built** — see the README "Not included (pending real data)" note.
+
 ## 1) Purpose
 
 This manual explains how `industry-analysis` builds public-data overlays for **property-backed commercial lending** (for example, investment property, bridging, development, and construction-related credit where collateral and market conditions are central).
@@ -261,6 +263,5 @@ What staff should check:
 
 - If network download is blocked, stage required public files manually and rerun.
 - If parquet export fails, install dependencies from `requirements.txt`.
-- If ASIC Series 1A is not staged and `ASIC_USE_STUB` is unset, `export_contracts.py` will fail loud — this is intentional, do not bypass.
 - Use `source_note` and validation outputs to confirm whether the run used primary datasets or fallback proxies.
 - For property-backed lending, treat `industry_financial_benchmarks` as the APG-220-aligned reference for the operating-company side of the deal and pair it with the property overlays for the collateral side.

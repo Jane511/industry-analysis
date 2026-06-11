@@ -127,7 +127,8 @@ def test_arrears_environment_defaults_to_low_improving_when_context_missing() ->
     assert row["arrears_environment_level"] == "Low"
     assert row["arrears_trend"] == "Improving"
     assert float(row["macro_housing_risk_score"]) < 2.5
-    assert "local transformation instructions" in row["notes"]
+    assert "ASSUMPTION" in row["notes"]
+    assert "RBA Financial Stability Review" in row["notes"]
 
 
 def test_property_downturn_overlays_are_monotonic() -> None:
