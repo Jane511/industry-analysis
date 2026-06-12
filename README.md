@@ -19,6 +19,33 @@ stress multipliers — with a board-ready report.**
 
 ---
 
+## Key charts
+
+*All charts are regenerated from the committed contract CSVs in [outputs/contracts/](outputs/contracts/)
+by [reports/make_figures.py](reports/make_figures.py) — public-source aggregated signals only.*
+
+### 1. Which industries are riskiest right now
+![ANZSIC industries ranked by base risk score, riskiest at top](reports/figures/industry_risk_scores_ranked.png)
+
+**What this shows:** all 18 ANZSIC industry divisions ranked by their base risk score (1 = low → 5 = high), coloured by risk band.
+**Why it matters:** it instantly answers the question a credit committee asks — where in the book is the cyclical risk concentrated right now (agriculture, mining, manufacturing, retail at the top).
+
+### 2. Downturn overlay — stress multipliers by scenario
+![PD, LGD, CCF multipliers and property haircut across base, mild, moderate and severe scenarios](reports/figures/downturn_scenario_multipliers.png)
+
+**What this shows:** the PD, LGD and CCF multipliers (and property-value haircut) the overlay applies under base, mild, moderate and severe downturns.
+**Why it matters:** these are the ready-to-use stress dials a PD/LGD/ECL model multiplies through — the bridge from "current" to "stressed" expected loss.
+
+### 3. Where the property market is soft
+![Commercial property segments ranked by market softness score](reports/figures/property_market_softness.png)
+
+**What this shows:** commercial-property segments ranked by a market-softness score built from real ABS building-approvals data, with each segment's cycle stage.
+**Why it matters:** property-secured lending risk follows the building cycle — offices are in a clear downturn while other segments hold up, which should shape LGD and appetite by segment.
+
+*Full methodology and the board/technical reports: see [notebooks/](notebooks/) and [outputs/reports/](outputs/reports/).*
+
+---
+
 ## Why this matters for credit risk
 
 A lender's loss rate is driven as much by *where* it lends — which industries
