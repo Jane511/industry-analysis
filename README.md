@@ -272,3 +272,7 @@ makes the outputs trustworthy as an industry benchmark.
 
 *Built by Jane Wu. Real public data only (ABS/RBA/PTRS); a sector-level
 reference layer, not a firm-level credit model.*
+
+## License
+
+Released under the MIT License — free to read, run, and reuse with attribution.
