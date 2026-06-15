@@ -1,3 +1,5 @@
+![CI](https://github.com/Jane511/industry-analysis/actions/workflows/ci.yml/badge.svg)
+
 # Australian Industry & Property Risk Reference Layer
 
 **Turns real public Australian data (ABS / RBA / PTRS) into credit-risk
