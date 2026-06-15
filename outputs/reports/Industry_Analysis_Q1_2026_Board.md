@@ -1,10 +1,10 @@
 # Industry Analysis Report — Q1 2026
 
-*Board Summary variant. Generated 2026-06-12.*
+*Board Summary variant. Generated 2026-06-15.*
 
 
 
-Macro and downturn overlays as of 2026-06-11. Property cycle data as of 2026-02-01.
+Macro and downturn overlays as of 2026-06-12. Property cycle data as of 2026-02-01.
 
 This is a summary view for non-technical reviewers. Every table and chart in this document traces back to the canonical CSV contracts in `outputs/contracts/`. For full per-column detail, methodology references, and the audit-log appendix, see the Technical variant.
 
@@ -16,7 +16,7 @@ This report reads the credit-risk temperature of the Australian economy from pub
 
 Headline picture: the cash rate is 4.35% (+0.50 points over the past year) and the arrears backdrop is low and improving, so the macro regime is set to 'base'. Against that backdrop, 4 of 18 industries score Elevated on the 1-5 risk scale, and 0 of 5 property segments are in downturn. The downturn-overlay table translates this into stress multipliers — up to 2.00x on PD in a severe scenario — that a pricing or expected-loss model can apply directly.
 
-Macro and downturn overlays are dated 2026-06-11; property-cycle data is dated 2026-02-01. The headline numbers are in Section 2; every figure traces back to a named public source in Sections 3-5.
+Macro and downturn overlays are dated 2026-06-12; property-cycle data is dated 2026-02-01. The headline numbers are in Section 2; every figure traces back to a named public source in Sections 3-5.
 
 ## 2. Headline Numbers
 
@@ -26,46 +26,46 @@ These are the calibrated outputs and operating numbers reviewers usually need fi
 
 | Metric | Value | Vintage | Trace |
 | --- | --- | --- | --- |
-| Industries covered | 18 | 2026-06-11 | industry_risk_scores.csv |
+| Industries covered | 18 | 2026-06-12 | industry_risk_scores.csv |
 | Property segments covered | 5 | 2026-02-01 | property_market_overlays.csv |
-| Cash rate latest pct | 4.35 | 2026-06-11 | rba_cash_rate_csv -> macro_regime_flags.csv |
-| Cash rate 1y change pctpts | +0.50 | 2026-06-11 | rba_cash_rate_csv -> industry_risk_scores.csv |
-| Elevated industry count | 4 | 2026-06-11 | industry_risk_scores.csv |
+| Cash rate latest pct | 4.35 | 2026-06-12 | rba_cash_rate_csv -> macro_regime_flags.csv |
+| Cash rate 1y change pctpts | +0.50 | 2026-06-12 | rba_cash_rate_csv -> industry_risk_scores.csv |
+| Elevated industry count | 4 | 2026-06-12 | industry_risk_scores.csv |
 | Downturn property segment count | 0 | 2026-02-01 | property_market_overlays.csv |
-| Macro regime flag | base | 2026-06-11 | macro_regime_flags.csv |
-| Severe PD multiplier | 2.00 | 2026-06-11 | downturn_overlay_table.csv |
+| Macro regime flag | base | 2026-06-12 | macro_regime_flags.csv |
+| Severe PD multiplier | 2.00 | 2026-06-12 | downturn_overlay_table.csv |
 
 *Industry risk scores - full current output*
 
 | as_of_date | anzsic_division_code | industry | classification_risk_score | macro_risk_score | industry_base_risk_score | industry_base_risk_level | pd_multiplier | cash_rate_latest_pct | cash_rate_change_1y_pctpts |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-06-12 | A | Agriculture, Forestry and Fishing | 4.12 | 3.2 | 3.71 | Elevated | 1.15 | 4.35 | 0.5 |
-| 2026-06-12 | B | Mining | 3.88 | 2.8 | 3.39 | Elevated | 1.15 | 4.35 | 0.5 |
-| 2026-06-12 | C | Manufacturing | 3.5 | 3.2 | 3.36 | Elevated | 1.15 | 4.35 | 0.5 |
-| 2026-06-12 | G | Retail Trade | 3.25 | 3.2 | 3.23 | Elevated | 1.15 | 4.35 | 0.5 |
-| 2026-06-12 | F | Wholesale Trade | 3.12 | 3.2 | 3.16 | Moderate-high | 1.1 | 4.35 | 0.5 |
-| 2026-06-12 | R | Arts and Recreation Services | 2.38 | 3.8 | 3.02 | Moderate-high | 1.1 | 4.35 | 0.5 |
-| 2026-06-12 | H | Accommodation and Food Services | 2.75 | 2.6 | 2.68 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | E | Construction | 2.75 | 2.6 | 2.68 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | I | Transport, Postal and Warehousing | 2.5 | 2.8 | 2.64 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | J | Information Media and Telecommunications | 2.12 | 3.0 | 2.52 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | O | Public Administration and Safety | 1.62 | 3.6 | 2.51 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | P | Education and Training | 1.75 | 3.4 | 2.49 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | L | Rental, Hiring and Real Estate Services | 2.38 | 2.6 | 2.48 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | N | Administrative and Support Services | 2.12 | 2.8 | 2.43 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | S | Other Services | 2.38 | 2.2 | 2.3 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | D | Electricity, Gas, Water and Waste Services | 2.25 | 2.0 | 2.14 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | Q | Health Care and Social Assistance | 1.5 | 2.8 | 2.08 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | M | Professional, Scientific and Technical Services | 1.75 | 2.4 | 2.04 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | A | Agriculture, Forestry and Fishing | 4.12 | 3.2 | 3.71 | Elevated | 1.15 | 4.35 | 0.5 |
+| 2026-06-15 | B | Mining | 3.88 | 2.8 | 3.39 | Elevated | 1.15 | 4.35 | 0.5 |
+| 2026-06-15 | C | Manufacturing | 3.5 | 3.2 | 3.36 | Elevated | 1.15 | 4.35 | 0.5 |
+| 2026-06-15 | G | Retail Trade | 3.25 | 3.2 | 3.23 | Elevated | 1.15 | 4.35 | 0.5 |
+| 2026-06-15 | F | Wholesale Trade | 3.12 | 3.2 | 3.16 | Moderate-high | 1.1 | 4.35 | 0.5 |
+| 2026-06-15 | R | Arts and Recreation Services | 2.38 | 3.8 | 3.02 | Moderate-high | 1.1 | 4.35 | 0.5 |
+| 2026-06-15 | H | Accommodation and Food Services | 2.75 | 2.6 | 2.68 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | E | Construction | 2.75 | 2.6 | 2.68 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | I | Transport, Postal and Warehousing | 2.5 | 2.8 | 2.64 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | J | Information Media and Telecommunications | 2.12 | 3.0 | 2.52 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | O | Public Administration and Safety | 1.62 | 3.6 | 2.51 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | P | Education and Training | 1.75 | 3.4 | 2.49 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | L | Rental, Hiring and Real Estate Services | 2.38 | 2.6 | 2.48 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | N | Administrative and Support Services | 2.12 | 2.8 | 2.43 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | S | Other Services | 2.38 | 2.2 | 2.3 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | D | Electricity, Gas, Water and Waste Services | 2.25 | 2.0 | 2.14 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | Q | Health Care and Social Assistance | 1.5 | 2.8 | 2.08 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | M | Professional, Scientific and Technical Services | 1.75 | 2.4 | 2.04 | Medium | 1.0 | 4.35 | 0.5 |
 
 *Downturn multipliers - full current output*
 
-| scenario | pd_multiplier | lgd_multiplier | ccf_multiplier | property_value_haircut | notes | as_of_date |
-| --- | --- | --- | --- | --- | --- | --- |
-| base | 1.0 | 1.0 | 1.0 | 0.0 | Current environment (base scenario). Anchored to a low / improving arrears backdrop (qualitative assumption from RBA FSR) and an average property-cycle softness score of 2.73 (real, ABS building approvals). | 2026-06-11 |
-| mild | 1.2 | 1.1 | 1.05 | 0.05 | ASSUMPTION (scenario parameter) — illustrative mild downturn for conservative portfolio calibration. | 2026-06-11 |
-| moderate | 1.5 | 1.2 | 1.1 | 0.1 | ASSUMPTION (scenario parameter) — illustrative moderate downturn for stressed pricing and EL scenario analysis. | 2026-06-11 |
-| severe | 2.0 | 1.3 | 1.2 | 0.2 | ASSUMPTION (scenario parameter) — illustrative severe downturn; not a calibrated regulatory stress parameter. | 2026-06-11 |
+| scenario | pd_multiplier | lgd_multiplier | ccf_multiplier | property_value_haircut | macro_path | notes | as_of_date |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| base | 1.0 | 1.0 | 1.0 | 0.0 | Current environment, no recession overlay: GDP growth around trend, unemployment broadly stable, house prices at latest observed levels. | Current environment (base scenario). Anchored to a low / improving arrears backdrop (qualitative assumption from RBA FSR) and an average property-cycle softness score of 2.73 (real, ABS building approvals). No diversification benefit assumed (APG 113 para 92). | 2026-06-12 |
+| mild | 1.2 | 1.1 | 1.05 | 0.05 | Basel CRE36.51 mandatory minimum — two consecutive quarters of zero GDP growth; unemployment +~1.0-1.5pp; house prices ~-5 to -10%. | ASSUMPTION (scenario parameter) — mild recession = Basel CRE36.51 two-quarters-zero-growth minimum, for conservative portfolio calibration. No diversification benefit assumed (APG 113 para 92). | 2026-06-12 |
+| moderate | 1.5 | 1.2 | 1.1 | 0.1 | Deeper recession: multi-quarter contraction; unemployment +~2-3pp; house prices ~-10 to -15%. | ASSUMPTION (scenario parameter) — illustrative moderate downturn for stressed pricing and EL scenario analysis. No diversification benefit assumed (APG 113 para 92). | 2026-06-12 |
+| severe | 2.0 | 1.3 | 1.2 | 0.2 | GFC-like severe-but-plausible path: deep multi-quarter contraction; unemployment +~3-4pp; house prices ~-20 to -30%. | ASSUMPTION (scenario parameter) — illustrative severe downturn; not a calibrated regulatory stress parameter. No diversification benefit assumed (APG 113 para 92). | 2026-06-12 |
 
 ## 3. Data Sources Inventory
 
@@ -78,25 +78,25 @@ One row is shown for every item in the canonical source registry. Missing and ma
 | anzsic_classification_page | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/latest-release | landing page |  |  |  | missing |  |
 | anzsic_division_codes_page | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/2006-revision-2-0/numbering-system-and-titles/division-codes-and-titles | landing page |  |  |  | missing |  |
 | anzsic_division_subdivision_class_page | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/2006-revision-2-0/numbering-system-and-titles/division-subdivision-group-and-class-codes-and-titles | landing page |  |  |  | missing |  |
-| australian_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/industry-overview/australian-industry/2023-24/81550DO001_202324.xlsx | XLSX |  | 2026-06-11T23:56:03+00:00 | 597090 | manually staged |  |
-| building_approvals_nonres_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/87310051.xlsx | XLSX |  | 2026-06-11T23:56:06+00:00 | 185814 | manually staged |  |
+| australian_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/industry-overview/australian-industry/2023-24/81550DO001_202324.xlsx | XLSX |  | 2026-06-15T04:40:20+00:00 | 597090 | manually staged |  |
+| building_approvals_nonres_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/87310051.xlsx | XLSX |  | 2026-06-15T04:40:23+00:00 | 185814 | manually staged |  |
 | business_indicators_consumer_sales_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760024.xlsx | XLSX |  |  |  | missing |  |
-| business_indicators_inventory_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760023.xlsx | XLSX |  | 2026-06-11T23:56:05+00:00 | 51783 | manually staged |  |
-| business_indicators_profit_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760022.xlsx | XLSX |  | 2026-06-11T23:56:04+00:00 | 56253 | manually staged |  |
+| business_indicators_inventory_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760023.xlsx | XLSX |  | 2026-06-15T04:40:21+00:00 | 51783 | manually staged |  |
+| business_indicators_profit_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760022.xlsx | XLSX |  | 2026-06-15T04:40:21+00:00 | 56253 | manually staged |  |
 | cpi_all_groups_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640101.xlsx | XLSX |  |  |  | missing |  |
 | cpi_subgroups_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640107.xlsx | XLSX |  |  |  | missing |  |
 | dwelling_approvals_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/875206.xlsx | XLSX |  |  |  | missing |  |
 | dwelling_value_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/875211.xlsx | XLSX |  |  |  | missing |  |
-| labour_force_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia-detailed/feb-2026/6291004.xlsx | XLSX |  | 2026-06-11T23:56:06+00:00 | 160939 | manually staged |  |
+| labour_force_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia-detailed/feb-2026/6291004.xlsx | XLSX |  | 2026-06-15T04:40:22+00:00 | 160939 | manually staged |  |
 | lending_indicators_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/finance/lending-indicators/feb-2026/560101.xlsx | XLSX |  |  |  | missing |  |
 | ppi_construction_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642713.xlsx | XLSX |  |  |  | missing |  |
 | ppi_manufacturing_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642712.xlsx | XLSX |  |  |  | missing |  |
 | property_price_capitals_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/residential-property-price-indexes-eight-capital-cities/dec-2025/641602.xlsx | XLSX |  |  |  | missing |  |
 | property_price_index_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/residential-property-price-indexes-eight-capital-cities/dec-2025/641601.xlsx | XLSX |  |  |  | missing |  |
-| ptrs_cycle_8_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2025-07/reg-update-july-2025.pdf | PDF |  | 2026-06-11T23:56:07+00:00 | 2055606 | manually staged |  |
-| ptrs_cycle_9_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2026-01/regulators-update-202601.pdf | PDF |  | 2026-06-11T23:56:08+00:00 | 3629142 | manually staged |  |
-| ptrs_guidance | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/regulatory-resource/ptrs-guidance-materials-march2025.pdf | PDF |  | 2026-06-11T23:56:09+00:00 | 947450 | manually staged |  |
-| rba_cash_rate_csv | Reserve Bank of Australia | https://www.rba.gov.au/statistics/tables/csv/f1-data.csv | CSV |  | 2026-06-11T23:56:07+00:00 | 302081 | manually staged |  |
+| ptrs_cycle_8_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2025-07/reg-update-july-2025.pdf | PDF |  | 2026-06-15T04:40:25+00:00 | 2055606 | manually staged |  |
+| ptrs_cycle_9_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2026-01/regulators-update-202601.pdf | PDF |  | 2026-06-15T04:40:25+00:00 | 3629142 | manually staged |  |
+| ptrs_guidance | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/regulatory-resource/ptrs-guidance-materials-march2025.pdf | PDF |  | 2026-06-15T04:40:26+00:00 | 947450 | manually staged |  |
+| rba_cash_rate_csv | Reserve Bank of Australia | https://www.rba.gov.au/statistics/tables/csv/f1-data.csv | CSV |  | 2026-06-15T04:40:24+00:00 | 302148 | manually staged |  |
 | rba_chart_pack_page | Reserve Bank of Australia | https://www.rba.gov.au/chart-pack/ | landing page |  |  |  | missing |  |
 | rba_chart_pack_pdf | Reserve Bank of Australia | https://www.rba.gov.au/chart-pack/ | PDF | March 2026 | 2026-04-28T08:01:43+00:00 | 5434746 | auto-downloaded | 66945f0e420217b86069e72880c20b4670f17a2ff52e6e0de9c9d13a174364d9 |
 | rba_fsr_page | Reserve Bank of Australia | https://www.rba.gov.au/publications/fsr/ | landing page |  |  |  | missing |  |
@@ -114,14 +114,14 @@ Every canonical CSV export in outputs/contracts/ appears exactly once with its i
 
 | Output filename | Input source(s) | Transformation script | Row count of output | Last build timestamp | Validation status |
 | --- | --- | --- | --- | --- | --- |
-| industry_risk_scores.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/overlays/build_industry_risk_scores.py | 18 | 2026-06-12T09:56:11 | PASS: present_nonempty |
-| property_market_overlays.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 5 | 2026-06-12T09:56:11 | PASS: present_nonempty |
-| downturn_overlay_table.csv | property_cycle_panel; scenario multipliers (assumption); qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/overlays/build_downturn_overlay_tables.py | 4 | 2026-06-12T09:56:11 | PASS: present_nonempty |
-| macro_regime_flags.csv | rba_cash_rate_csv; qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/panels/build_macro_regime_flags.py | 1 | 2026-06-12T09:56:11 | PASS: present_nonempty |
-| industry_financial_benchmarks.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; labour_force_industry_xlsx | src/panels/build_industry_financial_benchmarks.py | 18 | 2026-06-12T09:56:11 | PASS: present_nonempty |
-| business_cycle_panel.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; business_indicators_consumer_sales_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/panels/build_business_cycle_panel.py | 18 | 2026-06-12T09:56:11 | PASS: present_nonempty |
-| property_cycle_panel.csv | building_approvals_nonres_xlsx | src/panels/build_property_cycle_panel.py | 11 | 2026-06-12T09:56:11 | PASS: present_nonempty |
-| property_market_overlays_by_building_type.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 11 | 2026-06-12T09:56:11 | PASS: present_nonempty |
+| industry_risk_scores.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/overlays/build_industry_risk_scores.py | 18 | 2026-06-15T14:40:29 | PASS: present_nonempty |
+| property_market_overlays.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 5 | 2026-06-15T14:40:29 | PASS: present_nonempty |
+| downturn_overlay_table.csv | property_cycle_panel; scenario multipliers (assumption); qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/overlays/build_downturn_overlay_tables.py | 4 | 2026-06-15T14:40:29 | PASS: present_nonempty |
+| macro_regime_flags.csv | rba_cash_rate_csv; qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/panels/build_macro_regime_flags.py | 1 | 2026-06-15T14:40:29 | PASS: present_nonempty |
+| industry_financial_benchmarks.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; labour_force_industry_xlsx | src/panels/build_industry_financial_benchmarks.py | 18 | 2026-06-15T14:40:29 | PASS: present_nonempty |
+| business_cycle_panel.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; business_indicators_consumer_sales_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/panels/build_business_cycle_panel.py | 18 | 2026-06-15T14:40:29 | PASS: present_nonempty |
+| property_cycle_panel.csv | building_approvals_nonres_xlsx | src/panels/build_property_cycle_panel.py | 11 | 2026-06-15T14:40:29 | PASS: present_nonempty |
+| property_market_overlays_by_building_type.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 11 | 2026-06-15T14:40:29 | PASS: present_nonempty |
 
 ## 5. Detailed Analysis
 
@@ -133,7 +133,7 @@ The tables below include the actual analytical rows behind the report, not only 
 | --- | --- | --- |
 | industry_risk_scores.csv | Compact industry overlay: classification score, macro score, base risk score/level, and shared cash-rate backdrop fields. | PD overlays / scorecards; EL and pricing overlays; External sector benchmarks; Board reporting |
 | property_market_overlays.csv | Compact property overlay: cycle stage, softness score/band, region risk, approvals change, and approvals-proxy activity signals. | LGD and collateral overlays; Property-backed PD context; Pricing and policy overlays; Board reporting |
-| downturn_overlay_table.csv | Scenario multipliers for PD, LGD, and CCF plus property haircuts and scenario notes. | PD scenario layer; LGD scenario layer; CCF / EAD scenario layer; Stress testing and pricing what-if views |
+| downturn_overlay_table.csv | Scenario multipliers for PD, LGD, and CCF plus property haircuts, a per-scenario macro-path note (mild = Basel CRE36.51), and scenario notes (incl. the no-diversification assumption). | PD scenario layer; LGD scenario layer; CCF / EAD scenario layer; Stress testing and pricing what-if views |
 | macro_regime_flags.csv | Environment selector: cash-rate regime, arrears level/trend, macro regime flag, and source dataset. | PD regime conditioning; LGD / EL regime conditioning; Scenario-row selection; Portfolio and board reporting |
 | industry_financial_benchmarks.csv | Per-ANZSIC-division medians of the financial ratios APG 220 paragraph 64 calls out as standard credit-assessment benchmarks: EBITDA margin, gross operating profit-to-sales, wages-to-sales, inventory days, sales growth, employment growth, inventory-to-sales, and sales per employee. | Origination scorecard industry-relative ratios; PD model industry-comparison features; ECL borrower-vs-industry signals; External sector benchmarks |
 | business_cycle_panel.csv | Wide industry diagnostics: structural factors, public benchmark metrics, macro factor scores, demand proxies, inventory flags, and explainability fields behind the industry overlay. | PD explainability; External benchmark diagnostics; Challenger overlay analysis; Technical report detail |
@@ -144,72 +144,72 @@ The tables below include the actual analytical rows behind the report, not only 
 
 | as_of_date | anzsic_division_code | industry | classification_risk_score | macro_risk_score | industry_base_risk_score | industry_base_risk_level | pd_multiplier | cash_rate_latest_pct | cash_rate_change_1y_pctpts |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-06-12 | A | Agriculture, Forestry and Fishing | 4.12 | 3.2 | 3.71 | Elevated | 1.15 | 4.35 | 0.5 |
-| 2026-06-12 | B | Mining | 3.88 | 2.8 | 3.39 | Elevated | 1.15 | 4.35 | 0.5 |
-| 2026-06-12 | C | Manufacturing | 3.5 | 3.2 | 3.36 | Elevated | 1.15 | 4.35 | 0.5 |
-| 2026-06-12 | G | Retail Trade | 3.25 | 3.2 | 3.23 | Elevated | 1.15 | 4.35 | 0.5 |
-| 2026-06-12 | F | Wholesale Trade | 3.12 | 3.2 | 3.16 | Moderate-high | 1.1 | 4.35 | 0.5 |
-| 2026-06-12 | R | Arts and Recreation Services | 2.38 | 3.8 | 3.02 | Moderate-high | 1.1 | 4.35 | 0.5 |
-| 2026-06-12 | H | Accommodation and Food Services | 2.75 | 2.6 | 2.68 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | E | Construction | 2.75 | 2.6 | 2.68 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | I | Transport, Postal and Warehousing | 2.5 | 2.8 | 2.64 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | J | Information Media and Telecommunications | 2.12 | 3.0 | 2.52 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | O | Public Administration and Safety | 1.62 | 3.6 | 2.51 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | P | Education and Training | 1.75 | 3.4 | 2.49 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | L | Rental, Hiring and Real Estate Services | 2.38 | 2.6 | 2.48 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | N | Administrative and Support Services | 2.12 | 2.8 | 2.43 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | S | Other Services | 2.38 | 2.2 | 2.3 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | D | Electricity, Gas, Water and Waste Services | 2.25 | 2.0 | 2.14 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | Q | Health Care and Social Assistance | 1.5 | 2.8 | 2.08 | Medium | 1.0 | 4.35 | 0.5 |
-| 2026-06-12 | M | Professional, Scientific and Technical Services | 1.75 | 2.4 | 2.04 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | A | Agriculture, Forestry and Fishing | 4.12 | 3.2 | 3.71 | Elevated | 1.15 | 4.35 | 0.5 |
+| 2026-06-15 | B | Mining | 3.88 | 2.8 | 3.39 | Elevated | 1.15 | 4.35 | 0.5 |
+| 2026-06-15 | C | Manufacturing | 3.5 | 3.2 | 3.36 | Elevated | 1.15 | 4.35 | 0.5 |
+| 2026-06-15 | G | Retail Trade | 3.25 | 3.2 | 3.23 | Elevated | 1.15 | 4.35 | 0.5 |
+| 2026-06-15 | F | Wholesale Trade | 3.12 | 3.2 | 3.16 | Moderate-high | 1.1 | 4.35 | 0.5 |
+| 2026-06-15 | R | Arts and Recreation Services | 2.38 | 3.8 | 3.02 | Moderate-high | 1.1 | 4.35 | 0.5 |
+| 2026-06-15 | H | Accommodation and Food Services | 2.75 | 2.6 | 2.68 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | E | Construction | 2.75 | 2.6 | 2.68 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | I | Transport, Postal and Warehousing | 2.5 | 2.8 | 2.64 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | J | Information Media and Telecommunications | 2.12 | 3.0 | 2.52 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | O | Public Administration and Safety | 1.62 | 3.6 | 2.51 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | P | Education and Training | 1.75 | 3.4 | 2.49 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | L | Rental, Hiring and Real Estate Services | 2.38 | 2.6 | 2.48 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | N | Administrative and Support Services | 2.12 | 2.8 | 2.43 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | S | Other Services | 2.38 | 2.2 | 2.3 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | D | Electricity, Gas, Water and Waste Services | 2.25 | 2.0 | 2.14 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | Q | Health Care and Social Assistance | 1.5 | 2.8 | 2.08 | Medium | 1.0 | 4.35 | 0.5 |
+| 2026-06-15 | M | Professional, Scientific and Technical Services | 1.75 | 2.4 | 2.04 | Medium | 1.0 | 4.35 | 0.5 |
 
 *Full detail rows from property_market_overlays.csv*
 
 | as_of_date | property_segment | property_segment_code | pd_multiplier | market_softness_score | region_risk_score | cycle_stage | source_note | market_softness_band | market_softness_level |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-06-12 | Residential | RES | 1.0 | 2.5 | 2.87 | neutral | Residential placeholder — ABS Cat. 8752.0 residential dwelling-approvals file not yet staged; RES row uses a neutral composite pending that upgrade. | normal | Medium |
-| 2026-06-12 | Commercial (office, health, education, accommodation) | CRE | 1.1 | 3.06 | 3.21 | slowing | Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Aged care facilities, Education buildings, Health buildings, Offices, Short term accommodation buildings | softening | Moderate-high |
-| 2026-06-12 | Industrial / Warehouse | IND | 1.0 | 2.23 | 2.56 | neutral | Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Agricultural and aquacultural buildings, Warehouses | normal | Medium |
-| 2026-06-12 | Retail Property | RET | 1.1 | 3.15 | 3.14 | slowing | Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Retail and wholesale trade buildings | softening | Moderate-high |
-| 2026-06-12 | Construction (non-residential development) | CON | 1.1 | 2.92 | 3.08 | slowing | Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Aged care facilities, Agricultural and aquacultural buildings, Education buildings, Health buildings, Offices, Retail and wholesale trade buildings, Short term accommodation buildings, Warehouses | softening | Moderate-high |
+| 2026-06-15 | Residential | RES | 1.0 | 2.5 | 2.87 | neutral | Residential placeholder — ABS Cat. 8752.0 residential dwelling-approvals file not yet staged; RES row uses a neutral composite pending that upgrade. | normal | Medium |
+| 2026-06-15 | Commercial (office, health, education, accommodation) | CRE | 1.1 | 3.06 | 3.21 | slowing | Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Aged care facilities, Education buildings, Health buildings, Offices, Short term accommodation buildings | softening | Moderate-high |
+| 2026-06-15 | Industrial / Warehouse | IND | 1.0 | 2.23 | 2.56 | neutral | Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Agricultural and aquacultural buildings, Warehouses | normal | Medium |
+| 2026-06-15 | Retail Property | RET | 1.1 | 3.15 | 3.14 | slowing | Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Retail and wholesale trade buildings | softening | Moderate-high |
+| 2026-06-15 | Construction (non-residential development) | CON | 1.1 | 2.92 | 3.08 | slowing | Aggregated from ABS Cat. 8731.0 non-residential building approvals. Exposure-weighted (12-month mean approval $ per building type). Constituent ABS categories: Aged care facilities, Agricultural and aquacultural buildings, Education buildings, Health buildings, Offices, Retail and wholesale trade buildings, Short term accommodation buildings, Warehouses | softening | Moderate-high |
 
 *Full detail rows from downturn_overlay_table.csv*
 
-| as_of_date | scenario | pd_multiplier | lgd_multiplier | ccf_multiplier | property_value_haircut | notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| 2026-06-11 | base | 1.0 | 1.0 | 1.0 | 0.0 | Current environment (base scenario). Anchored to a low / improving arrears backdrop (qualitative assumption from RBA FSR) and an average property-cycle softness score of 2.73 (real, ABS building approvals). |
-| 2026-06-11 | mild | 1.2 | 1.1 | 1.05 | 0.05 | ASSUMPTION (scenario parameter) — illustrative mild downturn for conservative portfolio calibration. |
-| 2026-06-11 | moderate | 1.5 | 1.2 | 1.1 | 0.1 | ASSUMPTION (scenario parameter) — illustrative moderate downturn for stressed pricing and EL scenario analysis. |
-| 2026-06-11 | severe | 2.0 | 1.3 | 1.2 | 0.2 | ASSUMPTION (scenario parameter) — illustrative severe downturn; not a calibrated regulatory stress parameter. |
+| as_of_date | scenario | pd_multiplier | lgd_multiplier | ccf_multiplier | property_value_haircut | macro_path | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-06-12 | base | 1.0 | 1.0 | 1.0 | 0.0 | Current environment, no recession overlay: GDP growth around trend, unemployment broadly stable, house prices at latest observed levels. | Current environment (base scenario). Anchored to a low / improving arrears backdrop (qualitative assumption from RBA FSR) and an average property-cycle softness score of 2.73 (real, ABS building approvals). No diversification benefit assumed (APG 113 para 92). |
+| 2026-06-12 | mild | 1.2 | 1.1 | 1.05 | 0.05 | Basel CRE36.51 mandatory minimum — two consecutive quarters of zero GDP growth; unemployment +~1.0-1.5pp; house prices ~-5 to -10%. | ASSUMPTION (scenario parameter) — mild recession = Basel CRE36.51 two-quarters-zero-growth minimum, for conservative portfolio calibration. No diversification benefit assumed (APG 113 para 92). |
+| 2026-06-12 | moderate | 1.5 | 1.2 | 1.1 | 0.1 | Deeper recession: multi-quarter contraction; unemployment +~2-3pp; house prices ~-10 to -15%. | ASSUMPTION (scenario parameter) — illustrative moderate downturn for stressed pricing and EL scenario analysis. No diversification benefit assumed (APG 113 para 92). |
+| 2026-06-12 | severe | 2.0 | 1.3 | 1.2 | 0.2 | GFC-like severe-but-plausible path: deep multi-quarter contraction; unemployment +~3-4pp; house prices ~-20 to -30%. | ASSUMPTION (scenario parameter) — illustrative severe downturn; not a calibrated regulatory stress parameter. No diversification benefit assumed (APG 113 para 92). |
 
 *Full detail rows from macro_regime_flags.csv*
 
 | as_of_date | cash_rate_regime | arrears_environment_level | arrears_trend | macro_regime_flag | source_dataset |
 | --- | --- | --- | --- | --- | --- |
-| 2026-06-11 | restrictive_rising | Low | Improving | base | RBA F1 cash-rate table (real) + qualitative arrears baseline (assumption, RBA FSR Mar-2026) |
+| 2026-06-12 | restrictive_rising | Low | Improving | base | RBA F1 cash-rate table (real) + qualitative arrears baseline (assumption, RBA FSR Mar-2026) |
 
 *Full detail rows from industry_financial_benchmarks.csv*
 
 | as_of_date | anzsic_division_code | industry | median_ebitda_margin_pct | source_note | median_gross_operating_profit_to_sales_ratio | median_wages_to_sales_pct | median_inventory_days_est | median_sales_growth_pct | median_employment_yoy_growth_pct |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-06-12 | A | Agriculture, Forestry and Fishing | 14.58 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. |  | 9.75 | 31.7 | -11.05 | -5.11 |
-| 2026-06-12 | B | Mining | 47.33 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.48 | 7.8 | 43.9 | -6.26 | -5.09 |
-| 2026-06-12 | C | Manufacturing | 9.15 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.1 | 14.3 | 52.7 | 1.34 | -0.93 |
-| 2026-06-12 | D | Electricity, Gas, Water and Waste Services | 20.95 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.2 | 9.93 | 9.1 | 3.6 | 12.29 |
-| 2026-06-12 | E | Construction | 10.15 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.08 | 15.04 | 20.0 | 10.54 | 1.47 |
-| 2026-06-12 | F | Wholesale Trade | 6.12 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.07 | 6.77 | 46.1 | 2.54 | -8.74 |
-| 2026-06-12 | G | Retail Trade | 7.8 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.07 | 10.28 | 30.4 | 4.82 | -0.46 |
-| 2026-06-12 | H | Accommodation and Food Services | 11.38 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.1 | 25.54 | 6.1 | 8.6 | 0.72 |
-| 2026-06-12 | I | Transport, Postal and Warehousing | 17.72 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.21 | 19.69 | 25.4 | 3.46 | 2.79 |
-| 2026-06-12 | J | Information Media and Telecommunications | 20.02 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.19 | 20.01 | 8.0 | 5.95 | -4.77 |
-| 2026-06-12 | L | Rental, Hiring and Real Estate Services | 40.88 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.37 | 13.0 | 8.0 | 7.72 | -15.06 |
-| 2026-06-12 | M | Professional, Scientific and Technical Services | 12.99 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.13 | 35.33 | 6.0 | 8.68 | 5.5 |
-| 2026-06-12 | N | Administrative and Support Services | 9.27 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.07 | 47.45 | 8.0 | 6.17 | 3.07 |
-| 2026-06-12 | O | Public Administration and Safety | 9.6 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. |  | 42.36 | 8.0 | 11.69 | -1.17 |
-| 2026-06-12 | P | Education and Training | 11.73 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. |  | 50.88 | 10.7 | 10.67 | 5.63 |
-| 2026-06-12 | Q | Health Care and Social Assistance | 16.65 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. |  | 43.29 | 6.0 | 7.54 | 3.74 |
-| 2026-06-12 | R | Arts and Recreation Services | 13.45 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.12 | 22.55 | 15.0 | 6.38 | -5.79 |
-| 2026-06-12 | S | Other Services | 5.28 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.14 | 31.62 | 10.0 | 13.2 | 7.12 |
+| 2026-06-15 | A | Agriculture, Forestry and Fishing | 14.58 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. |  | 9.75 | 31.7 | -11.05 | -5.11 |
+| 2026-06-15 | B | Mining | 47.33 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.48 | 7.8 | 43.9 | -6.26 | -5.09 |
+| 2026-06-15 | C | Manufacturing | 9.15 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.1 | 14.3 | 52.7 | 1.34 | -0.93 |
+| 2026-06-15 | D | Electricity, Gas, Water and Waste Services | 20.95 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.2 | 9.93 | 9.1 | 3.6 | 12.29 |
+| 2026-06-15 | E | Construction | 10.15 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.08 | 15.04 | 20.0 | 10.54 | 1.47 |
+| 2026-06-15 | F | Wholesale Trade | 6.12 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.07 | 6.77 | 46.1 | 2.54 | -8.74 |
+| 2026-06-15 | G | Retail Trade | 7.8 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.07 | 10.28 | 30.4 | 4.82 | -0.46 |
+| 2026-06-15 | H | Accommodation and Food Services | 11.38 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.1 | 25.54 | 6.1 | 8.6 | 0.72 |
+| 2026-06-15 | I | Transport, Postal and Warehousing | 17.72 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.21 | 19.69 | 25.4 | 3.46 | 2.79 |
+| 2026-06-15 | J | Information Media and Telecommunications | 20.02 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.19 | 20.01 | 8.0 | 5.95 | -4.77 |
+| 2026-06-15 | L | Rental, Hiring and Real Estate Services | 40.88 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.37 | 13.0 | 8.0 | 7.72 | -15.06 |
+| 2026-06-15 | M | Professional, Scientific and Technical Services | 12.99 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.13 | 35.33 | 6.0 | 8.68 | 5.5 |
+| 2026-06-15 | N | Administrative and Support Services | 9.27 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.07 | 47.45 | 8.0 | 6.17 | 3.07 |
+| 2026-06-15 | O | Public Administration and Safety | 9.6 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. |  | 42.36 | 8.0 | 11.69 | -1.17 |
+| 2026-06-15 | P | Education and Training | 11.73 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. |  | 50.88 | 10.7 | 10.67 | 5.63 |
+| 2026-06-15 | Q | Health Care and Social Assistance | 16.65 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. |  | 43.29 | 6.0 | 7.54 | 3.74 |
+| 2026-06-15 | R | Arts and Recreation Services | 13.45 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.12 | 22.55 | 15.0 | 6.38 | -5.79 |
+| 2026-06-15 | S | Other Services | 5.28 | Derived from ABS Cat. 8155.0 Australian Industry, Cat. 5676.0 Business Indicators, Cat. 6291.0 Labour Force Detailed. Percentiles (p25/p75) not published in this version — internal portfolio data required for firm-level distribution. Sub-sector (subdivision/group) granularity not published in this version — division-level only. | 0.14 | 31.62 | 10.0 | 13.2 | 7.12 |
 
 *Full detail rows from business_cycle_panel.csv*
 
@@ -254,17 +254,17 @@ The tables below include the actual analytical rows behind the report, not only 
 
 | as_of_date | property_segment | property_segment_code | market_softness_score | region_risk_score | cycle_stage | aggregate_role | market_softness_band | region_risk_band | approvals_change_pct |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-06-12 | Offices | CRE | 4.3 | 4.21 | downturn | specific | soft | High | -35.72 |
-| 2026-06-12 | Education buildings | CRE | 3.25 | 3.56 | slowing | specific | softening | Elevated | -21.37 |
-| 2026-06-12 | Retail and wholesale trade buildings | RET | 3.15 | 3.14 | neutral | specific | normal | Elevated | 68.47 |
-| 2026-06-12 | Short term accommodation buildings | CRE | 2.85 | 2.74 | growth | specific | supportive | Medium | 113.7 |
-| 2026-06-12 | Aged care facilities | CRE | 2.7 | 2.91 | neutral | specific | normal | Medium | 219.88 |
-| 2026-06-12 | Agricultural and aquacultural buildings | IND | 2.65 | 2.76 | neutral | specific | normal | Medium | 58.37 |
-| 2026-06-12 | Total Non-residential | CON | 2.6 | 2.74 | neutral | aggregate (reviewer reference only) | normal | Medium | 71.46 |
-| 2026-06-12 | Industrial Buildings - Total | CON | 2.4 | 2.64 | neutral | aggregate (reviewer reference only) | normal | Medium | 55.53 |
-| 2026-06-12 | Commercial Buildings - Total | CON | 2.3 | 2.34 | growth | aggregate (reviewer reference only) | supportive | Medium | 165.42 |
-| 2026-06-12 | Warehouses | IND | 2.2 | 2.54 | neutral | specific | normal | Medium | 69.32 |
-| 2026-06-12 | Health buildings | CRE | 1.65 | 2.01 | growth | specific | supportive | Medium | 355.03 |
+| 2026-06-15 | Offices | CRE | 4.3 | 4.21 | downturn | specific | soft | High | -35.72 |
+| 2026-06-15 | Education buildings | CRE | 3.25 | 3.56 | slowing | specific | softening | Elevated | -21.37 |
+| 2026-06-15 | Retail and wholesale trade buildings | RET | 3.15 | 3.14 | neutral | specific | normal | Elevated | 68.47 |
+| 2026-06-15 | Short term accommodation buildings | CRE | 2.85 | 2.74 | growth | specific | supportive | Medium | 113.7 |
+| 2026-06-15 | Aged care facilities | CRE | 2.7 | 2.91 | neutral | specific | normal | Medium | 219.88 |
+| 2026-06-15 | Agricultural and aquacultural buildings | IND | 2.65 | 2.76 | neutral | specific | normal | Medium | 58.37 |
+| 2026-06-15 | Total Non-residential | CON | 2.6 | 2.74 | neutral | aggregate (reviewer reference only) | normal | Medium | 71.46 |
+| 2026-06-15 | Industrial Buildings - Total | CON | 2.4 | 2.64 | neutral | aggregate (reviewer reference only) | normal | Medium | 55.53 |
+| 2026-06-15 | Commercial Buildings - Total | CON | 2.3 | 2.34 | growth | aggregate (reviewer reference only) | supportive | Medium | 165.42 |
+| 2026-06-15 | Warehouses | IND | 2.2 | 2.54 | neutral | specific | normal | Medium | 69.32 |
+| 2026-06-15 | Health buildings | CRE | 1.65 | 2.01 | growth | specific | supportive | Medium | 355.03 |
 
 ## 6. Lineage / Traceability
 

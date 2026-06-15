@@ -49,3 +49,47 @@ the header and data dictionary in their own ingestion layer.
 | Pricing | `industry_risk_scores.csv` | Deal-level industry multiplier |
 | Portfolio monitoring | `industry_failure_rates.csv`, `property_market_overlays.csv` | Sector watchlist and property concentration |
 | Board / governance reporting | all 11 CSVs | Embedded report tables and traceability |
+
+## Downturn overlays: stress framework notes
+
+`downturn_overlay_table.csv` is the macro-credit linkage step of a stress
+test: it translates a named macroeconomic path into PD / LGD / CCF (EAD)
+multipliers and a property-value haircut that a consuming portfolio applies
+to its own exposures. The following framework points govern its use.
+
+**Scenario set and macro path (ST-IA-1).** Scenarios are `base / mild /
+moderate / severe`. Each row carries a `macro_path` note so the multipliers
+read as *derived from* a scenario, not standalone dials. The **mild**
+scenario is the **Basel CRE36.51 mandatory minimum — two consecutive
+quarters of zero GDP growth**; severe is a GFC-like path. Multipliers remain
+illustrative assumptions (not calibrated regulatory parameters), nudged by
+the real ABS property-softness backdrop and the RBA-FSR arrears baseline.
+
+**No diversification (APG 113 para 92).** The overlays are applied per
+sector/segment with **no diversification benefit assumed** — a consuming
+book must not net these shocks down for portfolio correlation. This is also
+stated in each published overlay row's `notes`.
+
+**Reverse-stress view (APS 220).** Because the overlays are *relative*
+multipliers, reverse stress is read off the combined `pd_multiplier ×
+lgd_multiplier` uplift: that combined factor is ≈1.0× (base), ≈1.3× (mild),
+≈1.8× (moderate) and ≈2.6× (severe). A consuming portfolio sets the loss /
+appetite threshold it cannot exceed and reads back the **scenario (and
+sector) at which its overlaid PD × LGD breaches that threshold** — i.e.
+"which downturn breaks the limit?". For a book whose appetite ceiling is a
+2.0× EL uplift, that breach point sits between the moderate and severe
+scenarios.
+
+**Feeds stress → limits / appetite (ST-IA-2).** The downstream loop is:
+overlay multipliers → stressed portfolio PD × LGD (× CCF for EAD) → compare
+to risk-appetite limits → if breached, management action (tighten
+origination, reprice, reduce sector limits). The overlays are the
+macro-credit input to that loop, not the limit framework itself (which lives
+in the consuming monitoring/ICAAP project).
+
+**Independent validation (ST-IA-3, APS 220 para 76).** The overlay
+assumptions and macro paths are documented here and in
+`src/overlays/downturn_overlay_core.py`, and would be **independently
+reviewed/validated and refreshed on the documented schedule** (see the
+assumptions register / `docs/anchor_sources.md`). They are honestly labelled
+as illustrative, not calibrated regulatory stress parameters.

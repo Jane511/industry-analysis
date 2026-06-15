@@ -61,8 +61,9 @@ CONTRACT_EXPORT_SPECS: tuple[ContractExportSpec, ...] = (
         contract_role="Core downstream contract",
         join_grain="Scenario table",
         includes=(
-            "Scenario multipliers for PD, LGD, and CCF plus property haircuts and "
-            "scenario notes."
+            "Scenario multipliers for PD, LGD, and CCF plus property haircuts, a "
+            "per-scenario macro-path note (mild = Basel CRE36.51), and scenario "
+            "notes (incl. the no-diversification assumption)."
         ),
         downstream_layers=(
             "PD scenario layer",

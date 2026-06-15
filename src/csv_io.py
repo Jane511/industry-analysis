@@ -25,7 +25,7 @@ STRING_COLUMNS = {
         "completions_signal",
         "source_note",
     ],
-    "downturn_overlay_table": ["scenario", "notes"],
+    "downturn_overlay_table": ["scenario", "macro_path", "notes"],
     "macro_regime_flags": ["cash_rate_regime", "arrears_environment_level", "arrears_trend", "macro_regime_flag", "source_dataset"],
     "industry_financial_benchmarks": ["anzsic_division_code", "industry", "benchmark_method", "source_note"],
     "business_cycle_panel": [
