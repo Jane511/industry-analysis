@@ -1,12 +1,12 @@
 property_segment,property_segment_code,aggregate_role,cycle_stage,market_softness_score,market_softness_band,region_risk_score,region_risk_band,approvals_change_pct,commencements_signal,completions_signal,pd_multiplier_if_standalone,as_of_date
-Offices,CRE,specific,downturn,4.3,soft,4.21,High,-35.72,Proxy from approvals trend,Proxy from approvals trend,1.15,2026-06-16
-Education buildings,CRE,specific,slowing,3.25,softening,3.56,Elevated,-21.37,Proxy from approvals trend,Proxy from approvals trend,1.15,2026-06-16
-Retail and wholesale trade buildings,RET,specific,neutral,3.15,normal,3.14,Elevated,68.47,Proxy from approvals trend,Proxy from approvals trend,1.1,2026-06-16
-Short term accommodation buildings,CRE,specific,growth,2.85,supportive,2.74,Medium,113.7,Proxy from approvals trend,Proxy from approvals trend,1.1,2026-06-16
-Aged care facilities,CRE,specific,neutral,2.7,normal,2.91,Medium,219.88,Proxy from approvals trend,Proxy from approvals trend,1.0,2026-06-16
-Agricultural and aquacultural buildings,IND,specific,neutral,2.65,normal,2.76,Medium,58.37,Proxy from approvals trend,Proxy from approvals trend,1.0,2026-06-16
-Total Non-residential,CON,aggregate (reviewer reference only),neutral,2.6,normal,2.74,Medium,71.46,Proxy from approvals trend,Proxy from approvals trend,1.0,2026-06-16
-Industrial Buildings - Total,CON,aggregate (reviewer reference only),neutral,2.4,normal,2.64,Medium,55.53,Proxy from approvals trend,Proxy from approvals trend,1.0,2026-06-16
-Commercial Buildings - Total,CON,aggregate (reviewer reference only),growth,2.3,supportive,2.34,Medium,165.42,Proxy from approvals trend,Proxy from approvals trend,1.0,2026-06-16
-Warehouses,IND,specific,neutral,2.2,normal,2.54,Medium,69.32,Proxy from approvals trend,Proxy from approvals trend,1.0,2026-06-16
-Health buildings,CRE,specific,growth,1.65,supportive,2.01,Medium,355.03,Proxy from approvals trend,Proxy from approvals trend,0.95,2026-06-16
+Offices,CRE,specific,downturn,4.3,soft,4.21,High,-19.8,Proxy from approvals trend,Proxy from approvals trend,1.15,2026-06-16
+Agricultural and aquacultural buildings,IND,specific,downturn,3.9,soft,4.01,High,-27.02,Proxy from approvals trend,Proxy from approvals trend,1.15,2026-06-16
+Commercial Buildings - Total,CON,aggregate (reviewer reference only),slowing,3.8,softening,3.84,Elevated,-49.71,Proxy from approvals trend,Proxy from approvals trend,1.15,2026-06-16
+Retail and wholesale trade buildings,RET,specific,slowing,3.4,softening,3.39,Elevated,6.48,Proxy from approvals trend,Proxy from approvals trend,1.15,2026-06-16
+Total Non-residential,CON,aggregate (reviewer reference only),slowing,3.35,softening,3.49,Elevated,-15.94,Proxy from approvals trend,Proxy from approvals trend,1.15,2026-06-16
+Education buildings,CRE,specific,slowing,3.25,softening,3.56,Elevated,-31.29,Proxy from approvals trend,Proxy from approvals trend,1.15,2026-06-16
+Aged care facilities,CRE,specific,slowing,3.2,softening,3.41,Elevated,-21.97,Proxy from approvals trend,Proxy from approvals trend,1.1,2026-06-16
+Short term accommodation buildings,CRE,specific,neutral,3.1,normal,2.99,Medium,112.01,Proxy from approvals trend,Proxy from approvals trend,1.1,2026-06-16
+Health buildings,CRE,specific,neutral,2.4,normal,2.76,Medium,-35.96,Proxy from approvals trend,Proxy from approvals trend,1.0,2026-06-16
+Industrial Buildings - Total,CON,aggregate (reviewer reference only),growth,2.15,supportive,2.39,Medium,94.79,Proxy from approvals trend,Proxy from approvals trend,1.0,2026-06-16
+Warehouses,IND,specific,growth,1.7,supportive,2.04,Medium,108.47,Proxy from approvals trend,Proxy from approvals trend,0.95,2026-06-16

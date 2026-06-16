@@ -512,7 +512,7 @@ def parse_ptrs_ar_workbook(path: Path) -> pd.DataFrame:
 
 
 from src.public_data.load_abs_manual_exports_helpers import (
-    BUILDING_APPROVALS_FILENAME,
+    BUILDING_APPROVALS_GLOB,
     OPTIONAL_BUILDING_ACTIVITY_FILES,
     OPTIONAL_LENDING_INDICATOR_FILES,
     REFERENCE_SEGMENTS,
@@ -535,7 +535,7 @@ __all__ = [
     "parse_ppi",
     "parse_dwelling_approvals",
     "parse_ptrs_ar_workbook",
-    "BUILDING_APPROVALS_FILENAME",
+    "BUILDING_APPROVALS_GLOB",
     "OPTIONAL_BUILDING_ACTIVITY_FILES",
     "OPTIONAL_LENDING_INDICATOR_FILES",
     "REFERENCE_SEGMENTS",

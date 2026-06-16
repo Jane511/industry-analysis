@@ -8,10 +8,14 @@ import pandas as pd
 
 from src.config import RAW_ABS_DIR, RAW_MANUAL_DIR, RAW_PUBLIC_DIR_ABS
 from src.public_data.load_abs_manual_exports import parse_building_approvals
+from src.public_data.staged_files import find_latest_staged_file
 from src.utils import normalise_text
 
 
-BUILDING_APPROVALS_FILENAME = "87310051_feb2026_building_approvals_nonres.xlsx"
+# ABS catalogue 8731.0 Table 51 (non-residential approvals). The catalogue
+# prefix is stable; only the release date-suffix rotates, so resolve by glob
+# rather than a pinned filename — a fresh vintage needs no code edit.
+BUILDING_APPROVALS_GLOB = "87310051*.xlsx"
 OPTIONAL_BUILDING_ACTIVITY_FILES = (
     "building_activity_property_extract.csv",
     "building_activity_property_extract.xlsx",
@@ -161,10 +165,14 @@ def _summarise_series(df: pd.DataFrame, value_column: str, prefix: str) -> pd.Da
 
 
 def load_building_approvals_reference() -> pd.DataFrame:
-    path = _resolve_existing_file((BUILDING_APPROVALS_FILENAME,), [RAW_ABS_DIR, RAW_PUBLIC_DIR_ABS])
+    path = find_latest_staged_file("building_approvals_nonres_xlsx")
+    if path is None and RAW_ABS_DIR.exists():
+        legacy = sorted(RAW_ABS_DIR.glob(BUILDING_APPROVALS_GLOB))
+        path = legacy[-1] if legacy else None
     if path is None:
         raise FileNotFoundError(
-            f"Could not find {BUILDING_APPROVALS_FILENAME} in {RAW_ABS_DIR} or {RAW_PUBLIC_DIR_ABS}"
+            f"Could not find a staged non-residential building-approvals workbook "
+            f"({BUILDING_APPROVALS_GLOB}) in {RAW_ABS_DIR} or {RAW_PUBLIC_DIR_ABS}"
         )
 
     approvals = parse_building_approvals(path)

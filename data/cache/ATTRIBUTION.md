@@ -5,8 +5,9 @@ needs, so the reports are reproducible even if a live download fails. It is the
 guaranteed fallback: `run_pipeline.py` tries the live download first and only
 copies from here when a source is unreachable.
 
-**Data vintage (`DATA_AS_OF`): 2026-02-28.** No synthetic or proprietary data is
-included — every file below is an unmodified public release.
+**Data vintage (`DATA_AS_OF`): 2026-06-16.** Every quarterly / monthly ABS series
+reports through the **March 2026 quarter** (the end of Q1 2026). No synthetic or
+proprietary data is included — every file below is an unmodified public release.
 
 ## Australian Bureau of Statistics (ABS) — `abs/`
 
@@ -16,10 +17,10 @@ included — every file below is an unmodified public release.
 | File | ABS catalogue | Release |
 | --- | --- | --- |
 | `81550DO001_202324.xlsx` | 8155.0 Australian Industry | 2023–24 |
-| `56760022_dec2025_profit_ratio.xlsx` | 5676.0 Business Indicators (profit) | Dec 2025 |
-| `56760023_dec2025_inventory_ratio.xlsx` | 5676.0 Business Indicators (inventories) | Dec 2025 |
-| `6291004_feb2026_labour_force_industry.xlsx` | 6291.0 Labour Force, Detailed | Feb 2026 |
-| `87310051_feb2026_building_approvals_nonres.xlsx` | 8731.0 Building Approvals (non-residential) | Feb 2026 |
+| `56760022_mar2026_profit_ratio.xlsx` | 5676.0 Business Indicators (profit) | Mar 2026 |
+| `56760023_mar2026_inventory_ratio.xlsx` | 5676.0 Business Indicators (inventories) | Mar 2026 |
+| `6291004_mar2026_labour_force_industry.xlsx` | 6291.0 Labour Force, Detailed | Mar 2026 |
+| `87310051_mar2026_building_approvals_nonres.xlsx` | 8731.0 Building Approvals (non-residential) | Mar 2026 |
 
 Source: <https://www.abs.gov.au/>
 

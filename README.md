@@ -27,19 +27,19 @@ The model-ready data sits in eight CSV "contracts" in [`outputs/contracts/`](out
 
 ## Data vintage & reporting periods
 
-Every figure is the **2026-Q1 vintage** — pipeline `DATA_AS_OF = 2026-02-28`, with contracts
-stamped **2026-06-16** after a live cash-rate refresh. The reference period each real source
-actually reports for:
+Every figure is the **Q1 2026 vintage** — pipeline `DATA_AS_OF = 2026-06-16`. Every quarterly /
+monthly ABS series now reports **through the March 2026 quarter** (the end of Q1 2026); the cash
+rate is refreshed live. The reference period each real source actually reports for:
 
 | Source / series | Catalogue | Reference period reported |
 | --- | --- | --- |
-| Australian Industry — financial ratios, structure | ABS 8155.0 | **FY 2023–24** (annual) |
-| Business Indicators — profit / margins | ABS 5676.0 | **Dec 2025 quarter** |
-| Business Indicators — inventories | ABS 5676.0 | **Dec 2025 quarter** |
-| Labour Force, Detailed — industry employment | ABS 6291.0 | **Feb 2026** (monthly) |
-| Building Approvals, non-residential — property cycle | ABS 8731.0 | **Feb 2026** (monthly) |
+| Australian Industry — financial ratios, structure | ABS 8155.0 | **FY 2023–24** (annual — FY 2024–25 not yet released) |
+| Business Indicators — profit / margins | ABS 5676.0 | **Mar 2026 quarter** |
+| Business Indicators — inventories | ABS 5676.0 | **Mar 2026 quarter** |
+| Labour Force, Detailed — industry employment | ABS 6291.0 | **Mar 2026** |
+| Building Approvals, non-residential — property cycle | ABS 8731.0 | **Mar 2026** |
 | Cash rate | RBA F1 | **Live** — latest available |
-| Economy-wide levels — GDP, unemployment, CPI, WPI, house prices, TWI | ABS 5206 / 6202 / 6401 / 6345 / 6416 · RBA F11 | **Stated current readings** at the 2026-Q1 vintage |
+| Economy-wide levels — GDP, unemployment, CPI, WPI, house prices, TWI | ABS 5206 / 6202 / 6401 / 6345 / 6416 · RBA F11 | **Stated current readings** at the Q1 2026 vintage |
 
 The macro **stress shocks** in Section 2 are scenario-design assumptions (config vintage
 `2026-Q1`), not dated observations. The committed real-data cache and its full per-file
@@ -92,23 +92,24 @@ anchored to RBA FSR commentary). These feed the CRE stress paths in Section 2a:
 | CRE rents | 0.0% | Flat |
 | CRE cap rates | 6.0% | — |
 
-*(ii) Building-type cycle* — **real ABS data** (Cat. 8731 non-residential building approvals).
-This is where CRE risk actually concentrates right now: **offices are in a clear downturn**
-(approvals −36% YoY) while health buildings and warehouses still grow. The softness score runs
-1 (firm) → 5 (soft); "PD if standalone" is the overlay that segment would carry on its own.
+*(ii) Building-type cycle* — **real ABS data** (Cat. 8731 non-residential building approvals,
+Mar 2026). This is where CRE risk actually concentrates right now: **offices remain the softest
+segment** (a clear downturn), now joined by agricultural buildings, while warehouses are the
+firmest (still in growth). The softness score runs 1 (firm) → 5 (soft); "PD if standalone" is the
+overlay that segment would carry on its own.
 
-![Commercial property softness by building type, from ABS non-residential building approvals — offices softest, health buildings firmest](outputs/charts/property_market_softness.png)
+![Commercial property softness by building type, from ABS non-residential building approvals — offices softest, warehouses firmest](outputs/charts/property_market_softness.png)
 
 | Building type | Cycle stage | Softness (1 firm → 5 soft) | Approvals YoY | PD if standalone |
 |---|---|--:|--:|--:|
-| Offices | downturn | 4.30 | −35.7% | 1.15× |
-| Education buildings | slowing | 3.25 | −21.4% | 1.15× |
-| Retail & wholesale trade buildings | neutral | 3.15 | +68.5% | 1.10× |
-| Short-term accommodation buildings | growth | 2.85 | +113.7% | 1.10× |
-| Aged care facilities | neutral | 2.70 | +219.9% | 1.00× |
-| Agricultural & aquacultural buildings | neutral | 2.65 | +58.4% | 1.00× |
-| Warehouses | neutral | 2.20 | +69.3% | 1.00× |
-| Health buildings | growth | 1.65 | +355.0% | 0.95× |
+| Offices | downturn | 4.30 | −19.8% | 1.15× |
+| Agricultural & aquacultural buildings | downturn | 3.90 | −27.0% | 1.15× |
+| Retail & wholesale trade buildings | slowing | 3.40 | +6.5% | 1.15× |
+| Education buildings | slowing | 3.25 | −31.3% | 1.15× |
+| Aged care facilities | slowing | 3.20 | −22.0% | 1.10× |
+| Short-term accommodation buildings | neutral | 3.10 | +112.0% | 1.10× |
+| Health buildings | neutral | 2.40 | −36.0% | 1.00× |
+| Warehouses | growth | 1.70 | +108.5% | 0.95× |
 
 The table lists the eight specific building types; the chart additionally shows three "Total …"
 bars, which are aggregate reference lines only. The five-segment rollup these building types feed
@@ -131,38 +132,49 @@ pre-computes the stress dials in Section 2 so a downturn can be costed instantly
 
 ## 2. Macro drivers for stress testing — per product and per industry
 
-Stress testing runs the book through a **severe-but-plausible** scenario to see how defaults and
-losses move (Basel CRE36.50; APS 220 §70–72). The full bank exercise has eleven steps — scope,
-scenarios, **macro path**, **map the path to PD / LGD / EAD**, apply to the book, project capital,
-contingency actions, limits, board reporting, validation, documentation.
+Stress testing answers one question a credit team is always asked: **if the economy turns bad, how
+much more does the bank lose?**
 
-**This layer delivers the front of that process and hands the result downstream as a ready-to-use
-input.** It is the *top-down macro-credit linkage*: it turns one macro scenario into a **PD / LGD /
-EAD stress multiplier for every portfolio segment and every industry**. A downstream
-**PD / LGD / EAD portfolio-monitoring model then multiplies these factors onto its own facilities**
-(the bottom-up step) and carries on with capital projection, contingency actions and board
-reporting — those steps stay with the modelling and capital functions, not here.
+A recession doesn't create a loss directly. It first hurts the **borrower** (less income) and the
+**collateral** (lower property prices), and *that* shows up three ways — more borrowers default,
+the bank loses more on each one, and bigger balances are owing when they do:
 
-In the language of the standard process: this repo produces **Step 3 (the scenario macro path)**
-and **Step 4 (the map to PD / LGD / EAD)**; Steps 5–11 belong to the model that consumes it.
+> weak economy → borrowers & property hurt → higher **PD**, **LGD**, **EAD** → higher loss
 
-What it honours from the compliance guidance — and what it does **not** claim to be:
+- **PD** *(probability of default)* — the chance a borrower stops paying.
+- **LGD** *(loss given default)* — after the collateral is sold, the share of the money owed that
+  the bank still loses.
+- **EAD** *(exposure at default)* — how much is owed at the moment of default.
+- **Loss = PD × LGD × EAD** — push all three up and the loss multiplies quickly.
 
-| Aligned with | How this layer applies it |
-| --- | --- |
-| **Basel CRE36.51** — mild-recession minimum | `mild` = two consecutive quarters of ~zero GDP growth (the standard technical-recession definition) |
-| **APS 220 §72** — severe but plausible | `severe` is a GFC-like, internally consistent path — not a tail fantasy |
-| **APG 113 §92** — no diversification benefit | the roll-up assumes **no** diversification offset; segments are summed exposure-weighted |
-| **APS 220 §76** — validation | flagged **illustrative, not calibrated**: in production the paths come from a macro model and the weights from estimated betas, both independently validated at least annually |
+**What this layer builds.** It turns one economic scenario into a set of **"dials"** — how many
+times worse PD, LGD and EAD get for each type of loan. A downstream model multiplies those dials
+onto its own loans to get the stressed loss. There are three standard ways to build such dials,
+simplest first:
 
-> **Not a capital stress test.** This is the macro-credit *input*, not the bank's ICAAP / Pillar 1
-> exercise. It does not project capital, evolve the balance sheet, or set management actions. Four
-> CRE variables are labelled assumptions (no clean free quarterly public series).
+| Method | What it is | Used here? |
+| --- | --- | --- |
+| **Multiplier** | judgement-based "×2 in a severe recession" factors | ✅ **this layer** — fits simple / sector-level work |
+| **Rating migration** | re-grade each borrower under the stressed scenario | a loan-level model would |
+| **Statistical model** | a regression trained on years of real default data | a big, data-rich bank would |
 
-### 2a. The scenario macro path (the shocks a downstream model receives)
+This layer uses the **multiplier** method: it works at the public, sector level and needs no
+borrower-by-borrower default history. So these are **illustrative dials, not a fitted model** — a
+ready-to-use starting overlay, not a calibrated PD. A bank with the data would replace them with a
+statistical model and validate it every year.
 
-Twelve drivers, each with the Section 1 base level and an illustrative shock path across
-**base → mild → moderate → severe**. Source:
+> **Scope — the engine-room step only.** This layer turns a scenario into PD/LGD/EAD dials and stops
+> there; the rest of a real stress test (projecting capital, setting management actions, reporting to
+> the board) stays with the modelling and capital teams. Regulatory anchors honoured: `mild` = two
+> quarters of ~zero growth (Basel CRE36.51); `severe` is GFC-like but plausible (APS 220 §72); the
+> roll-up takes **no diversification benefit** (APG 113 §92); and everything is flagged illustrative,
+> to be independently validated in production (APS 220 §76).
+
+### 2a. Step 1 — the economic scenario (the "what if")
+
+Twelve drivers. **`base` is where each sits today** (Section 1); **`mild` / `moderate` / `severe`
+add a worsening shock on top** — `mild` is a textbook mild recession (two quarters of ~zero
+growth), `severe` is a GFC-like path. Source:
 [`macro_scenario_paths.csv`](outputs/contracts/macro_scenario_paths.csv).
 
 | Macro driver | Base | Mild | Moderate | Severe |
@@ -182,35 +194,35 @@ Twelve drivers, each with the Section 1 base level and an illustrative shock pat
 
 \* labelled assumption — no clean free quarterly public series.
 
-### 2b. Mapping the path to each product's PD / LGD / EAD
+### 2b. Step 2 — turn the scenario into per-product dials
 
-The map is *per product*, because different products fail for different reasons. For each one the
-layer splits risk into the three quantities a loss model needs and records which drivers move each:
-
-- **PD** — *probability of default*: how likely the borrower is to stop paying.
-- **LGD** — *loss given default*: the share of the balance lost once they default (a collateral story).
-- **EAD** — *exposure at default*: how much is drawn / owing when default hits.
-
-Each driver carries a **weight** for how much it moves that quantity. **Weights sum to 1.0 within
-each of PD / LGD / EAD** — so a 0.45 driver moves it about twice as much as a 0.20 driver. The
-arrow shows the stress direction (**↑** = worse when the driver rises, **↓** = worse when it
-falls). These are illustrative weights, not estimated betas. Source:
+Different loans break for different reasons, so each product reacts to its **own short list of
+drivers**. The number next to each driver is its **share of the blame** for that product — the
+shares add up to 100%. It says *which* drivers matter and in what proportion — **not how big the hit
+is**. The size of the hit is set separately, by how sensitive that product is (Section 2c). The
+arrow shows the bad direction (**↑** = worse when it rises, **↓** = worse when it falls). Source:
 [`portfolio_macro_sensitivity.csv`](outputs/contracts/portfolio_macro_sensitivity.csv).
 
-**Worked example — residential mortgages**, read as three separate stories:
+> **Two disciplines the textbooks insist on, both built in.** (1) A driver can legitimately hit PD,
+> LGD **and** EAD through *different* channels — e.g. rising unemployment means more defaults *and*
+> weaker sale prices *and* more arrears — but you must never **double-count** the *same* effect
+> twice. (2) These shares are illustrative, not fitted regression coefficients; in a *severe*
+> recession every driver is at its worst at once, so the shares wash out and the product's overall
+> sensitivity does the work — the shares matter most in *milder* scenarios, where some drivers move
+> more than others.
 
-- **PD** worsens when the **labour market and rates** turn: unemployment ↑ (0.45) does most of the
-  work, then cash rate ↑ (0.25), wage growth ↓ (0.20), inflation ↑ (0.10).
-- **LGD** is almost entirely a **collateral** story: house prices ↓ (0.70) dominate, with
-  unemployment ↑ (0.20) and cash rate ↑ (0.10) secondary.
-- **EAD** grows as stressed borrowers draw down: cash rate ↑ (0.50), unemployment ↑ (0.30),
-  GDP ↓ (0.20).
+**Worked example — residential mortgages.** The point is that the three quantities respond to
+*different* drivers, so the engine maps them separately:
 
-So in the *severe* scenario a −21% house-price move drives mortgage **LGD**, while the +4pp jump in
-unemployment drives mortgage **PD** — two different drivers, two different quantities. The same
-split for every product:
+- **PD** — *will they default?* A jobs-and-rates story: unemployment ↑ (0.45 share), then cash
+  rate ↑ (0.25), wage growth ↓ (0.20), inflation ↑ (0.10).
+- **LGD** — *how much is lost if they do?* Almost entirely **house prices ↓** (0.70), because
+  collateral recovery falls; unemployment and cash rate are minor.
+- **EAD** — *how much is owed?* Mostly cash rate ↑ (0.50) and unemployment ↑ (0.30).
 
-| Product / portfolio | PD — main drivers (weight) | LGD — main drivers (weight) | EAD — main drivers (weight) |
+The same split for every product (shares in brackets):
+
+| Product / portfolio | PD — main drivers (share) | LGD — main drivers (share) | EAD — main drivers (share) |
 |---|---|---|---|
 | **Residential mortgages** | unemployment ↑ (0.45), cash rate ↑ (0.25), wage growth ↓ (0.20), inflation ↑ (0.10) | house prices ↓ (0.70), unemployment ↑ (0.20), cash rate ↑ (0.10) | cash rate ↑ (0.50), unemployment ↑ (0.30), GDP ↓ (0.20) |
 | **Credit cards** | unemployment ↑ (0.50), wage growth ↓ (0.30), inflation ↑ (0.20) | unemployment ↑ (0.50), inflation ↑ (0.30), wage growth ↓ (0.20) | GDP ↓ (0.40), cash rate ↑ (0.35), unemployment ↑ (0.25) |
@@ -220,17 +232,19 @@ split for every product:
 | **Development finance** | CRE prices ↓ (0.35), GDP ↓ (0.25), vacancy ↑ (0.20), cash rate ↑ (0.20) | CRE prices ↓ (0.55), cap rates ↑ (0.25), rents ↓ (0.20) | cash rate ↑ (0.45), CRE prices ↓ (0.30), GDP ↓ (0.25) |
 
 The pattern: **household products** (mortgages, cards) pivot on the **labour market**; **business
-products** (SME, corporate) pivot on **GDP and sector output**; **property products** (CRE,
-development finance) pivot on **property values, vacancy and cap rates**.
+products** (SME, corporate) on **GDP and sector output**; **property products** (CRE, development
+finance) on **property values, vacancy and cap rates**. *(Development finance's textbook drivers —
+presales and construction costs — have no free public series, so GDP and office-vacancy stand in as
+proxies here.)*
 
-### 2c. The output — stress multipliers a PD/LGD/EAD monitoring model plugs in
+### 2c. Step 3 — the dials a downstream PD/LGD/EAD model plugs in
 
-Combining the scenario path (2a) with each product's driver mix (2b) — scaled by a per-segment
-magnitude factor and a multiplier ceiling — yields **the deliverable**: a PD / LGD / EAD stress
-multiplier for every segment, in every scenario
+Combining the scenario (2a) with each product's driver mix (2b) — then scaling by how sensitive the
+product is and capping the result — gives **the deliverable**: a PD / LGD / EAD stress multiplier
+("dial") for every product, in every scenario
 ([`macro_stress_segment_multipliers.csv`](outputs/reports/macro_stress_segment_multipliers.csv)).
-A monitoring model reads these and multiplies them onto its own base estimates; stressed
-**EL = stressed PD × stressed LGD × stressed EAD**.
+A monitoring model multiplies these onto its own base numbers; stressed
+**loss = stressed PD × stressed LGD × stressed EAD**.
 
 Severe-scenario multipliers (mild and moderate are in the contract; PD rises most because default
 is the most cyclical parameter):
@@ -263,12 +277,12 @@ and feed the per-industry PD overlay in Section 3. Source:
 
 | Industry | Employment YoY | EBITDA margin | Demand YoY | Macro (current-conditions) score |
 |---|--:|--:|--:|--:|
-| Agriculture, Forestry and Fishing | −5.1% | 14.6% | +58% | 3.20 |
-| Mining | −5.1% | 47.3% | — | 2.80 |
-| Manufacturing | −0.9% | 9.2% | +56% | 3.20 |
-| Retail Trade | −0.5% | 7.8% | +68% | 3.20 |
-| Wholesale Trade | −8.7% | 6.1% | +69% | 3.20 |
-| Arts and Recreation Services | −5.8% | 13.5% | −56% | 3.80 |
+| Agriculture, Forestry and Fishing | −5.1% | 14.6% | −27% | 4.20 |
+| Mining | −5.1% | 47.3% | — | 3.20 |
+| Manufacturing | −0.9% | 9.2% | +95% | 3.40 |
+| Retail Trade | −0.5% | 7.8% | +6% | 3.40 |
+| Wholesale Trade | −8.7% | 6.1% | +108% | 3.40 |
+| Arts and Recreation Services | −5.8% | 13.5% | −46% | 3.60 |
 
 A sector with falling employment and thin margins is exactly where the sector-output shock bites
 hardest, so a downstream SME / corporate model can scale its sector-output sensitivity by the
@@ -321,10 +335,10 @@ structural risk of the division (cyclicality, capital intensity, revenue concent
 | Classification (structural) score | **4.12** | Structurally cyclical — weather- and commodity-exposed, concentrated revenue |
 | → Employment YoY | −5.1% | Falling employment → high employment score |
 | → EBITDA margin | 14.6% | Mid → moderate margin score |
-| → Demand proxy YoY | +58% | Strong (volatile base effect) → low demand score |
-| Macro (current-conditions) score | **3.20** | Average of the five components above |
+| → Demand proxy YoY | −27% | Weak (volatile base effect) → high demand score |
+| Macro (current-conditions) score | **4.20** | Average of the five components above |
 
-**Blend:** `0.55 × 4.12 + 0.45 × 3.20 = 3.71` → **Elevated** band (≥ 3.23) → **1.15× PD overlay**.
+**Blend:** `0.55 × 4.12 + 0.45 × 4.20 = 4.16` → **Elevated** band (≥ 3.23) → **1.15× PD overlay**.
 
 That `1.15×` is the deal-level industry overlay a PD model multiplies through. These are
 point-in-time, illustrative current-conditions overlays — *not* calibrated PD estimates.
@@ -333,30 +347,30 @@ point-in-time, illustrative current-conditions overlays — *not* calibrated PD 
 
 ![Australian industry credit-risk scores by ANZSIC division — base risk score 1 (low) to 5 (high), coloured by risk band](docs/charts/industry_risk_scores.png)
 
-Headline: **4 industries score Elevated, 2 Moderate-high, 12 Medium** (as of 2026-06-16;
-[`industry_risk_scores.csv`](outputs/contracts/industry_risk_scores.csv)). No industry currently
-sits in the Low or High band.
+Headline: **5 industries score Elevated, 2 Moderate-high, 10 Medium, 1 Moderate-low** (as of
+2026-06-16; [`industry_risk_scores.csv`](outputs/contracts/industry_risk_scores.csv)). No industry
+currently sits in the Low or High band.
 
 | Industry | Classification | Macro | Base score | Level | PD overlay |
 | --- | --: | --: | --: | --- | --: |
-| Agriculture, Forestry and Fishing | 4.12 | 3.20 | **3.71** | Elevated | 1.15× |
-| Mining | 3.88 | 2.80 | **3.39** | Elevated | 1.15× |
-| Manufacturing | 3.50 | 3.20 | **3.36** | Elevated | 1.15× |
-| Retail Trade | 3.25 | 3.20 | **3.23** | Elevated | 1.15× |
-| Wholesale Trade | 3.12 | 3.20 | 3.16 | Moderate-high | 1.10× |
-| Arts and Recreation Services | 2.38 | 3.80 | 3.02 | Moderate-high | 1.10× |
+| Agriculture, Forestry and Fishing | 4.12 | 4.20 | **4.16** | Elevated | 1.15× |
+| Mining | 3.88 | 3.20 | **3.57** | Elevated | 1.15× |
+| Manufacturing | 3.50 | 3.40 | **3.46** | Elevated | 1.15× |
+| Retail Trade | 3.25 | 3.40 | **3.32** | Elevated | 1.15× |
+| Wholesale Trade | 3.12 | 3.40 | **3.25** | Elevated | 1.15× |
+| Construction | 2.75 | 3.20 | 2.95 | Moderate-high | 1.10× |
+| Arts and Recreation Services | 2.38 | 3.60 | 2.93 | Moderate-high | 1.10× |
 | Accommodation and Food Services | 2.75 | 2.60 | 2.68 | Medium | 1.00× |
-| Construction | 2.75 | 2.60 | 2.68 | Medium | 1.00× |
-| Transport, Postal and Warehousing | 2.50 | 2.80 | 2.64 | Medium | 1.00× |
-| Information Media and Telecommunications | 2.12 | 3.00 | 2.52 | Medium | 1.00× |
 | Public Administration and Safety | 1.62 | 3.60 | 2.51 | Medium | 1.00× |
 | Education and Training | 1.75 | 3.40 | 2.49 | Medium | 1.00× |
 | Rental, Hiring and Real Estate Services | 2.38 | 2.60 | 2.48 | Medium | 1.00× |
+| Transport, Postal and Warehousing | 2.50 | 2.40 | 2.46 | Medium | 1.00× |
 | Administrative and Support Services | 2.12 | 2.80 | 2.43 | Medium | 1.00× |
+| Information Media and Telecommunications | 2.12 | 2.60 | 2.34 | Medium | 1.00× |
 | Other Services | 2.38 | 2.20 | 2.30 | Medium | 1.00× |
 | Electricity, Gas, Water and Waste Services | 2.25 | 2.00 | 2.14 | Medium | 1.00× |
 | Health Care and Social Assistance | 1.50 | 2.80 | 2.08 | Medium | 1.00× |
-| Professional, Scientific and Technical Services | 1.75 | 2.40 | 2.04 | Medium | 1.00× |
+| Professional, Scientific and Technical Services | 1.75 | 2.00 | 1.86 | Moderate-low | 0.95× |
 
 *Per-industry component detail and the source rows behind every number are in **Section 5** of
 the [Technical report](outputs/reports/Industry_Analysis_Q1_2026_Technical.md).*
@@ -404,7 +418,7 @@ python run_pipeline.py
 unreachable it falls back to a committed real-data cache, so it always produces the reports —
 online or offline. The flow runs end to end: **fetch → build panels + overlays → export the 8 CSV
 contracts → validate → render the Board + Technical report**. The data vintage is pinned
-(`DATA_AS_OF = 2026-02-28`); the committed cache and its source attribution live in
+(`DATA_AS_OF = 2026-06-16`); the committed cache and its source attribution live in
 [`data/cache/`](data/cache/). Methodology notes:
 [cash-flow lending](docs/methodology_cash_flow_lending.md) and
 [property-backed lending](docs/methodology_property_backed_lending.md).

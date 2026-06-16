@@ -29,7 +29,10 @@ from src.config import (
 
 # Vintage of the committed real-data cache. Pin this so the report is
 # reproducible and clearly dated regardless of when a reviewer runs it.
-DATA_AS_OF = "2026-02-28"
+# 2026-06-16 refresh: all quarterly/monthly ABS series now report through the
+# March 2026 quarter (Q1 2026); Australian Industry stays at its latest annual
+# (FY 2023-24 — FY 2024-25 not yet released). Cash rate is live RBA F1.
+DATA_AS_OF = "2026-06-16"
 
 CACHE_DIR = REPO_ROOT / "data" / "cache"
 
@@ -55,13 +58,13 @@ REQUIRED_SOURCES: tuple[SourceSpec, ...] = (
     SourceSpec("australian_industry_xlsx", "ABS 8155.0 Australian Industry",
                RAW_PUBLIC_DIR_ABS, "81550DO001_202324.xlsx", "abs/81550DO001_202324.xlsx", True),
     SourceSpec("business_indicators_profit_ratio_xlsx", "ABS 5676.0 Business Indicators (profit)",
-               RAW_PUBLIC_DIR_ABS, "56760022_dec2025_profit_ratio.xlsx", "abs/56760022_dec2025_profit_ratio.xlsx", True),
+               RAW_PUBLIC_DIR_ABS, "56760022_mar2026_profit_ratio.xlsx", "abs/56760022_mar2026_profit_ratio.xlsx", True),
     SourceSpec("business_indicators_inventory_ratio_xlsx", "ABS 5676.0 Business Indicators (inventories)",
-               RAW_PUBLIC_DIR_ABS, "56760023_dec2025_inventory_ratio.xlsx", "abs/56760023_dec2025_inventory_ratio.xlsx", True),
+               RAW_PUBLIC_DIR_ABS, "56760023_mar2026_inventory_ratio.xlsx", "abs/56760023_mar2026_inventory_ratio.xlsx", True),
     SourceSpec("labour_force_industry_xlsx", "ABS 6291.0 Labour Force, Detailed",
-               RAW_PUBLIC_DIR_ABS, "6291004_feb2026_labour_force_industry.xlsx", "abs/6291004_feb2026_labour_force_industry.xlsx", True),
+               RAW_PUBLIC_DIR_ABS, "6291004_mar2026_labour_force_industry.xlsx", "abs/6291004_mar2026_labour_force_industry.xlsx", True),
     SourceSpec("building_approvals_nonres_xlsx", "ABS 8731.0 Building Approvals (non-residential)",
-               RAW_PUBLIC_DIR_ABS, "87310051_feb2026_building_approvals_nonres.xlsx", "abs/87310051_feb2026_building_approvals_nonres.xlsx", True),
+               RAW_PUBLIC_DIR_ABS, "87310051_mar2026_building_approvals_nonres.xlsx", "abs/87310051_mar2026_building_approvals_nonres.xlsx", True),
     SourceSpec("rba_cash_rate_csv", "RBA F1 cash-rate table",
                RAW_PUBLIC_DIR, "rba_f1_data.csv", "rba/rba_f1_data.csv", True),
 )
