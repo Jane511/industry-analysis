@@ -70,6 +70,115 @@ validation function expects.
 
 ---
 
+## Results — current readings and industry findings
+
+### Current macro readings
+
+The drivers the engine conditions on, at their latest observed level (the base of every
+scenario). Economy-wide drivers apply to all portfolios; industry output is the
+industry-specific one. Four CRE variables have no clean free public series and are honestly
+labelled assumptions.
+
+| Macro driver | Current level | Source |
+|---|---|---|
+| GDP growth (real, YoY) | 1.8% | ABS 5206 National Accounts |
+| Unemployment rate | 4.1% | ABS 6202 Labour Force |
+| Cash rate | 3.85% | RBA F1 |
+| Inflation (CPI, YoY) | 3.2% | ABS 6401 CPI |
+| Wage growth (WPI, YoY) | 3.5% | ABS 6345 Wage Price Index |
+| House-price growth (YoY) | 4.0% | ABS 6416 Residential Property Price Index |
+| Exchange rate (TWI, change) | 0.0% | RBA F11 |
+| Industry / sector output (YoY) | 2.0% | ABS 8155 + 5676 |
+| Commercial-property prices | 0.0% | *assumption* |
+| Office vacancy rate | 12.0% | *assumption* |
+| CRE rents | 0.0% | *assumption* |
+| CRE cap rates | 6.0% | *assumption* |
+
+Macro regime (latest): cash-rate regime **restrictive / rising**, arrears **low / improving**,
+overall macro-regime flag **base** (`macro_regime_flags.csv`).
+
+### Industry credit-risk findings (all 18 ANZSIC divisions)
+
+Headline: **4 industries score Elevated, 2 Moderate-high, 12 Medium** (as of 2026-06-15;
+`industry_risk_scores.csv`). No industry currently sits in the Low or High band.
+
+| Industry | Classification | Macro | Base score | Level | PD overlay |
+|---|--:|--:|--:|---|--:|
+| Agriculture, Forestry and Fishing | 4.12 | 3.20 | **3.71** | Elevated | 1.15× |
+| Mining | 3.88 | 2.80 | **3.39** | Elevated | 1.15× |
+| Manufacturing | 3.50 | 3.20 | **3.36** | Elevated | 1.15× |
+| Retail Trade | 3.25 | 3.20 | **3.23** | Elevated | 1.15× |
+| Wholesale Trade | 3.12 | 3.20 | 3.16 | Moderate-high | 1.10× |
+| Arts and Recreation Services | 2.38 | 3.80 | 3.02 | Moderate-high | 1.10× |
+| Accommodation and Food Services | 2.75 | 2.60 | 2.68 | Medium | 1.00× |
+| Construction | 2.75 | 2.60 | 2.68 | Medium | 1.00× |
+| Transport, Postal and Warehousing | 2.50 | 2.80 | 2.64 | Medium | 1.00× |
+| Information Media and Telecommunications | 2.12 | 3.00 | 2.52 | Medium | 1.00× |
+| Public Administration and Safety | 1.62 | 3.60 | 2.51 | Medium | 1.00× |
+| Education and Training | 1.75 | 3.40 | 2.49 | Medium | 1.00× |
+| Rental, Hiring and Real Estate Services | 2.38 | 2.60 | 2.48 | Medium | 1.00× |
+| Administrative and Support Services | 2.12 | 2.80 | 2.43 | Medium | 1.00× |
+| Other Services | 2.38 | 2.20 | 2.30 | Medium | 1.00× |
+| Electricity, Gas, Water and Waste Services | 2.25 | 2.00 | 2.14 | Medium | 1.00× |
+| Health Care and Social Assistance | 1.50 | 2.80 | 2.08 | Medium | 1.00× |
+| Professional, Scientific and Technical Services | 1.75 | 2.40 | 2.04 | Medium | 1.00× |
+
+**Industry-specific drivers behind the macro score** (the current-conditions inputs that vary
+by industry; `business_cycle_panel.csv`). Demand growth is a volatile approvals/indicator proxy
+(base effects), so it is read alongside employment and margins, not alone.
+
+| Industry | Employment YoY | EBITDA margin | Demand YoY | Macro score |
+|---|--:|--:|--:|--:|
+| Agriculture, Forestry and Fishing | −5.1% | 14.6% | +58% | 3.20 |
+| Mining | −5.1% | 47.3% | — | 2.80 |
+| Manufacturing | −0.9% | 9.2% | +56% | 3.20 |
+| Retail Trade | −0.5% | 7.8% | +68% | 3.20 |
+| Wholesale Trade | −8.7% | 6.1% | +69% | 3.20 |
+| Arts and Recreation Services | −5.8% | 13.5% | −56% | 3.80 |
+
+Full per-industry detail (all components and source rows) is **Section 5** of the Board /
+Technical report (`outputs/reports/Industry_Analysis_Q1_2026_Technical.md`).
+
+## How the industry credit-risk score is calculated
+
+Each industry's score blends a **structural** view with a **current-conditions** view, then maps
+to a risk level and a PD overlay. The whole calculation is in
+[src/panels/macro_signals.py](src/panels/macro_signals.py) (scoring) and
+[src/overlays/build_industry_risk_scores.py](src/overlays/build_industry_risk_scores.py) (ladder).
+
+**Step 1 — macro (current-conditions) score.** Five components, each scored **1 (low risk) → 5
+(high risk)** from ABS business-indicator series, then averaged:
+
+| Component | What it measures (higher risk when…) | Source |
+|---|---|---|
+| Employment score | industry employment YoY growth (falling) | ABS 6291 Labour Force |
+| Margin level score | gross operating profit-to-sales / EBITDA margin (thin) | ABS 5676 / 8155 |
+| Margin trend score | YoY change in margin (deteriorating) | ABS 5676 / 8155 |
+| Inventory score | inventory days / stock-build risk (rising) | ABS 5676 |
+| Demand score | demand-proxy YoY growth (weak) | ABS approvals / indicators |
+
+`macro_risk_score = mean(employment, margin level, margin trend, inventory, demand)`
+
+**Step 2 — blend with structural risk.** `classification_risk_score` (1–5) is the structural risk
+of the ANZSIC division (cyclicality, capital intensity, revenue concentration):
+
+`industry_base_risk_score = 0.55 × classification_risk_score + 0.45 × macro_risk_score`
+
+**Step 3 — map to level + PD overlay** via a five-band ladder:
+
+| Base score | Level | PD multiplier |
+|---|---|--:|
+| < 1.60 | Low | 0.90× |
+| 1.60 – 2.00 | Moderate-low | 0.95× |
+| 2.00 – 2.80 | Medium | 1.00× |
+| 2.80 – 3.23 | Moderate-high | 1.10× |
+| ≥ 3.23 | Elevated | 1.15× |
+
+The PD multiplier is the deal-level industry overlay a PD model multiplies through.
+**Worked example — Agriculture:** classification 4.12 (structurally cyclical, weather/commodity
+exposed) and macro 3.20 → 0.55 × 4.12 + 0.45 × 3.20 = **3.71** → **Elevated** → **1.15×** PD overlay.
+These are point-in-time, illustrative current-conditions overlays — not calibrated PD estimates.
+
 ## Macro stress inputs (facility + portfolio level)
 
 ![Macro-derived PD stress multipliers by segment](reports/figures/macro_scenario_paths.png)
