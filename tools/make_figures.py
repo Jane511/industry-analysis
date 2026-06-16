@@ -72,15 +72,18 @@ ax.set_title("Downturn overlay: stress multipliers by scenario")
 ax.legend(frameon=False, ncol=2, fontsize=10)
 save(fig, "downturn_scenario_multipliers.png")
 
-# 3. Property-market softness by segment -------------------------------------
+# 3. Property-market softness by building type -------------------------------
 prop = pd.read_csv(CON / "property_cycle_panel.csv").sort_values("market_softness_score")
-fig, ax = plt.subplots(figsize=(8.4, 5.2))
+fig, ax = plt.subplots(figsize=(9.8, 5.6))
 colors = [LEVEL_COLOR.get(b, BLUE) for b in prop.market_softness_band]
 bars = ax.barh(prop.property_segment, prop.market_softness_score, color=colors, edgecolor="white")
 for y, (v, st) in enumerate(zip(prop.market_softness_score, prop.cycle_stage)):
     ax.text(v, y, f" {v:.1f}  ({st})", va="center", fontsize=9)
+ax.tick_params(axis="y", labelsize=10.5)
+ax.set_xlim(0, max(prop.market_softness_score) + 1.4)
 ax.set_xlabel("market softness score (higher = softer / weaker demand)")
-ax.set_title("Commercial property softness by segment (ABS approvals)")
+ax.set_title("Commercial property softness by building type\n(ABS Cat. 8731 non-residential approvals)",
+             fontsize=13, pad=10)
 ax.grid(axis="y", alpha=0)
 save(fig, "property_market_softness.png")
 

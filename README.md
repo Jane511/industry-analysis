@@ -30,10 +30,14 @@ The model-ready data sits in eight CSV "contracts" in [`outputs/contracts/`](out
 ## 1. Macro conditions for credit assessment & risk management
 
 A lender's loss rate is driven as much by *the environment it lends into* as by any single
-borrower. Before scoring an industry or a deal, the engine reads where the economy currently
-sits — these are the **economy-wide conditions a credit team assesses against**, each at its
-latest observed level from a named public series. They form the **base** of every stress
-scenario and condition PD and LGD across the whole book.
+borrower. Before scoring an industry or a deal, the engine reads where the economy and the
+property markets currently sit — the conditions a credit team assesses against. Each figure
+below is the latest observed level from a named public series, and together they form the
+**base** of every stress scenario in Section 2.
+
+### 1a. Economy-wide conditions
+
+The broad drivers that condition PD and LGD across the whole book, regardless of product.
 
 | Macro condition | Current level | What it signals for credit risk | Source |
 |---|---|---|---|
@@ -42,21 +46,66 @@ scenario and condition PD and LGD across the whole book.
 | Cash rate | 4.35% (+0.5pp YoY) | Restrictive — debt-servicing pressure on leveraged borrowers | RBA F1 (live) |
 | Inflation (CPI, YoY) | 3.2% | Above target — cost-of-living squeeze on cash flow | ABS 6401 CPI |
 | Wage growth (WPI, YoY) | 3.5% | Roughly matching CPI — thin real-income buffer | ABS 6345 Wage Price Index |
-| House-price growth (YoY) | 4.0% | Positive — supportive residential collateral | ABS 6416 Residential Property Price Index |
 | Exchange rate (TWI, change) | 0.0% | Stable — neutral for FX-exposed corporates | RBA F11 |
 | Industry / sector output (YoY) | 2.0% | Modest — sector-revenue channel for SME / corporate | ABS 8155 + 5676 |
-| Commercial-property prices | 0.0% | *assumption* — flat, anchored to RBA FSR commentary | *assumption* |
-| Office vacancy rate | 12.0% | *assumption* — elevated, office segment under pressure | *assumption* |
-| CRE rents | 0.0% | *assumption* | *assumption* |
-| CRE cap rates | 6.0% | *assumption* | *assumption* |
 
-**Macro regime (latest, as of 2026-06-15):** cash-rate regime **restrictive / rising**,
-arrears **Low / Improving**, overall macro-regime flag **base**
+### 1b. Property conditions
+
+Property-secured lending splits into **residential** and **commercial** — they sit on different
+cycles, so the engine reads them separately.
+
+**Residential property.** The residential signal is **house-price growth: +4.0% YoY** (ABS 6416
+Residential Property Price Index). This is the collateral channel for residential mortgages — when
+it falls, mortgage LGD rises (Section 2b). *This is a **national** figure. State / capital-city
+splits (ABS 6432) are not yet staged, so there is no by-state residential breakdown here; it will
+be added once that source is in place.*
+
+**Commercial property (CRE).** Read two ways:
+
+*(i) Price & yield levels* — labelled **assumptions** (no clean free quarterly public series;
+anchored to RBA FSR commentary). These feed the CRE stress paths in Section 2a:
+
+| CRE condition | Current level | Reading |
+|---|---|---|
+| Commercial-property prices | 0.0% | Flat |
+| Office vacancy rate | 12.0% | Elevated — office segment under pressure |
+| CRE rents | 0.0% | Flat |
+| CRE cap rates | 6.0% | — |
+
+*(ii) Building-type cycle* — **real ABS data** (Cat. 8731 non-residential building approvals).
+This is where CRE risk actually concentrates right now: **offices are in a clear downturn**
+(approvals −36% YoY) while health buildings and warehouses still grow. The softness score runs
+1 (firm) → 5 (soft); "PD if standalone" is the overlay that segment would carry on its own.
+
+![Commercial property softness by building type, from ABS non-residential building approvals — offices softest, health buildings firmest](outputs/charts/property_market_softness.png)
+
+| Building type | Cycle stage | Softness (1 firm → 5 soft) | Approvals YoY | PD if standalone |
+|---|---|--:|--:|--:|
+| Offices | downturn | 4.30 | −35.7% | 1.15× |
+| Education buildings | slowing | 3.25 | −21.4% | 1.15× |
+| Retail & wholesale trade buildings | neutral | 3.15 | +68.5% | 1.10× |
+| Short-term accommodation buildings | growth | 2.85 | +113.7% | 1.10× |
+| Aged care facilities | neutral | 2.70 | +219.9% | 1.00× |
+| Agricultural & aquacultural buildings | neutral | 2.65 | +58.4% | 1.00× |
+| Warehouses | neutral | 2.20 | +69.3% | 1.00× |
+| Health buildings | growth | 1.65 | +355.0% | 0.95× |
+
+The table lists the eight specific building types; the chart additionally shows three "Total …"
+bars, which are aggregate reference lines only. The five-segment rollup these building types feed
+(CRE / Retail / Industrial / Construction / Residential) is in
+[`property_market_overlays.csv`](outputs/contracts/property_market_overlays.csv). Approvals are a
+forward-looking proxy for building activity (commencements/completions are not yet staged), and
+the high positive YoY figures reflect volatile low-base months, so they are read for *direction*,
+not magnitude.
+
+### 1c. Macro regime
+
+**Latest (as of 2026-06-15):** cash-rate regime **restrictive / rising**, arrears
+**Low / Improving**, overall macro-regime flag **base**
 ([`macro_regime_flags.csv`](outputs/contracts/macro_regime_flags.csv)). The cash-rate regime is
-real RBA F1; the arrears level/trend is a labelled qualitative assumption from the RBA FSR.
-
-*A "base" regime means the engine applies no recession overlay at current readings — but it
-pre-computes the stress dials in Section 2 so a downturn can be costed instantly.*
+real RBA F1; the arrears level/trend is a labelled qualitative assumption from the RBA FSR. A
+"base" regime means no recession overlay is applied at current readings — but the engine
+pre-computes the stress dials in Section 2 so a downturn can be costed instantly.
 
 ---
 
@@ -104,26 +153,49 @@ multipliers (and property-value haircut) a model multiplies through —
 
 ### 2b. Which drivers stress which product
 
-Different lending products fail for different reasons, so each portfolio is stressed against the
-drivers that matter to it (illustrative weights, not estimated betas — the weights inside each
-PD / LGD / EAD parameter sum to 1.0). Source:
+Different lending products fail for different reasons, so each is stressed against its own short
+list of drivers. For every product the engine splits credit risk into the three quantities a loss
+model needs, and tells you which macro drivers move each one:
+
+- **PD** — *probability of default*: how likely the borrower is to stop paying.
+- **LGD** — *loss given default*: the share of the balance you lose once they default (mostly a
+  collateral story).
+- **EAD** — *exposure at default*: how much is drawn/owing when default hits.
+
+Each driver carries a **weight** showing how much it moves that quantity. **Weights are
+illustrative (not estimated betas) and sum to 1.0 within each of PD / LGD / EAD** — so a 0.45
+driver moves that quantity about twice as much as a 0.20 driver. The arrow shows the stress
+direction: **↑** = worse when the driver rises, **↓** = worse when it falls. Source:
 [`portfolio_macro_sensitivity.csv`](outputs/contracts/portfolio_macro_sensitivity.csv).
 
-| Product / portfolio | PD driven mainly by | LGD driven mainly by | EAD driven mainly by |
-|---|---|---|---|
-| **Residential mortgages** | unemployment (.45), cash rate (.25), wage growth (.20) | **house prices (.70)**, unemployment (.20) | cash rate (.50), unemployment (.30) |
-| **Credit cards** | unemployment (.50), wage growth (.30), inflation (.20) | unemployment (.50), inflation (.30) | GDP (.40), cash rate (.35) |
-| **SME lending** | GDP (.35), unemployment (.25), cash rate (.20), sector output (.20) | CRE prices (.45), house prices (.35), sector output (.20) | cash rate (.40), GDP (.35), sector output (.25) |
-| **Corporate lending** | GDP (.40), sector output (.30), cash rate (.15), FX (.15) | sector output (.45), CRE prices (.30), FX (.25) | cash rate (.45), GDP (.35), sector output (.20) |
-| **Commercial property (CRE)** | CRE prices (.30), vacancy (.30), rents (.20), cash rate (.20) | CRE prices (.40), cap rates (.35), rents (.25) | cash rate (.50), vacancy (.30) |
-| **Development finance** | CRE prices (.35), GDP (.25), vacancy (.20), cash rate (.20) | CRE prices (.55), cap rates (.25), rents (.20) | cash rate (.45), CRE prices (.30), GDP (.25) |
+**Worked example — residential mortgages.** Read the row as three separate stories:
 
-How to read it: residential mortgage **LGD** is overwhelmingly a **house-price** story (collateral
-channel), while its **PD** is a **labour-market and rate** story (debt-servicing). CRE and
-development finance pivot on **property values, vacancy and cap rates**; SME and corporate pivot
-on **GDP and sector output**. The roll-up is demonstrated on a committed demo book — illustrative
-portfolio EL ≈ **1.9× mild, 3.2× moderate, 5.6× severe** (exposure-weighted, no diversification
-benefit, per APG 113 para 92).
+- **PD** worsens when the **labour market and rates** turn: unemployment ↑ (0.45) does most of
+  the work, then cash rate ↑ (0.25), wage growth ↓ (0.20), inflation ↑ (0.10).
+- **LGD** is almost entirely a **collateral** story: house prices ↓ (0.70) dominate, with
+  unemployment ↑ (0.20) and cash rate ↑ (0.10) secondary.
+- **EAD** grows as stressed borrowers draw down: cash rate ↑ (0.50), unemployment ↑ (0.30),
+  GDP ↓ (0.20).
+
+So in the *severe* scenario a −21% house-price move is what drives mortgage **LGD** up, while the
++4pp jump in unemployment is what drives mortgage **PD** — two different drivers, two different
+quantities. The same split for every product:
+
+| Product / portfolio | PD — main drivers (weight) | LGD — main drivers (weight) | EAD — main drivers (weight) |
+|---|---|---|---|
+| **Residential mortgages** | unemployment ↑ (0.45), cash rate ↑ (0.25), wage growth ↓ (0.20), inflation ↑ (0.10) | house prices ↓ (0.70), unemployment ↑ (0.20), cash rate ↑ (0.10) | cash rate ↑ (0.50), unemployment ↑ (0.30), GDP ↓ (0.20) |
+| **Credit cards** | unemployment ↑ (0.50), wage growth ↓ (0.30), inflation ↑ (0.20) | unemployment ↑ (0.50), inflation ↑ (0.30), wage growth ↓ (0.20) | GDP ↓ (0.40), cash rate ↑ (0.35), unemployment ↑ (0.25) |
+| **SME lending** | GDP ↓ (0.35), unemployment ↑ (0.25), cash rate ↑ (0.20), sector output ↓ (0.20) | CRE prices ↓ (0.45), house prices ↓ (0.35), sector output ↓ (0.20) | cash rate ↑ (0.40), GDP ↓ (0.35), sector output ↓ (0.25) |
+| **Corporate lending** | GDP ↓ (0.40), sector output ↓ (0.30), cash rate ↑ (0.15), FX ↓ (0.15) | sector output ↓ (0.45), CRE prices ↓ (0.30), FX ↓ (0.25) | cash rate ↑ (0.45), GDP ↓ (0.35), sector output ↓ (0.20) |
+| **Commercial property (CRE)** | CRE prices ↓ (0.30), vacancy ↑ (0.30), rents ↓ (0.20), cash rate ↑ (0.20) | CRE prices ↓ (0.40), cap rates ↑ (0.35), rents ↓ (0.25) | cash rate ↑ (0.50), vacancy ↑ (0.30), CRE prices ↓ (0.20) |
+| **Development finance** | CRE prices ↓ (0.35), GDP ↓ (0.25), vacancy ↑ (0.20), cash rate ↑ (0.20) | CRE prices ↓ (0.55), cap rates ↑ (0.25), rents ↓ (0.20) | cash rate ↑ (0.45), CRE prices ↓ (0.30), GDP ↓ (0.25) |
+
+The pattern: **household products** (mortgages, cards) pivot on the **labour market**;
+**business products** (SME, corporate) pivot on **GDP and sector output**; **property products**
+(CRE, development finance) pivot on **property values, vacancy and cap rates**. Applying these
+weights to the Section 2a shock paths on a committed demo book gives an illustrative portfolio
+expected loss of ≈ **1.9× mild, 3.2× moderate, 5.6× severe** (exposure-weighted, no
+diversification benefit, per APG 113 para 92).
 
 ### 2c. Which drivers stress which industry
 
