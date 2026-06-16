@@ -4,7 +4,7 @@
 
 
 
-Macro and downturn overlays as of 2026-06-12. Property cycle data as of 2026-02-01.
+Macro and downturn overlays as of 2026-06-15. Property cycle data as of 2026-02-01.
 
 This is a summary view for non-technical reviewers. Every table and chart in this document traces back to the canonical CSV contracts in `outputs/contracts/`. For full per-column detail, methodology references, and the audit-log appendix, see the Technical variant.
 
@@ -16,7 +16,7 @@ This report reads the credit-risk temperature of the Australian economy from pub
 
 Headline picture: the cash rate is 4.35% (+0.50 points over the past year) and the arrears backdrop is low and improving, so the macro regime is set to 'base'. Against that backdrop, 4 of 18 industries score Elevated on the 1-5 risk scale, and 0 of 5 property segments are in downturn. The downturn-overlay table translates this into stress multipliers — up to 2.00x on PD in a severe scenario — that a pricing or expected-loss model can apply directly.
 
-Macro and downturn overlays are dated 2026-06-12; property-cycle data is dated 2026-02-01. The headline numbers are in Section 2; every figure traces back to a named public source in Sections 3-5.
+Macro and downturn overlays are dated 2026-06-15; property-cycle data is dated 2026-02-01. The headline numbers are in Section 2; every figure traces back to a named public source in Sections 3-5.
 
 ## 2. Headline Numbers
 
@@ -26,14 +26,14 @@ These are the calibrated outputs and operating numbers reviewers usually need fi
 
 | Metric | Value | Vintage | Trace |
 | --- | --- | --- | --- |
-| Industries covered | 18 | 2026-06-12 | industry_risk_scores.csv |
+| Industries covered | 18 | 2026-06-15 | industry_risk_scores.csv |
 | Property segments covered | 5 | 2026-02-01 | property_market_overlays.csv |
-| Cash rate latest pct | 4.35 | 2026-06-12 | rba_cash_rate_csv -> macro_regime_flags.csv |
-| Cash rate 1y change pctpts | +0.50 | 2026-06-12 | rba_cash_rate_csv -> industry_risk_scores.csv |
-| Elevated industry count | 4 | 2026-06-12 | industry_risk_scores.csv |
+| Cash rate latest pct | 4.35 | 2026-06-15 | rba_cash_rate_csv -> macro_regime_flags.csv |
+| Cash rate 1y change pctpts | +0.50 | 2026-06-15 | rba_cash_rate_csv -> industry_risk_scores.csv |
+| Elevated industry count | 4 | 2026-06-15 | industry_risk_scores.csv |
 | Downturn property segment count | 0 | 2026-02-01 | property_market_overlays.csv |
-| Macro regime flag | base | 2026-06-12 | macro_regime_flags.csv |
-| Severe PD multiplier | 2.00 | 2026-06-12 | downturn_overlay_table.csv |
+| Macro regime flag | base | 2026-06-15 | macro_regime_flags.csv |
+| Severe PD multiplier | 2.00 | 2026-06-15 | downturn_overlay_table.csv |
 
 *Industry risk scores - full current output*
 
@@ -62,10 +62,10 @@ These are the calibrated outputs and operating numbers reviewers usually need fi
 
 | scenario | pd_multiplier | lgd_multiplier | ccf_multiplier | property_value_haircut | macro_path | notes | as_of_date |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| base | 1.0 | 1.0 | 1.0 | 0.0 | Current environment, no recession overlay: GDP growth around trend, unemployment broadly stable, house prices at latest observed levels. | Current environment (base scenario). Anchored to a low / improving arrears backdrop (qualitative assumption from RBA FSR) and an average property-cycle softness score of 2.73 (real, ABS building approvals). No diversification benefit assumed (APG 113 para 92). | 2026-06-12 |
-| mild | 1.2 | 1.1 | 1.05 | 0.05 | Basel CRE36.51 mandatory minimum — two consecutive quarters of zero GDP growth; unemployment +~1.0-1.5pp; house prices ~-5 to -10%. | ASSUMPTION (scenario parameter) — mild recession = Basel CRE36.51 two-quarters-zero-growth minimum, for conservative portfolio calibration. No diversification benefit assumed (APG 113 para 92). | 2026-06-12 |
-| moderate | 1.5 | 1.2 | 1.1 | 0.1 | Deeper recession: multi-quarter contraction; unemployment +~2-3pp; house prices ~-10 to -15%. | ASSUMPTION (scenario parameter) — illustrative moderate downturn for stressed pricing and EL scenario analysis. No diversification benefit assumed (APG 113 para 92). | 2026-06-12 |
-| severe | 2.0 | 1.3 | 1.2 | 0.2 | GFC-like severe-but-plausible path: deep multi-quarter contraction; unemployment +~3-4pp; house prices ~-20 to -30%. | ASSUMPTION (scenario parameter) — illustrative severe downturn; not a calibrated regulatory stress parameter. No diversification benefit assumed (APG 113 para 92). | 2026-06-12 |
+| base | 1.0 | 1.0 | 1.0 | 0.0 | Current environment, no recession overlay: GDP growth around trend, unemployment broadly stable, house prices at latest observed levels. | Current environment (base scenario). Anchored to a low / improving arrears backdrop (qualitative assumption from RBA FSR) and an average property-cycle softness score of 2.73 (real, ABS building approvals). No diversification benefit assumed (APG 113 para 92). | 2026-06-15 |
+| mild | 1.2 | 1.1 | 1.05 | 0.05 | Basel CRE36.51 mandatory minimum — two consecutive quarters of zero GDP growth; unemployment +~1.0-1.5pp; house prices ~-5 to -10%. | ASSUMPTION (scenario parameter) — mild recession = Basel CRE36.51 two-quarters-zero-growth minimum, for conservative portfolio calibration. No diversification benefit assumed (APG 113 para 92). | 2026-06-15 |
+| moderate | 1.5 | 1.2 | 1.1 | 0.1 | Deeper recession: multi-quarter contraction; unemployment +~2-3pp; house prices ~-10 to -15%. | ASSUMPTION (scenario parameter) — illustrative moderate downturn for stressed pricing and EL scenario analysis. No diversification benefit assumed (APG 113 para 92). | 2026-06-15 |
+| severe | 2.0 | 1.3 | 1.2 | 0.2 | GFC-like severe-but-plausible path: deep multi-quarter contraction; unemployment +~3-4pp; house prices ~-20 to -30%. | ASSUMPTION (scenario parameter) — illustrative severe downturn; not a calibrated regulatory stress parameter. No diversification benefit assumed (APG 113 para 92). | 2026-06-15 |
 
 ## 3. Data Sources Inventory
 
@@ -78,25 +78,25 @@ One row is shown for every item in the canonical source registry. Missing and ma
 | anzsic_classification_page | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/latest-release | landing page |  |  |  | missing |  |
 | anzsic_division_codes_page | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/2006-revision-2-0/numbering-system-and-titles/division-codes-and-titles | landing page |  |  |  | missing |  |
 | anzsic_division_subdivision_class_page | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/2006-revision-2-0/numbering-system-and-titles/division-subdivision-group-and-class-codes-and-titles | landing page |  |  |  | missing |  |
-| australian_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/industry-overview/australian-industry/2023-24/81550DO001_202324.xlsx | XLSX |  | 2026-06-15T04:40:20+00:00 | 597090 | manually staged |  |
-| building_approvals_nonres_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/87310051.xlsx | XLSX |  | 2026-06-15T04:40:23+00:00 | 185814 | manually staged |  |
+| australian_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/industry-overview/australian-industry/2023-24/81550DO001_202324.xlsx | XLSX |  | 2026-06-16T00:59:21+00:00 | 597090 | manually staged |  |
+| building_approvals_nonres_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/87310051.xlsx | XLSX |  | 2026-06-16T00:59:23+00:00 | 185814 | manually staged |  |
 | business_indicators_consumer_sales_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760024.xlsx | XLSX |  |  |  | missing |  |
-| business_indicators_inventory_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760023.xlsx | XLSX |  | 2026-06-15T04:40:21+00:00 | 51783 | manually staged |  |
-| business_indicators_profit_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760022.xlsx | XLSX |  | 2026-06-15T04:40:21+00:00 | 56253 | manually staged |  |
+| business_indicators_inventory_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760023.xlsx | XLSX |  | 2026-06-16T00:59:22+00:00 | 51783 | manually staged |  |
+| business_indicators_profit_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/dec-2025/56760022.xlsx | XLSX |  | 2026-06-16T00:59:21+00:00 | 56253 | manually staged |  |
 | cpi_all_groups_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640101.xlsx | XLSX |  |  |  | missing |  |
 | cpi_subgroups_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640107.xlsx | XLSX |  |  |  | missing |  |
 | dwelling_approvals_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/875206.xlsx | XLSX |  |  |  | missing |  |
 | dwelling_value_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/875211.xlsx | XLSX |  |  |  | missing |  |
-| labour_force_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia-detailed/feb-2026/6291004.xlsx | XLSX |  | 2026-06-15T04:40:22+00:00 | 160939 | manually staged |  |
+| labour_force_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia-detailed/feb-2026/6291004.xlsx | XLSX |  | 2026-06-16T00:59:22+00:00 | 160939 | manually staged |  |
 | lending_indicators_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/finance/lending-indicators/feb-2026/560101.xlsx | XLSX |  |  |  | missing |  |
 | ppi_construction_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642713.xlsx | XLSX |  |  |  | missing |  |
 | ppi_manufacturing_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642712.xlsx | XLSX |  |  |  | missing |  |
 | property_price_capitals_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/residential-property-price-indexes-eight-capital-cities/dec-2025/641602.xlsx | XLSX |  |  |  | missing |  |
 | property_price_index_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/residential-property-price-indexes-eight-capital-cities/dec-2025/641601.xlsx | XLSX |  |  |  | missing |  |
-| ptrs_cycle_8_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2025-07/reg-update-july-2025.pdf | PDF |  | 2026-06-15T04:40:25+00:00 | 2055606 | manually staged |  |
-| ptrs_cycle_9_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2026-01/regulators-update-202601.pdf | PDF |  | 2026-06-15T04:40:25+00:00 | 3629142 | manually staged |  |
-| ptrs_guidance | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/regulatory-resource/ptrs-guidance-materials-march2025.pdf | PDF |  | 2026-06-15T04:40:26+00:00 | 947450 | manually staged |  |
-| rba_cash_rate_csv | Reserve Bank of Australia | https://www.rba.gov.au/statistics/tables/csv/f1-data.csv | CSV |  | 2026-06-15T04:40:24+00:00 | 302148 | manually staged |  |
+| ptrs_cycle_8_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2025-07/reg-update-july-2025.pdf | PDF |  | 2026-06-16T00:59:24+00:00 | 2055606 | manually staged |  |
+| ptrs_cycle_9_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2026-01/regulators-update-202601.pdf | PDF |  | 2026-06-16T00:59:25+00:00 | 3629142 | manually staged |  |
+| ptrs_guidance | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/regulatory-resource/ptrs-guidance-materials-march2025.pdf | PDF |  | 2026-06-16T00:59:25+00:00 | 947450 | manually staged |  |
+| rba_cash_rate_csv | Reserve Bank of Australia | https://www.rba.gov.au/statistics/tables/csv/f1-data.csv | CSV |  | 2026-06-16T00:59:23+00:00 | 302215 | manually staged |  |
 | rba_chart_pack_page | Reserve Bank of Australia | https://www.rba.gov.au/chart-pack/ | landing page |  |  |  | missing |  |
 | rba_chart_pack_pdf | Reserve Bank of Australia | https://www.rba.gov.au/chart-pack/ | PDF | March 2026 | 2026-04-28T08:01:43+00:00 | 5434746 | auto-downloaded | 66945f0e420217b86069e72880c20b4670f17a2ff52e6e0de9c9d13a174364d9 |
 | rba_fsr_page | Reserve Bank of Australia | https://www.rba.gov.au/publications/fsr/ | landing page |  |  |  | missing |  |
@@ -114,14 +114,14 @@ Every canonical CSV export in outputs/contracts/ appears exactly once with its i
 
 | Output filename | Input source(s) | Transformation script | Row count of output | Last build timestamp | Validation status |
 | --- | --- | --- | --- | --- | --- |
-| industry_risk_scores.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/overlays/build_industry_risk_scores.py | 18 | 2026-06-16T10:26:53 | PASS: present_nonempty |
-| property_market_overlays.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 5 | 2026-06-16T10:26:53 | PASS: present_nonempty |
-| downturn_overlay_table.csv | property_cycle_panel; scenario multipliers (assumption); qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/overlays/build_downturn_overlay_tables.py | 4 | 2026-06-16T10:26:53 | PASS: present_nonempty |
-| macro_regime_flags.csv | rba_cash_rate_csv; qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/panels/build_macro_regime_flags.py | 1 | 2026-06-16T10:26:53 | PASS: present_nonempty |
-| industry_financial_benchmarks.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; labour_force_industry_xlsx | src/panels/build_industry_financial_benchmarks.py | 18 | 2026-06-16T10:26:53 | PASS: present_nonempty |
-| business_cycle_panel.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; business_indicators_consumer_sales_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/panels/build_business_cycle_panel.py | 18 | 2026-06-16T10:26:53 | PASS: present_nonempty |
-| property_cycle_panel.csv | building_approvals_nonres_xlsx | src/panels/build_property_cycle_panel.py | 11 | 2026-06-16T10:26:53 | PASS: present_nonempty |
-| property_market_overlays_by_building_type.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 11 | 2026-06-16T10:26:53 | PASS: present_nonempty |
+| industry_risk_scores.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/overlays/build_industry_risk_scores.py | 18 | 2026-06-16T10:59:27 | PASS: present_nonempty |
+| property_market_overlays.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 5 | 2026-06-16T10:59:27 | PASS: present_nonempty |
+| downturn_overlay_table.csv | property_cycle_panel; scenario multipliers (assumption); qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/overlays/build_downturn_overlay_tables.py | 4 | 2026-06-16T10:59:27 | PASS: present_nonempty |
+| macro_regime_flags.csv | rba_cash_rate_csv; qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/panels/build_macro_regime_flags.py | 1 | 2026-06-16T10:59:27 | PASS: present_nonempty |
+| industry_financial_benchmarks.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; labour_force_industry_xlsx | src/panels/build_industry_financial_benchmarks.py | 18 | 2026-06-16T10:59:27 | PASS: present_nonempty |
+| business_cycle_panel.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; business_indicators_consumer_sales_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/panels/build_business_cycle_panel.py | 18 | 2026-06-16T10:59:27 | PASS: present_nonempty |
+| property_cycle_panel.csv | building_approvals_nonres_xlsx | src/panels/build_property_cycle_panel.py | 11 | 2026-06-16T10:59:27 | PASS: present_nonempty |
+| property_market_overlays_by_building_type.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 11 | 2026-06-16T10:59:27 | PASS: present_nonempty |
 
 ## 5. Detailed Analysis
 
@@ -177,16 +177,16 @@ The tables below include the actual analytical rows behind the report, not only 
 
 | as_of_date | scenario | pd_multiplier | lgd_multiplier | ccf_multiplier | property_value_haircut | macro_path | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-06-12 | base | 1.0 | 1.0 | 1.0 | 0.0 | Current environment, no recession overlay: GDP growth around trend, unemployment broadly stable, house prices at latest observed levels. | Current environment (base scenario). Anchored to a low / improving arrears backdrop (qualitative assumption from RBA FSR) and an average property-cycle softness score of 2.73 (real, ABS building approvals). No diversification benefit assumed (APG 113 para 92). |
-| 2026-06-12 | mild | 1.2 | 1.1 | 1.05 | 0.05 | Basel CRE36.51 mandatory minimum — two consecutive quarters of zero GDP growth; unemployment +~1.0-1.5pp; house prices ~-5 to -10%. | ASSUMPTION (scenario parameter) — mild recession = Basel CRE36.51 two-quarters-zero-growth minimum, for conservative portfolio calibration. No diversification benefit assumed (APG 113 para 92). |
-| 2026-06-12 | moderate | 1.5 | 1.2 | 1.1 | 0.1 | Deeper recession: multi-quarter contraction; unemployment +~2-3pp; house prices ~-10 to -15%. | ASSUMPTION (scenario parameter) — illustrative moderate downturn for stressed pricing and EL scenario analysis. No diversification benefit assumed (APG 113 para 92). |
-| 2026-06-12 | severe | 2.0 | 1.3 | 1.2 | 0.2 | GFC-like severe-but-plausible path: deep multi-quarter contraction; unemployment +~3-4pp; house prices ~-20 to -30%. | ASSUMPTION (scenario parameter) — illustrative severe downturn; not a calibrated regulatory stress parameter. No diversification benefit assumed (APG 113 para 92). |
+| 2026-06-15 | base | 1.0 | 1.0 | 1.0 | 0.0 | Current environment, no recession overlay: GDP growth around trend, unemployment broadly stable, house prices at latest observed levels. | Current environment (base scenario). Anchored to a low / improving arrears backdrop (qualitative assumption from RBA FSR) and an average property-cycle softness score of 2.73 (real, ABS building approvals). No diversification benefit assumed (APG 113 para 92). |
+| 2026-06-15 | mild | 1.2 | 1.1 | 1.05 | 0.05 | Basel CRE36.51 mandatory minimum — two consecutive quarters of zero GDP growth; unemployment +~1.0-1.5pp; house prices ~-5 to -10%. | ASSUMPTION (scenario parameter) — mild recession = Basel CRE36.51 two-quarters-zero-growth minimum, for conservative portfolio calibration. No diversification benefit assumed (APG 113 para 92). |
+| 2026-06-15 | moderate | 1.5 | 1.2 | 1.1 | 0.1 | Deeper recession: multi-quarter contraction; unemployment +~2-3pp; house prices ~-10 to -15%. | ASSUMPTION (scenario parameter) — illustrative moderate downturn for stressed pricing and EL scenario analysis. No diversification benefit assumed (APG 113 para 92). |
+| 2026-06-15 | severe | 2.0 | 1.3 | 1.2 | 0.2 | GFC-like severe-but-plausible path: deep multi-quarter contraction; unemployment +~3-4pp; house prices ~-20 to -30%. | ASSUMPTION (scenario parameter) — illustrative severe downturn; not a calibrated regulatory stress parameter. No diversification benefit assumed (APG 113 para 92). |
 
 *Full detail rows from macro_regime_flags.csv*
 
 | as_of_date | cash_rate_regime | arrears_environment_level | arrears_trend | macro_regime_flag | source_dataset |
 | --- | --- | --- | --- | --- | --- |
-| 2026-06-12 | restrictive_rising | Low | Improving | base | RBA F1 cash-rate table (real) + qualitative arrears baseline (assumption, RBA FSR Mar-2026) |
+| 2026-06-15 | restrictive_rising | Low | Improving | base | RBA F1 cash-rate table (real) + qualitative arrears baseline (assumption, RBA FSR Mar-2026) |
 
 *Full detail rows from industry_financial_benchmarks.csv*
 
@@ -343,7 +343,7 @@ A macro-driven stress layer turns macroeconomic scenario paths into PD / LGD / E
 
 | Variable | Unit | Source | base | mild | moderate | severe |
 | --- | --- | --- | --- | --- | --- | --- |
-| Cash rate (%) | % | RBA F1 cash-rate table | 3.85 | 4.1 | 4.35 | 4.6 |
+| Cash rate (%) | % | RBA F1 cash-rate table | 4.35 | 4.6 | 4.85 | 5.1 |
 | Commercial-property prices (% change) | % change | assumption | 0.0 | -7.0 | -15.0 | -28.0 |
 | CRE cap rates (%) | % | assumption | 6.0 | 6.4 | 6.9 | 7.6 |
 | CRE rents (% change) | % change | assumption | 0.0 | -4.0 | -9.0 | -16.0 |

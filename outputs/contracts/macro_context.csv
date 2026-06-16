@@ -1,0 +1,13 @@
+variable,label,unit,current_level,reading_type,source_or_assumption,macro_note
+gdp_growth,"GDP growth (real, YoY %)",% yoy,1.8,stated,ABS 5206 National Accounts,mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction.
+unemployment,Unemployment rate (%),%,4.1,stated,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
+cash_rate,Cash rate (%),%,4.35,live,RBA F1 cash-rate table (+0.50pp 1y),illustrative higher-for-longer rate path; debt-servicing channel.
+inflation,"Inflation (CPI, YoY %)",% yoy,3.2,stated,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
+wage_growth,"Wage growth (WPI, YoY %)",% yoy,3.5,stated,ABS 6345 Wage Price Index,real-income squeeze when paired with higher inflation.
+house_price_growth,House-price growth (YoY %),% yoy,4.0,stated,ABS 6416 Residential Property Price Index,collateral channel for residential-secured lending.
+exchange_rate_twi,"Exchange rate (TWI, % change)",% change,0.0,stated,RBA F11 exchange rates,depreciation raises input costs for FX-exposed corporates.
+industry_output,Industry / sector output (YoY %),% yoy,2.0,stated,ABS 8155 Australian Industry + 5676 Business Indicators,sector-revenue channel for SME / corporate borrowers.
+commercial_property_prices,Commercial-property prices (% change),% change,0.0,assumption,assumption,ASSUMPTION — no clean free quarterly series; anchored to RBA FSR commentary.
+vacancy_rate,"Vacancy rate (office, %)",%,12.0,assumption,assumption,ASSUMPTION — illustrative office-vacancy path; RBA FSR backdrop.
+cre_rents,CRE rents (% change),% change,0.0,assumption,assumption,ASSUMPTION — illustrative rent path; valuer/RBA commentary.
+cre_cap_rates,CRE cap rates (%),%,6.0,assumption,assumption,ASSUMPTION — cap-rate expansion lowers CRE values.

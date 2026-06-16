@@ -13,6 +13,7 @@ from src.overlays.macro_stress_core import (
     PARAMETERS,
     build_demo_portfolio_stress,
     build_demo_portfolio_summary,
+    build_macro_context,
     build_macro_scenario_paths,
     build_portfolio_macro_sensitivity,
     compute_segment_multipliers,
@@ -91,6 +92,22 @@ def test_multipliers_respect_ceiling(cfg) -> None:
     assert (mult["pd_multiplier"] <= ceil["PD"]).all()
     assert (mult["lgd_multiplier"] <= ceil["LGD"]).all()
     assert (mult["ead_multiplier"] <= ceil["EAD"]).all()
+
+
+def test_macro_context_is_real_and_tagged(cfg) -> None:
+    ctx = build_macro_context(cfg)
+    # one row per macro variable, all current levels populated
+    assert len(ctx) == len(cfg["variables"])
+    assert ctx["current_level"].notna().all()
+    # honest reading_type tags only
+    assert set(ctx["reading_type"]) <= {"live", "stated", "assumption"}
+    # the four CRE variables are assumptions; no broken/garbage unemployment
+    cre = ctx[ctx["variable"].isin(
+        ["commercial_property_prices", "vacancy_rate", "cre_rents", "cre_cap_rates"]
+    )]
+    assert (cre["reading_type"] == "assumption").all()
+    unemp = ctx[ctx["variable"] == "unemployment"]["current_level"].iloc[0]
+    assert 0 < unemp < 30  # plausible rate, not the legacy garbage value
 
 
 def test_demo_rollup_base_unity_and_monotonic(cfg) -> None:

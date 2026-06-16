@@ -223,6 +223,50 @@ def reverse_stress_scenario(
     )
 
 
+def build_macro_context(cfg: Optional[dict] = None) -> pd.DataFrame:
+    """Current macro-state snapshot: base-scenario readings + live cash rate.
+
+    Replaces the legacy (orphaned, broken) macro_context_panel. One row per
+    macro driver at its latest level, tagged by ``reading_type``:
+      * ``live``       — fetched now (the RBA F1 cash rate),
+      * ``stated``     — current level cited from the named public series
+                         (not auto-fetched in this reference layer),
+      * ``assumption`` — no clean free public series.
+    """
+    cfg = cfg or load_macro_config()
+    base = build_macro_scenario_paths(cfg)
+    base = (
+        base[base["scenario"] == "base"][
+            ["variable", "label", "unit", "base_level", "source_or_assumption", "macro_note"]
+        ]
+        .rename(columns={"base_level": "current_level"})
+        .reset_index(drop=True)
+    )
+    base["reading_type"] = base["source_or_assumption"].apply(
+        lambda s: "assumption" if str(s).strip().lower() == "assumption" else "stated"
+    )
+
+    # Overlay the live RBA F1 cash rate when the staged file is available;
+    # otherwise keep the config base level (offline-safe).
+    try:
+        from src.public_data.download_rba_rates import load_cash_rate_summary
+
+        cr = load_cash_rate_summary()
+        live = round(float(cr["cash_rate_latest_pct"].iloc[0]), 2)
+        chg = float(cr["cash_rate_change_1y_pctpts"].iloc[0])
+        mask = base["variable"] == "cash_rate"
+        base.loc[mask, "current_level"] = live
+        base.loc[mask, "source_or_assumption"] = f"RBA F1 cash-rate table ({chg:+.2f}pp 1y)"
+        base.loc[mask, "reading_type"] = "live"
+    except Exception:
+        pass
+
+    return base[[
+        "variable", "label", "unit", "current_level", "reading_type",
+        "source_or_assumption", "macro_note",
+    ]]
+
+
 # ---------------------------------------------------------------------------
 # Orchestration
 # ---------------------------------------------------------------------------
@@ -249,9 +293,10 @@ def build_and_export_macro_stress(
 
     contracts_dir.mkdir(parents=True, exist_ok=True)
     reports_dir.mkdir(parents=True, exist_ok=True)
-    # Two new downstream contracts.
+    # Downstream contracts.
     save_csv(paths, contracts_dir / "macro_scenario_paths.csv")
     save_csv(sensitivity, contracts_dir / "portfolio_macro_sensitivity.csv")
+    save_csv(build_macro_context(cfg), contracts_dir / "macro_context.csv")
     # Supporting demo artifacts (not core contracts).
     save_csv(multipliers, reports_dir / "macro_stress_segment_multipliers.csv")
     save_csv(facility, reports_dir / "macro_stress_demo_portfolio.csv")

@@ -75,7 +75,9 @@ def test_board_report_completeness_contract() -> None:
     # The macro-stress contracts are produced by a separate builder
     # (src/overlays/macro_stress_core.py) and covered by tests/test_macro_stress.py,
     # so they sit outside this upstream-transformation completeness check.
-    macro_stress_contracts = {"macro_scenario_paths.csv", "portfolio_macro_sensitivity.csv"}
+    macro_stress_contracts = {
+        "macro_scenario_paths.csv", "portfolio_macro_sensitivity.csv", "macro_context.csv",
+    }
     assert contract_csv_names - macro_stress_contracts == set(transformations["Output filename"])
     assert set(transformations["Validation status"].str.split(":", n=1).str[0]) <= {"PASS", "WARN", "FAIL"}
 

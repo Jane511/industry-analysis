@@ -83,7 +83,7 @@ labelled assumptions.
 |---|---|---|
 | GDP growth (real, YoY) | 1.8% | ABS 5206 National Accounts |
 | Unemployment rate | 4.1% | ABS 6202 Labour Force |
-| Cash rate | 3.85% | RBA F1 |
+| Cash rate | 4.35% (+0.5pp YoY) | RBA F1 (live) |
 | Inflation (CPI, YoY) | 3.2% | ABS 6401 CPI |
 | Wage growth (WPI, YoY) | 3.5% | ABS 6345 Wage Price Index |
 | House-price growth (YoY) | 4.0% | ABS 6416 Residential Property Price Index |

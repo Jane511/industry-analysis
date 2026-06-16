@@ -7,10 +7,10 @@ base,unemployment,Unemployment rate (%),%,up,4.1,0.0,4.1,0.0,ABS 6202 Labour For
 mild,unemployment,Unemployment rate (%),%,up,4.1,1.2,5.3,0.3,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
 moderate,unemployment,Unemployment rate (%),%,up,4.1,2.5,6.6,0.625,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
 severe,unemployment,Unemployment rate (%),%,up,4.1,4.0,8.1,1.0,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
-base,cash_rate,Cash rate (%),%,up,3.85,0.0,3.85,0.0,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
-mild,cash_rate,Cash rate (%),%,up,3.85,0.25,4.1,0.3333,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
-moderate,cash_rate,Cash rate (%),%,up,3.85,0.5,4.35,0.6667,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
-severe,cash_rate,Cash rate (%),%,up,3.85,0.75,4.6,1.0,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
+base,cash_rate,Cash rate (%),%,up,4.35,0.0,4.35,0.0,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
+mild,cash_rate,Cash rate (%),%,up,4.35,0.25,4.6,0.3333,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
+moderate,cash_rate,Cash rate (%),%,up,4.35,0.5,4.85,0.6667,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
+severe,cash_rate,Cash rate (%),%,up,4.35,0.75,5.1,1.0,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
 base,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,0.0,3.2,0.0,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
 mild,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,0.8,4.0,0.32,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
 moderate,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,1.5,4.7,0.6,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.

@@ -19,7 +19,7 @@ the header and data dictionary in their own ingestion layer.
 | `downturn_overlay_table.csv` | One row per scenario | Core downstream contract | PD/LGD/EAD stress, ICAAP |
 | `macro_scenario_paths.csv` | One row per scenario x macro variable | Core downstream contract | Macro stress paths for PD/LGD/EAD, ICAAP, scenario design |
 | `portfolio_macro_sensitivity.csv` | One row per segment x parameter x driver | Core downstream contract | Portfolio/facility macro-to-PD/LGD/EAD multiplier mapping |
-| `macro_context.csv` | One row per quarter | Core downstream contract | PD macro features, ECL FLI, stress testing, Board cycle commentary |
+| `macro_context.csv` | One row per macro variable (current state) | Core downstream contract | PD macro features, ECL FLI, stress testing, Board cycle commentary |
 | `macro_regime_flags.csv` | One row per quarter | Core downstream contract | ECL staging trigger, PIT PD overlay, scenario weighting |
 | `business_cycle_panel.csv` | Wide industry diagnostics | Optional explainability panel | PD explainability, validation diagnostics, challenger model analysis |
 | `property_cycle_panel.csv` | Property segment-by-region diagnostics | Optional explainability panel | LGD explainability, property stress interpretation |

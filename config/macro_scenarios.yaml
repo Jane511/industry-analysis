@@ -55,7 +55,7 @@ variables:
     label: Cash rate (%)
     unit: "%"
     stress_direction: up
-    base_level: 3.85
+    base_level: 4.35
     source_or_assumption: "RBA F1 cash-rate table"
     shocks: { base: 0.0, mild: 0.25, moderate: 0.5, severe: 0.75 }
     macro_note: "illustrative higher-for-longer rate path; debt-servicing channel."
