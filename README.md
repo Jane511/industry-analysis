@@ -74,7 +74,7 @@ validation function expects.
 
 ![Macro-derived PD stress multipliers by segment](reports/figures/macro_scenario_paths.png)
 
-A macro-driven stress layer turns a panel of macroeconomic scenario paths into **PD / LGD / EAD multipliers per portfolio segment**, then demonstrates facility-level and portfolio-level stressed expected loss on a committed demo book. Config in [config/macro_scenarios.yaml](config/macro_scenarios.yaml); engine in [src/overlays/macro_stress_core.py](src/overlays/macro_stress_core.py); full tables in [outputs/reports/Macro_Stress_Inputs.md](outputs/reports/Macro_Stress_Inputs.md).
+A macro-driven stress layer turns a panel of macroeconomic scenario paths into **PD / LGD / EAD multipliers per portfolio segment**, then demonstrates facility-level and portfolio-level stressed expected loss on a committed demo book. Config in [config/macro_scenarios.yaml](config/macro_scenarios.yaml); engine in [src/overlays/macro_stress_core.py](src/overlays/macro_stress_core.py); full tables are **Section 9** of the Board / Technical report ([outputs/reports/Industry_Analysis_Q1_2026_Board.md](outputs/reports/Industry_Analysis_Q1_2026_Board.md)).
 
 > Illustrative scenario design — **not** calibrated regulatory stress. Base levels are current values from the named public series; the per-scenario shocks and the portfolio elasticities are illustrative assumptions. Four CRE variables (commercial-property prices, vacancy, rents, cap rates) are labelled assumptions — no clean free quarterly public series.
 

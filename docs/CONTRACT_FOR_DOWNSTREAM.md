@@ -126,9 +126,10 @@ segment and scenario, `multiplier[s,p,k] = clamp(1 + intensity[p] * beta[s,p] *
 `stressed_PD_i = base_PD_i × multiplier(segment_i, PD, k)` (same for LGD/EAD) and
 sums `stressed_EL_i` with **no diversification benefit** for the portfolio total.
 The repo demonstrates this on `data/raw/demo_portfolio.csv`; the worked tables
-and a reverse-stress line are in `outputs/reports/Macro_Stress_Inputs.md` with
-supporting CSVs (`macro_stress_segment_multipliers.csv`,
-`macro_stress_demo_portfolio.csv`, `macro_stress_demo_summary.csv`).
+and a reverse-stress line are **Section 9 of the Board / Technical report**
+(`outputs/reports/Industry_Analysis_Q1_2026_*.md`), backed by supporting CSVs
+(`macro_stress_segment_multipliers.csv`, `macro_stress_demo_portfolio.csv`,
+`macro_stress_demo_summary.csv`).
 
 **Separate vs pooled models.** A bank normally develops separate models per
 material portfolio, or a pooled model with portfolio/sector effects; this layer

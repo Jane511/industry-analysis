@@ -38,9 +38,17 @@ from typing import Any
 
 import pandas as pd
 
-from src.config import ALL_CONTRACT_EXPORTS, PUBLIC_SOURCE_URLS, RAW_PUBLIC_DIR
+from src.config import ALL_CONTRACT_EXPORTS, PUBLIC_SOURCE_URLS, RAW_DIR, RAW_PUBLIC_DIR
 from src.contract_exports import CONTRACT_EXPORT_SPECS, build_contract_export_summary_rows
 from src.csv_io import read_canonical_csv
+from src.overlays.macro_stress_core import (
+    build_demo_portfolio_stress,
+    build_demo_portfolio_summary,
+    build_macro_scenario_paths,
+    compute_segment_multipliers,
+    load_macro_config,
+    reverse_stress_scenario,
+)
 from src.public_data.staged_files import find_latest_staged_file
 
 CONTRACTS_DIR = Path("outputs/contracts")
@@ -421,6 +429,91 @@ def _table_payload(caption: str, data: pd.DataFrame, board_cols: list[str] | Non
     })
 
 
+def build_macro_stress_section() -> dict[str, Any]:
+    """Section 9 — macro-driven stress inputs (facility + portfolio level).
+
+    Reads config/macro_scenarios.yaml + the committed demo book; renders the
+    scenario paths, the portfolio->driver mapping, the macro-derived segment
+    multipliers, and the demo portfolio EL roll-up into the Board + Technical
+    report. Illustrative scenario design, not calibrated regulatory stress.
+    """
+    cfg = load_macro_config()
+    paths = build_macro_scenario_paths(cfg)
+    multipliers = compute_segment_multipliers(cfg, paths=paths)
+    demo = build_demo_portfolio_stress(
+        pd.read_csv(RAW_DIR / "demo_portfolio.csv"), cfg, multipliers=multipliers
+    )
+    summary = build_demo_portfolio_summary(demo)
+
+    scen = cfg["meta"]["scenarios"]
+    piv = paths.pivot(index="variable", columns="scenario", values="stressed_level").reindex(columns=scen)
+    meta = paths.drop_duplicates("variable").set_index("variable")
+    paths_disp = pd.DataFrame({
+        "Variable": [meta.loc[v, "label"] for v in piv.index],
+        "Unit": [meta.loc[v, "unit"] for v in piv.index],
+        "Source": [meta.loc[v, "source_or_assumption"] for v in piv.index],
+        **{s: piv[s].to_numpy() for s in scen},
+    })
+    mult_disp = multipliers.rename(columns={
+        "segment": "Segment", "scenario": "Scenario",
+        "pd_multiplier": "PD x", "lgd_multiplier": "LGD x", "ead_multiplier": "EAD x",
+    })
+    summary_disp = summary.rename(columns={
+        "scenario": "Scenario", "n_facilities": "Facilities",
+        "portfolio_base_el": "Base EL ($)", "portfolio_stressed_el": "Stressed EL ($)",
+        "portfolio_el_uplift_x": "EL uplift x",
+    })
+    drivers_disp = pd.DataFrame([
+        {"Portfolio": "Residential mortgages", "Material macro drivers": "unemployment, cash rate, wage growth, house prices"},
+        {"Portfolio": "Credit cards", "Material macro drivers": "unemployment, wage growth, inflation"},
+        {"Portfolio": "SME lending", "Material macro drivers": "GDP, unemployment, cash rate, sector output"},
+        {"Portfolio": "Corporate lending", "Material macro drivers": "GDP, sector output, cash rate, exchange rate"},
+        {"Portfolio": "Commercial property", "Material macro drivers": "property prices, vacancy, rents, cap rates, cash rate"},
+        {"Portfolio": "Development finance", "Material macro drivers": "property prices, GDP, vacancy, cash rate"},
+    ])
+
+    lead_board = (
+        "A macro-driven stress layer turns macroeconomic scenario paths into PD / LGD / EAD "
+        "multipliers per portfolio segment, then rolls facility-level stress up to a portfolio "
+        "expected-loss total — answering 'if the economy turns, how much worse do losses get, "
+        "and for which portfolios?'."
+    )
+    lead_tech = (
+        lead_board + " Engine src/overlays/macro_stress_core.py; config "
+        "config/macro_scenarios.yaml; contracts macro_scenario_paths.csv and "
+        "portfolio_macro_sensitivity.csv. multiplier[s,p,k] = clamp(1 + intensity[p] * "
+        "beta[s,p] * sum_d weight[s,p,d] * shock_norm[d,k]); base = 1.0, monotonic to severe."
+    )
+    callout_body = (
+        "Illustrative scenario design — not calibrated regulatory stress. Base levels are "
+        "current values from the named ABS/RBA series; the four CRE variables "
+        "(commercial-property prices, vacancy, rents, cap rates) and all elasticities are "
+        "labelled assumptions. The portfolio roll-up is exposure-weighted with no "
+        f"diversification benefit. Reverse stress: {reverse_stress_scenario(summary)}. A bank "
+        "normally builds separate models per material portfolio or a pooled model with "
+        "portfolio/sector effects; this layer supplies the macro-credit linkage either consumes."
+    )
+
+    return {
+        "id": "macro_stress_inputs",
+        "title": "9. Macro Stress Inputs",
+        "lead": (lead_board, lead_tech),
+        "elements": [
+            _table_payload("Macro scenario paths - stressed level by scenario", paths_disp),
+            _table_payload("Which macro drivers move which portfolio (illustrative)", drivers_disp),
+            _table_payload("Macro-derived segment multipliers (PD / LGD / EAD)", mult_disp),
+            _table_payload("Demonstration - facility roll-up to portfolio EL (illustrative demo book)", summary_disp),
+            ("callout", {
+                "style": "methodology_note",
+                "title": "Macro stress - scope and governance",
+                "body_board": callout_body,
+                "body_technical": callout_body,
+                "variants": {"board", "technical"},
+            }),
+        ],
+    }
+
+
 def build_completeness_report(data: dict[str, Any], manifest: dict[str, dict[str, Any]]) -> dict[str, Any]:
     stats = data["stats"]
     inventory_df = build_source_inventory(manifest)
@@ -607,6 +700,9 @@ def build_completeness_report(data: dict[str, Any], manifest: dict[str, dict[str
             ],
         },
     ]
+
+    # Section 9 — macro-driven stress inputs (facility + portfolio level).
+    sections.append(build_macro_stress_section())
 
     return {
         "metadata": {

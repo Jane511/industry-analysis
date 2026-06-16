@@ -224,98 +224,6 @@ def reverse_stress_scenario(
 
 
 # ---------------------------------------------------------------------------
-# Report markdown
-# ---------------------------------------------------------------------------
-
-def _md_table(df: pd.DataFrame, cols: list[str], headers: list[str]) -> list[str]:
-    out = ["| " + " | ".join(headers) + " |", "| " + " | ".join("---" for _ in headers) + " |"]
-    for _, row in df.iterrows():
-        out.append("| " + " | ".join(str(row[c]) for c in cols) + " |")
-    return out
-
-
-def render_macro_stress_markdown(
-    cfg: dict,
-    paths: pd.DataFrame,
-    sensitivity: pd.DataFrame,
-    multipliers: pd.DataFrame,
-    summary: pd.DataFrame,
-) -> str:
-    scenarios = cfg["meta"]["scenarios"]
-    lines: list[str] = [
-        "# Macro Stress Inputs — scenario paths, portfolio drivers, demo EL",
-        "",
-        "> **Illustrative scenario design — not calibrated regulatory stress.** Base levels are "
-        "current observed values from the named public series; per-scenario shocks and the "
-        "portfolio elasticities are illustrative assumptions. Variables tagged `assumption` have "
-        "no clean free public series. No diversification benefit is assumed in the portfolio "
-        "roll-up.",
-        "",
-        "## 1. Macro scenario paths (stressed levels by scenario)",
-        "",
-    ]
-    pivot = paths.pivot(index="variable", columns="scenario", values="stressed_level").reindex(
-        columns=scenarios
-    )
-    meta = paths.drop_duplicates("variable").set_index("variable")
-    lines.append("| Variable | Unit | Source | " + " | ".join(scenarios) + " |")
-    lines.append("| --- | --- | --- | " + " | ".join("---" for _ in scenarios) + " |")
-    for var in paths["variable"].drop_duplicates():
-        cells = " | ".join(str(pivot.loc[var, s]) for s in scenarios)
-        lines.append(
-            f"| {meta.loc[var, 'label']} | {meta.loc[var, 'unit']} | "
-            f"{meta.loc[var, 'source_or_assumption']} | {cells} |"
-        )
-    lines += [
-        "",
-        "_mild = technical-recession proxy (two consecutive quarters of ~zero GDP growth); "
-        "moderate / severe are progressively deeper internally-consistent paths._",
-        "",
-        "## 2. Portfolio → macro-driver sensitivity (illustrative weights, not betas)",
-        "",
-    ]
-    lines += _md_table(
-        sensitivity,
-        ["segment", "parameter", "driver", "sensitivity_weight", "source_or_assumption"],
-        ["Segment", "Parameter", "Driver", "Weight", "Source"],
-    )
-    lines += [
-        "",
-        "## 3. Macro-derived segment multipliers (PD / LGD / EAD)",
-        "",
-    ]
-    lines += _md_table(
-        multipliers,
-        ["segment", "scenario", "pd_multiplier", "lgd_multiplier", "ead_multiplier"],
-        ["Segment", "Scenario", "PD x", "LGD x", "EAD x"],
-    )
-    lines += [
-        "",
-        "## 4. Demonstration — facility roll-up to portfolio EL (illustrative demo book)",
-        "",
-    ]
-    lines += _md_table(
-        summary,
-        ["scenario", "n_facilities", "portfolio_base_el", "portfolio_stressed_el", "portfolio_el_uplift_x"],
-        ["Scenario", "Facilities", "Base EL ($)", "Stressed EL ($)", "EL uplift x"],
-    )
-    lines += [
-        "",
-        f"**Reverse stress:** {reverse_stress_scenario(summary)}.",
-        "",
-        "## 5. Governance",
-        "",
-        f"- {_flatten(cfg['meta'].get('validation_note', ''))}",
-        "- No diversification benefit assumed in the portfolio roll-up (conservative).",
-        "- A bank normally develops **separate models per material portfolio** or a **pooled "
-        "model with portfolio / sector effects**; this layer supplies the macro-credit linkage "
-        "either approach consumes.",
-        "",
-    ]
-    return "\n".join(lines)
-
-
-# ---------------------------------------------------------------------------
 # Orchestration
 # ---------------------------------------------------------------------------
 
@@ -325,7 +233,11 @@ def build_and_export_macro_stress(
     reports_dir: Path = OUTPUT_REPORTS_DIR,
     demo_path: Optional[Path] = None,
 ) -> dict[str, pd.DataFrame]:
-    """Write the 2 macro-stress contracts + demo artifacts + report markdown."""
+    """Write the 2 macro-stress contracts + demo support artifacts.
+
+    The human-readable macro-stress section is rendered into the main Board /
+    Technical report (Section 9), not a standalone file.
+    """
     cfg = load_macro_config()
     paths = build_macro_scenario_paths(cfg)
     sensitivity = build_portfolio_macro_sensitivity(cfg)
@@ -344,10 +256,6 @@ def build_and_export_macro_stress(
     save_csv(multipliers, reports_dir / "macro_stress_segment_multipliers.csv")
     save_csv(facility, reports_dir / "macro_stress_demo_portfolio.csv")
     save_csv(summary, reports_dir / "macro_stress_demo_summary.csv")
-    (reports_dir / "Macro_Stress_Inputs.md").write_text(
-        render_macro_stress_markdown(cfg, paths, sensitivity, multipliers, summary),
-        encoding="utf-8",
-    )
     return {
         "macro_scenario_paths": paths,
         "portfolio_macro_sensitivity": sensitivity,
