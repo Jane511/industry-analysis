@@ -99,7 +99,7 @@ overall macro-regime flag **base** (`macro_regime_flags.csv`).
 
 ### Industry credit-risk findings (all 18 ANZSIC divisions)
 
-Headline: **4 industries score Elevated, 2 Moderate-high, 12 Medium** (as of 2026-06-15;
+Headline: **4 industries score Elevated, 2 Moderate-high, 12 Medium** (as of 2026-06-16;
 `industry_risk_scores.csv`). No industry currently sits in the Low or High band.
 
 | Industry | Classification | Macro | Base score | Level | PD overlay |
