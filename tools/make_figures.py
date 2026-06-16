@@ -1,13 +1,13 @@
 """
-reports/make_figures.py — regenerate the README charts for this repo.
+tools/make_figures.py — regenerate the README charts for this repo.
 
 Every figure is built from the committed contract CSVs in outputs/contracts/
 (aggregated, public-source industry signals only), so the charts regenerate
 reproducibly with:
 
-    python reports/make_figures.py
+    python tools/make_figures.py
 
-Outputs PNGs into reports/figures/.
+Outputs PNGs into outputs/charts/.
 """
 from pathlib import Path
 
@@ -18,7 +18,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 CON = ROOT / "outputs" / "contracts"
-FIG = ROOT / "reports" / "figures"
+FIG = ROOT / "outputs" / "charts"
 FIG.mkdir(parents=True, exist_ok=True)
 
 plt.rcParams.update({

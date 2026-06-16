@@ -24,22 +24,22 @@ stress multipliers — with a board-ready report.**
 ## Key charts
 
 *All charts are regenerated from the committed contract CSVs in [outputs/contracts/](outputs/contracts/)
-by [reports/make_figures.py](reports/make_figures.py) — public-source aggregated signals only.*
+by [tools/make_figures.py](tools/make_figures.py) — public-source aggregated signals only.*
 
 ### 1. Which industries are riskiest right now
-![ANZSIC industries ranked by base risk score, riskiest at top](reports/figures/industry_risk_scores_ranked.png)
+![ANZSIC industries ranked by base risk score, riskiest at top](outputs/charts/industry_risk_scores_ranked.png)
 
 **What this shows:** all 18 ANZSIC industry divisions ranked by their base risk score (1 = low → 5 = high), coloured by risk band.
 **Why it matters:** it instantly answers the question a credit committee asks — where in the book is the cyclical risk concentrated right now (agriculture, mining, manufacturing, retail at the top).
 
 ### 2. Downturn overlay — stress multipliers by scenario
-![PD, LGD, CCF multipliers and property haircut across base, mild, moderate and severe scenarios](reports/figures/downturn_scenario_multipliers.png)
+![PD, LGD, CCF multipliers and property haircut across base, mild, moderate and severe scenarios](outputs/charts/downturn_scenario_multipliers.png)
 
 **What this shows:** the PD, LGD and CCF multipliers (and property-value haircut) the overlay applies under base, mild, moderate and severe downturns.
 **Why it matters:** these are the ready-to-use stress dials a PD/LGD/ECL model multiplies through — the bridge from "current" to "stressed" expected loss.
 
 ### 3. Where the property market is soft
-![Commercial property segments ranked by market softness score](reports/figures/property_market_softness.png)
+![Commercial property segments ranked by market softness score](outputs/charts/property_market_softness.png)
 
 **What this shows:** commercial-property segments ranked by a market-softness score built from real ABS building-approvals data, with each segment's cycle stage.
 **Why it matters:** property-secured lending risk follows the building cycle — offices are in a clear downturn while other segments hold up, which should shape LGD and appetite by segment.
@@ -181,7 +181,7 @@ These are point-in-time, illustrative current-conditions overlays — not calibr
 
 ## Macro stress inputs (facility + portfolio level)
 
-![Macro-derived PD stress multipliers by segment](reports/figures/macro_scenario_paths.png)
+![Macro-derived PD stress multipliers by segment](outputs/charts/macro_scenario_paths.png)
 
 A macro-driven stress layer turns a panel of macroeconomic scenario paths into **PD / LGD / EAD multipliers per portfolio segment**, then demonstrates facility-level and portfolio-level stressed expected loss on a committed demo book. Config in [config/macro_scenarios.yaml](config/macro_scenarios.yaml); engine in [src/overlays/macro_stress_core.py](src/overlays/macro_stress_core.py); full tables are **Section 9** of the Board / Technical report ([outputs/reports/Industry_Analysis_Q1_2026_Board.md](outputs/reports/Industry_Analysis_Q1_2026_Board.md)).
 
@@ -361,9 +361,12 @@ industry-analysis/
 │   ├── export_contracts.py     # Write the 8 CSV contracts
 │   ├── build_board_report.py   # Render the report
 │   └── make_readme_assets.py   # Parquet mirrors + README charts
-├── outputs/
-│   ├── contracts/              # The 8 model-ready CSV contracts
+├── outputs/                    # All generated artifacts
+│   ├── contracts/              # The model-ready CSV contracts
+│   ├── charts/                 # README / analytical chart PNGs
 │   └── reports/                # Board + Technical report (md / html / docx)
+├── tools/
+│   └── make_figures.py         # Regenerates outputs/charts/ from the contracts
 ├── notebooks/                  # 00–05 guided walkthrough
 ├── docs/                       # Methodology notes + charts/
 ├── data/
