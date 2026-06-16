@@ -1,0 +1,199 @@
+# Macro-driven stress scenario configuration (codename MACRO-STRESS).
+#
+# ILLUSTRATIVE scenario design — NOT calibrated regulatory stress parameters.
+# Base levels are current observed values from the named public series (tagged
+# in `source_or_assumption`); the per-scenario shocks are scenario-design
+# assumptions. Variables tagged `assumption` have no clean free quarterly public
+# series and are anchored qualitatively to RBA FSR / valuer commentary.
+#
+# Scenario set: base / mild / moderate / severe.
+#   mild     = technical-recession proxy: two consecutive quarters of ~zero GDP
+#              growth (standard definition; no regulatory paragraph asserted).
+#   moderate = deeper, internally consistent downturn.
+#   severe   = GFC-like severe-but-plausible path.
+#
+# Each variable's `shocks` are deltas applied to `base_level` (same unit).
+# `stress_direction` orients which way is adverse so the engine can normalise
+# every driver onto a common 0..1 stress scale (severe oriented shock = 1.0).
+
+meta:
+  vintage: "2026-Q1"
+  scenarios: [base, mild, moderate, severe]
+  # Per-parameter response intensity and hard ceilings on the multiplier.
+  parameter_intensity: { PD: 1.5, LGD: 0.6, EAD: 0.4 }
+  multiplier_ceiling:  { PD: 5.0, LGD: 2.0, EAD: 1.5 }
+  no_diversification: true
+  validation_note: >-
+    Illustrative scenario parameters and elasticities, not calibrated regulatory
+    stress. In production the paths would come from a macro model and the weights
+    from estimated betas; both would be independently validated at least annually.
+
+# ---------------------------------------------------------------------------
+# 12 macro variables (8 public-data-backed, 4 labelled assumptions)
+# ---------------------------------------------------------------------------
+variables:
+
+  gdp_growth:
+    label: GDP growth (real, YoY %)
+    unit: "% yoy"
+    stress_direction: down
+    base_level: 1.8
+    source_or_assumption: "ABS 5206 National Accounts"
+    shocks: { base: 0.0, mild: -1.8, moderate: -3.3, severe: -5.3 }
+    macro_note: "mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction."
+
+  unemployment:
+    label: Unemployment rate (%)
+    unit: "%"
+    stress_direction: up
+    base_level: 4.1
+    source_or_assumption: "ABS 6202 Labour Force"
+    shocks: { base: 0.0, mild: 1.2, moderate: 2.5, severe: 4.0 }
+    macro_note: "rises ~1.2pp (mild) to ~4pp (severe)."
+
+  cash_rate:
+    label: Cash rate (%)
+    unit: "%"
+    stress_direction: up
+    base_level: 3.85
+    source_or_assumption: "RBA F1 cash-rate table"
+    shocks: { base: 0.0, mild: 0.25, moderate: 0.5, severe: 0.75 }
+    macro_note: "illustrative higher-for-longer rate path; debt-servicing channel."
+
+  inflation:
+    label: Inflation (CPI, YoY %)
+    unit: "% yoy"
+    stress_direction: up
+    base_level: 3.2
+    source_or_assumption: "ABS 6401 CPI"
+    shocks: { base: 0.0, mild: 0.8, moderate: 1.5, severe: 2.5 }
+    macro_note: "cost-of-living pressure on borrower cash flow."
+
+  wage_growth:
+    label: Wage growth (WPI, YoY %)
+    unit: "% yoy"
+    stress_direction: down
+    base_level: 3.5
+    source_or_assumption: "ABS 6345 Wage Price Index"
+    shocks: { base: 0.0, mild: -0.5, moderate: -1.0, severe: -1.8 }
+    macro_note: "real-income squeeze when paired with higher inflation."
+
+  house_price_growth:
+    label: House-price growth (YoY %)
+    unit: "% yoy"
+    stress_direction: down
+    base_level: 4.0
+    source_or_assumption: "ABS 6416 Residential Property Price Index"
+    shocks: { base: 0.0, mild: -8.0, moderate: -15.0, severe: -25.0 }
+    macro_note: "collateral channel for residential-secured lending."
+
+  exchange_rate_twi:
+    label: Exchange rate (TWI, % change)
+    unit: "% change"
+    stress_direction: down
+    base_level: 0.0
+    source_or_assumption: "RBA F11 exchange rates"
+    shocks: { base: 0.0, mild: -5.0, moderate: -10.0, severe: -15.0 }
+    macro_note: "depreciation raises input costs for FX-exposed corporates."
+
+  industry_output:
+    label: Industry / sector output (YoY %)
+    unit: "% yoy"
+    stress_direction: down
+    base_level: 2.0
+    source_or_assumption: "ABS 8155 Australian Industry + 5676 Business Indicators"
+    shocks: { base: 0.0, mild: -2.0, moderate: -4.0, severe: -7.0 }
+    macro_note: "sector-revenue channel for SME / corporate borrowers."
+
+  commercial_property_prices:
+    label: Commercial-property prices (% change)
+    unit: "% change"
+    stress_direction: down
+    base_level: 0.0
+    source_or_assumption: "assumption"
+    shocks: { base: 0.0, mild: -7.0, moderate: -15.0, severe: -28.0 }
+    macro_note: "ASSUMPTION — no clean free quarterly series; anchored to RBA FSR commentary."
+
+  vacancy_rate:
+    label: Vacancy rate (office, %)
+    unit: "%"
+    stress_direction: up
+    base_level: 12.0
+    source_or_assumption: "assumption"
+    shocks: { base: 0.0, mild: 2.0, moderate: 4.0, severe: 7.0 }
+    macro_note: "ASSUMPTION — illustrative office-vacancy path; RBA FSR backdrop."
+
+  cre_rents:
+    label: CRE rents (% change)
+    unit: "% change"
+    stress_direction: down
+    base_level: 0.0
+    source_or_assumption: "assumption"
+    shocks: { base: 0.0, mild: -4.0, moderate: -9.0, severe: -16.0 }
+    macro_note: "ASSUMPTION — illustrative rent path; valuer/RBA commentary."
+
+  cre_cap_rates:
+    label: CRE cap rates (%)
+    unit: "%"
+    stress_direction: up
+    base_level: 6.0
+    source_or_assumption: "assumption"
+    shocks: { base: 0.0, mild: 0.4, moderate: 0.9, severe: 1.6 }
+    macro_note: "ASSUMPTION — cap-rate expansion lowers CRE values."
+
+# Per-(segment, parameter) overall macro-sensitivity scalar (illustrative).
+# The driver weights below are the *mix* (sum to 1.0); these betas scale the
+# overall magnitude, so e.g. development finance moves more than residential at
+# the same scenario. Not estimated betas.
+segment_beta:
+  residential_mortgages: { PD: 0.90, LGD: 0.80, EAD: 0.50 }
+  credit_cards:          { PD: 1.10, LGD: 0.70, EAD: 0.60 }
+  sme_lending:           { PD: 1.10, LGD: 0.90, EAD: 0.70 }
+  corporate_lending:     { PD: 1.00, LGD: 0.90, EAD: 0.70 }
+  commercial_property:   { PD: 1.30, LGD: 1.20, EAD: 0.80 }
+  development_finance:   { PD: 1.50, LGD: 1.30, EAD: 0.90 }
+
+# ---------------------------------------------------------------------------
+# Portfolio -> macro-driver sensitivities (illustrative weights, not betas).
+# Weights per (segment, parameter) sum to 1.0 (the driver MIX); every driver
+# must exist above. Each (segment, parameter) carries >=3 drivers for coverage.
+# ---------------------------------------------------------------------------
+portfolio_sensitivities:
+
+  residential_mortgages:
+    PD:  { unemployment: 0.45, cash_rate: 0.25, wage_growth: 0.20, inflation: 0.10 }
+    LGD: { house_price_growth: 0.70, unemployment: 0.20, cash_rate: 0.10 }
+    EAD: { cash_rate: 0.50, unemployment: 0.30, gdp_growth: 0.20 }
+
+  credit_cards:
+    PD:  { unemployment: 0.50, wage_growth: 0.30, inflation: 0.20 }
+    LGD: { unemployment: 0.50, inflation: 0.30, wage_growth: 0.20 }
+    EAD: { gdp_growth: 0.40, cash_rate: 0.35, unemployment: 0.25 }
+
+  sme_lending:
+    PD:  { gdp_growth: 0.35, unemployment: 0.25, cash_rate: 0.20, industry_output: 0.20 }
+    LGD: { commercial_property_prices: 0.45, house_price_growth: 0.35, industry_output: 0.20 }
+    EAD: { cash_rate: 0.40, gdp_growth: 0.35, industry_output: 0.25 }
+
+  corporate_lending:
+    PD:  { gdp_growth: 0.40, industry_output: 0.30, cash_rate: 0.15, exchange_rate_twi: 0.15 }
+    LGD: { industry_output: 0.45, commercial_property_prices: 0.30, exchange_rate_twi: 0.25 }
+    EAD: { cash_rate: 0.45, gdp_growth: 0.35, industry_output: 0.20 }
+
+  commercial_property:
+    PD:  { commercial_property_prices: 0.30, vacancy_rate: 0.30, cre_rents: 0.20, cash_rate: 0.20 }
+    LGD: { commercial_property_prices: 0.40, cre_cap_rates: 0.35, cre_rents: 0.25 }
+    EAD: { cash_rate: 0.50, vacancy_rate: 0.30, commercial_property_prices: 0.20 }
+
+  development_finance:
+    PD:  { commercial_property_prices: 0.35, gdp_growth: 0.25, vacancy_rate: 0.20, cash_rate: 0.20 }
+    LGD: { commercial_property_prices: 0.55, cre_cap_rates: 0.25, cre_rents: 0.20 }
+    EAD: { cash_rate: 0.45, commercial_property_prices: 0.30, gdp_growth: 0.25 }
+
+# Map the demo-portfolio segment labels onto the canonical segments above.
+demo_segment_map:
+  "SME Cash Flow": sme_lending
+  "Property Backed": commercial_property
+  "Working Capital": sme_lending
+  "Trade Finance": corporate_lending
+  "Contingent": corporate_lending

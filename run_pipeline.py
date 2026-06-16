@@ -30,6 +30,7 @@ if str(ROOT) not in sys.path:
 
 from src.public_data.fetch_public_data import DATA_AS_OF, fetch_all
 from src.overlays.export_contracts import export_contracts
+from src.overlays.macro_stress_core import build_and_export_macro_stress
 from src.validate_upstream import validate_upstream
 from src.reporting.industry_analysis_report import (
     MANIFEST_PATH,
@@ -65,6 +66,12 @@ def main() -> int:
     print("-" * 68)
     outputs = export_contracts()
     print(f"Wrote {len(outputs)} contracts to outputs/contracts/.")
+
+    macro = build_and_export_macro_stress()
+    print(
+        "Wrote macro-stress contracts (macro_scenario_paths, "
+        "portfolio_macro_sensitivity) + demo roll-up to outputs/."
+    )
 
     print("\n[3/4] Validating contracts")
     print("-" * 68)

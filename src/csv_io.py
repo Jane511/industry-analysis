@@ -26,6 +26,14 @@ STRING_COLUMNS = {
         "source_note",
     ],
     "downturn_overlay_table": ["scenario", "macro_path", "notes"],
+    "macro_scenario_paths": [
+        "scenario", "variable", "label", "unit", "stress_direction",
+        "source_or_assumption", "macro_note",
+    ],
+    "portfolio_macro_sensitivity": [
+        "segment", "parameter", "driver", "driver_stress_direction",
+        "source_or_assumption",
+    ],
     "macro_regime_flags": ["cash_rate_regime", "arrears_environment_level", "arrears_trend", "macro_regime_flag", "source_dataset"],
     "industry_financial_benchmarks": ["anzsic_division_code", "industry", "benchmark_method", "source_note"],
     "business_cycle_panel": [
@@ -115,6 +123,14 @@ def read_property_market_overlays_by_building_type(path: Path) -> pd.DataFrame:
     return _read_export(path, "property_market_overlays_by_building_type")
 
 
+def read_macro_scenario_paths(path: Path) -> pd.DataFrame:
+    return _read_export(path, "macro_scenario_paths")
+
+
+def read_portfolio_macro_sensitivity(path: Path) -> pd.DataFrame:
+    return _read_export(path, "portfolio_macro_sensitivity")
+
+
 READERS: dict[str, Callable[[Path], pd.DataFrame]] = {
     "industry_risk_scores": read_industry_risk_scores,
     "property_market_overlays": read_property_market_overlays,
@@ -124,6 +140,8 @@ READERS: dict[str, Callable[[Path], pd.DataFrame]] = {
     "business_cycle_panel": read_business_cycle_panel,
     "property_cycle_panel": read_property_cycle_panel,
     "property_market_overlays_by_building_type": read_property_market_overlays_by_building_type,
+    "macro_scenario_paths": read_macro_scenario_paths,
+    "portfolio_macro_sensitivity": read_portfolio_macro_sensitivity,
 }
 
 

@@ -1,0 +1,49 @@
+scenario,variable,label,unit,stress_direction,base_level,shock,stressed_level,shock_norm,source_or_assumption,macro_note
+base,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,1.8,0.0,1.8,0.0,ABS 5206 National Accounts,mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction.
+mild,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,1.8,-1.8,0.0,0.3396,ABS 5206 National Accounts,mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction.
+moderate,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,1.8,-3.3,-1.5,0.6226,ABS 5206 National Accounts,mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction.
+severe,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,1.8,-5.3,-3.5,1.0,ABS 5206 National Accounts,mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction.
+base,unemployment,Unemployment rate (%),%,up,4.1,0.0,4.1,0.0,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
+mild,unemployment,Unemployment rate (%),%,up,4.1,1.2,5.3,0.3,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
+moderate,unemployment,Unemployment rate (%),%,up,4.1,2.5,6.6,0.625,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
+severe,unemployment,Unemployment rate (%),%,up,4.1,4.0,8.1,1.0,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
+base,cash_rate,Cash rate (%),%,up,3.85,0.0,3.85,0.0,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
+mild,cash_rate,Cash rate (%),%,up,3.85,0.25,4.1,0.3333,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
+moderate,cash_rate,Cash rate (%),%,up,3.85,0.5,4.35,0.6667,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
+severe,cash_rate,Cash rate (%),%,up,3.85,0.75,4.6,1.0,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
+base,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,0.0,3.2,0.0,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
+mild,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,0.8,4.0,0.32,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
+moderate,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,1.5,4.7,0.6,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
+severe,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,2.5,5.7,1.0,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
+base,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.5,0.0,3.5,0.0,ABS 6345 Wage Price Index,real-income squeeze when paired with higher inflation.
+mild,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.5,-0.5,3.0,0.2778,ABS 6345 Wage Price Index,real-income squeeze when paired with higher inflation.
+moderate,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.5,-1.0,2.5,0.5556,ABS 6345 Wage Price Index,real-income squeeze when paired with higher inflation.
+severe,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.5,-1.8,1.7,1.0,ABS 6345 Wage Price Index,real-income squeeze when paired with higher inflation.
+base,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,0.0,4.0,0.0,ABS 6416 Residential Property Price Index,collateral channel for residential-secured lending.
+mild,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,-8.0,-4.0,0.32,ABS 6416 Residential Property Price Index,collateral channel for residential-secured lending.
+moderate,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,-15.0,-11.0,0.6,ABS 6416 Residential Property Price Index,collateral channel for residential-secured lending.
+severe,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,-25.0,-21.0,1.0,ABS 6416 Residential Property Price Index,collateral channel for residential-secured lending.
+base,exchange_rate_twi,"Exchange rate (TWI, % change)",% change,down,0.0,0.0,0.0,0.0,RBA F11 exchange rates,depreciation raises input costs for FX-exposed corporates.
+mild,exchange_rate_twi,"Exchange rate (TWI, % change)",% change,down,0.0,-5.0,-5.0,0.3333,RBA F11 exchange rates,depreciation raises input costs for FX-exposed corporates.
+moderate,exchange_rate_twi,"Exchange rate (TWI, % change)",% change,down,0.0,-10.0,-10.0,0.6667,RBA F11 exchange rates,depreciation raises input costs for FX-exposed corporates.
+severe,exchange_rate_twi,"Exchange rate (TWI, % change)",% change,down,0.0,-15.0,-15.0,1.0,RBA F11 exchange rates,depreciation raises input costs for FX-exposed corporates.
+base,industry_output,Industry / sector output (YoY %),% yoy,down,2.0,0.0,2.0,0.0,ABS 8155 Australian Industry + 5676 Business Indicators,sector-revenue channel for SME / corporate borrowers.
+mild,industry_output,Industry / sector output (YoY %),% yoy,down,2.0,-2.0,0.0,0.2857,ABS 8155 Australian Industry + 5676 Business Indicators,sector-revenue channel for SME / corporate borrowers.
+moderate,industry_output,Industry / sector output (YoY %),% yoy,down,2.0,-4.0,-2.0,0.5714,ABS 8155 Australian Industry + 5676 Business Indicators,sector-revenue channel for SME / corporate borrowers.
+severe,industry_output,Industry / sector output (YoY %),% yoy,down,2.0,-7.0,-5.0,1.0,ABS 8155 Australian Industry + 5676 Business Indicators,sector-revenue channel for SME / corporate borrowers.
+base,commercial_property_prices,Commercial-property prices (% change),% change,down,0.0,0.0,0.0,0.0,assumption,ASSUMPTION — no clean free quarterly series; anchored to RBA FSR commentary.
+mild,commercial_property_prices,Commercial-property prices (% change),% change,down,0.0,-7.0,-7.0,0.25,assumption,ASSUMPTION — no clean free quarterly series; anchored to RBA FSR commentary.
+moderate,commercial_property_prices,Commercial-property prices (% change),% change,down,0.0,-15.0,-15.0,0.5357,assumption,ASSUMPTION — no clean free quarterly series; anchored to RBA FSR commentary.
+severe,commercial_property_prices,Commercial-property prices (% change),% change,down,0.0,-28.0,-28.0,1.0,assumption,ASSUMPTION — no clean free quarterly series; anchored to RBA FSR commentary.
+base,vacancy_rate,"Vacancy rate (office, %)",%,up,12.0,0.0,12.0,0.0,assumption,ASSUMPTION — illustrative office-vacancy path; RBA FSR backdrop.
+mild,vacancy_rate,"Vacancy rate (office, %)",%,up,12.0,2.0,14.0,0.2857,assumption,ASSUMPTION — illustrative office-vacancy path; RBA FSR backdrop.
+moderate,vacancy_rate,"Vacancy rate (office, %)",%,up,12.0,4.0,16.0,0.5714,assumption,ASSUMPTION — illustrative office-vacancy path; RBA FSR backdrop.
+severe,vacancy_rate,"Vacancy rate (office, %)",%,up,12.0,7.0,19.0,1.0,assumption,ASSUMPTION — illustrative office-vacancy path; RBA FSR backdrop.
+base,cre_rents,CRE rents (% change),% change,down,0.0,0.0,0.0,0.0,assumption,ASSUMPTION — illustrative rent path; valuer/RBA commentary.
+mild,cre_rents,CRE rents (% change),% change,down,0.0,-4.0,-4.0,0.25,assumption,ASSUMPTION — illustrative rent path; valuer/RBA commentary.
+moderate,cre_rents,CRE rents (% change),% change,down,0.0,-9.0,-9.0,0.5625,assumption,ASSUMPTION — illustrative rent path; valuer/RBA commentary.
+severe,cre_rents,CRE rents (% change),% change,down,0.0,-16.0,-16.0,1.0,assumption,ASSUMPTION — illustrative rent path; valuer/RBA commentary.
+base,cre_cap_rates,CRE cap rates (%),%,up,6.0,0.0,6.0,0.0,assumption,ASSUMPTION — cap-rate expansion lowers CRE values.
+mild,cre_cap_rates,CRE cap rates (%),%,up,6.0,0.4,6.4,0.25,assumption,ASSUMPTION — cap-rate expansion lowers CRE values.
+moderate,cre_cap_rates,CRE cap rates (%),%,up,6.0,0.9,6.9,0.5625,assumption,ASSUMPTION — cap-rate expansion lowers CRE values.
+severe,cre_cap_rates,CRE cap rates (%),%,up,6.0,1.6,7.6,1.0,assumption,ASSUMPTION — cap-rate expansion lowers CRE values.

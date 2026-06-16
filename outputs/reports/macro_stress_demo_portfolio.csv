@@ -1,0 +1,25 @@
+facility_id,segment_demo,segment_canonical,scenario,base_pd,base_lgd,base_ead,base_el,stressed_pd,stressed_lgd,stressed_ead,stressed_el,el_uplift_x
+F001,SME Cash Flow,sme_lending,base,0.018,0.42,1040000.0,7862.4,0.018,0.42,1040000.0,7862.4,1.0
+F001,SME Cash Flow,sme_lending,mild,0.018,0.42,1040000.0,7862.4,0.027434,0.483882,1134224.0,15056.51,1.915
+F001,SME Cash Flow,sme_lending,moderate,0.018,0.42,1040000.0,7862.4,0.036466,0.548226,1222728.0,24444.43,3.109
+F001,SME Cash Flow,sme_lending,severe,0.018,0.42,1040000.0,7862.4,0.0477,0.6468,1331200.0,41070.66,5.224
+F002,SME Cash Flow,sme_lending,base,0.052,0.58,742000.0,22378.72,0.052,0.58,742000.0,22378.72,1.0
+F002,SME Cash Flow,sme_lending,mild,0.052,0.58,742000.0,22378.72,0.079253,0.668218,809225.2,42855.28,1.915
+F002,SME Cash Flow,sme_lending,moderate,0.052,0.58,742000.0,22378.72,0.105347,0.757074,872369.4,69576.1,3.109
+F002,SME Cash Flow,sme_lending,severe,0.052,0.58,742000.0,22378.72,0.1378,0.8932,949760.0,116899.27,5.224
+F003,Property Backed,commercial_property,base,0.034,0.33,2220000.0,24908.4,0.034,0.33,2220000.0,24908.4,1.0
+F003,Property Backed,commercial_property,mild,0.034,0.33,2220000.0,24908.4,0.052391,0.3894,2434896.0,49674.07,1.994
+F003,Property Backed,commercial_property,moderate,0.034,0.33,2220000.0,24908.4,0.072318,0.461109,2654676.0,88524.1,3.554
+F003,Property Backed,commercial_property,severe,0.034,0.33,2220000.0,24908.4,0.1003,0.5676,2930400.0,166828.49,6.698
+F004,Working Capital,sme_lending,base,0.026,0.47,1100000.0,13442.0,0.026,0.47,1100000.0,13442.0,1.0
+F004,Working Capital,sme_lending,mild,0.026,0.47,1100000.0,13442.0,0.039627,0.541487,1199660.0,25741.45,1.915
+F004,Working Capital,sme_lending,moderate,0.026,0.47,1100000.0,13442.0,0.052673,0.613491,1293270.0,41791.58,3.109
+F004,Working Capital,sme_lending,severe,0.026,0.47,1100000.0,13442.0,0.0689,0.7238,1408000.0,70216.71,5.224
+F005,Trade Finance,corporate_lending,base,0.041,0.55,420000.0,9471.0,0.041,0.55,420000.0,9471.0,1.0
+F005,Trade Finance,corporate_lending,mild,0.041,0.55,420000.0,9471.0,0.060774,0.635195,458346.0,17693.77,1.868
+F005,Trade Finance,corporate_lending,moderate,0.041,0.55,420000.0,9471.0,0.079159,0.72358,494340.0,28314.63,2.99
+F005,Trade Finance,corporate_lending,severe,0.041,0.55,420000.0,9471.0,0.1025,0.847,537600.0,46673.09,4.928
+F006,Contingent,corporate_lending,base,0.012,0.36,285000.0,1231.2,0.012,0.36,285000.0,1231.2,1.0
+F006,Contingent,corporate_lending,mild,0.012,0.36,285000.0,1231.2,0.017788,0.415764,311020.5,2300.13,1.868
+F006,Contingent,corporate_lending,moderate,0.012,0.36,285000.0,1231.2,0.023168,0.473616,335445.0,3680.81,2.99
+F006,Contingent,corporate_lending,severe,0.012,0.36,285000.0,1231.2,0.03,0.5544,364800.0,6067.35,4.928

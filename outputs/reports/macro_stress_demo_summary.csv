@@ -1,0 +1,5 @@
+scenario,n_facilities,portfolio_base_el,portfolio_stressed_el,portfolio_el_uplift_x
+base,6,79293.72,79293.72,1.0
+mild,6,79293.72,153321.21,1.934
+moderate,6,79293.72,256331.65,3.233
+severe,6,79293.72,447755.57,5.647
