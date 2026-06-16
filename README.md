@@ -39,11 +39,16 @@ rate is refreshed live. The reference period each real source actually reports f
 | Labour Force, Detailed — industry employment | ABS 6291.0 | **Mar 2026** |
 | Building Approvals, non-residential — property cycle | ABS 8731.0 | **Mar 2026** |
 | Cash rate | RBA F1 | **Live** — latest available |
-| Economy-wide levels — GDP, unemployment, CPI, WPI, house prices, TWI | ABS 5206 / 6202 / 6401 / 6345 / 6416 · RBA F11 | **Stated current readings** at the Q1 2026 vintage |
+| GDP, unemployment, CPI, WPI | ABS 5206 / 6202 / 6401 / 6345 | **Observed — Mar 2026** (live-fetched + parsed each run) |
+| House prices, exchange rate (TWI), sector-output proxy | ABS 6416 *(discontinued 2021)* · RBA F11 · ABS 8155+5676 | **Stated** — no clean current free series |
 
-The macro **stress shocks** in Section 2 are scenario-design assumptions (config vintage
-`2026-Q1`), not dated observations. The committed real-data cache and its full per-file
-attribution are in [`data/cache/ATTRIBUTION.md`](data/cache/ATTRIBUTION.md).
+The four economy-wide headline levels (GDP, unemployment, CPI, WPI) are now **fetched live from the
+ABS releases and parsed** ([`download_macro_indicators.py`](src/public_data/download_macro_indicators.py)),
+joining the live cash rate; the rest stay stated (the ABS residential price index was discontinued
+after Dec-2021, and there is no clean free series for the TWI change or the sector-output proxy).
+The macro **stress shocks** in Section 2 are scenario-design assumptions (config vintage `2026-Q1`),
+not dated observations. The committed cache + full per-file attribution are in
+[`data/cache/ATTRIBUTION.md`](data/cache/ATTRIBUTION.md).
 
 ---
 
@@ -51,9 +56,10 @@ attribution are in [`data/cache/ATTRIBUTION.md`](data/cache/ATTRIBUTION.md).
 
 A lender's loss rate is driven as much by *the environment it lends into* as by any single
 borrower. Before scoring an industry or a deal, the engine reads where the economy and the
-property markets currently sit — the conditions a credit team assesses against. Each figure
-below is the latest observed level from a named public series, and together they form the
-**base** of every stress scenario in Section 2.
+property markets currently sit — the conditions a credit team assesses against. The headline rates
+are **live-fetched from the latest ABS/RBA releases**; a few series with no clean current public
+series are stated (and flagged as such). Together they form the **base** of every stress scenario
+in Section 2.
 
 ### 1a. Economy-wide conditions
 
@@ -61,24 +67,24 @@ The broad drivers that condition PD and LGD across the whole book, regardless of
 
 | Macro condition | Current level | What it signals for credit risk | Source |
 |---|---|---|---|
-| GDP growth (real, YoY) | 1.8% | Below-trend growth — softer revenue, slower deleveraging | ABS 5206 National Accounts |
-| Unemployment rate | 4.1% | Low — supports household & SME debt-servicing | ABS 6202 Labour Force |
+| GDP growth (real, YoY) | 2.5% | Around trend — moderate revenue growth | ABS 5206 (Mar 2026, live) |
+| Unemployment rate | 4.3% | Low — supports household & SME debt-servicing | ABS 6202 (Mar 2026, live) |
 | Cash rate | 4.35% (+0.5pp YoY) | Restrictive — debt-servicing pressure on leveraged borrowers | RBA F1 (live) |
-| Inflation (CPI, YoY) | 3.2% | Above target — cost-of-living squeeze on cash flow | ABS 6401 CPI |
-| Wage growth (WPI, YoY) | 3.5% | Roughly matching CPI — thin real-income buffer | ABS 6345 Wage Price Index |
-| Exchange rate (TWI, change) | 0.0% | Stable — neutral for FX-exposed corporates | RBA F11 |
-| Industry / sector output (YoY) | 2.0% | Modest — sector-revenue channel for SME / corporate | ABS 8155 + 5676 |
+| Inflation (CPI, YoY) | 2.4% | Back inside the 2–3% band — easing cost-of-living pressure | ABS 6401 (Mar 2026, live) |
+| Wage growth (WPI, YoY) | 3.3% | Now outpacing CPI — modest positive real-income growth | ABS 6345 (Mar 2026, live) |
+| Exchange rate (TWI, change) | 0.0% | Stable — neutral for FX-exposed corporates | RBA F11 *(stated)* |
+| Industry / sector output (YoY) | 2.0% | Modest — sector-revenue channel for SME / corporate | ABS 8155 + 5676 *(stated)* |
 
 ### 1b. Property conditions
 
 Property-secured lending splits into **residential** and **commercial** — they sit on different
 cycles, so the engine reads them separately.
 
-**Residential property.** The residential signal is **house-price growth: +4.0% YoY** (ABS 6416
-Residential Property Price Index). This is the collateral channel for residential mortgages — when
-it falls, mortgage LGD rises (Section 2b). *This is a **national** figure. State / capital-city
-splits (ABS 6432) are not yet staged, so there is no by-state residential breakdown here; it will
-be added once that source is in place.*
+**Residential property.** The residential signal is **house-price growth: +4.0% YoY** — the
+collateral channel for residential mortgages, where a fall lifts mortgage LGD (Section 2b). *This
+one is **stated**, not live: the ABS Residential Property Price Index (Cat. 6416) was **discontinued
+after the Dec-2021 quarter** and has no clean free replacement index, so it stays a labelled reading
+pending a new public source.*
 
 **Commercial property (CRE).** Read two ways:
 
@@ -179,11 +185,11 @@ growth), `severe` is a GFC-like path. Source:
 
 | Macro driver | Base | Mild | Moderate | Severe |
 |---|--:|--:|--:|--:|
-| GDP growth (real, YoY) | 1.8% | 0.0% | −1.5% | −3.5% |
-| Unemployment rate | 4.1% | 5.3% | 6.6% | 8.1% |
+| GDP growth (real, YoY) | 2.5% | 0.7% | −0.8% | −2.8% |
+| Unemployment rate | 4.3% | 5.5% | 6.8% | 8.3% |
 | Cash rate | 4.35% | 4.6% | 4.85% | 5.1% |
-| Inflation (CPI, YoY) | 3.2% | 4.0% | 4.7% | 5.7% |
-| Wage growth (WPI, YoY) | 3.5% | 3.0% | 2.5% | 1.7% |
+| Inflation (CPI, YoY) | 2.4% | 3.2% | 3.9% | 4.9% |
+| Wage growth (WPI, YoY) | 3.3% | 2.8% | 2.3% | 1.5% |
 | House-price growth (YoY) | 4.0% | −4.0% | −11.0% | −21.0% |
 | Exchange rate (TWI, change) | 0.0% | −5.0% | −10.0% | −15.0% |
 | Industry / sector output (YoY) | 2.0% | 0.0% | −2.0% | −5.0% |

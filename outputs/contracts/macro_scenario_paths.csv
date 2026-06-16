@@ -1,28 +1,28 @@
 scenario,variable,label,unit,stress_direction,base_level,shock,stressed_level,shock_norm,source_or_assumption,macro_note
-base,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,1.8,0.0,1.8,0.0,ABS 5206 National Accounts,mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction.
-mild,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,1.8,-1.8,0.0,0.3396,ABS 5206 National Accounts,mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction.
-moderate,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,1.8,-3.3,-1.5,0.6226,ABS 5206 National Accounts,mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction.
-severe,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,1.8,-5.3,-3.5,1.0,ABS 5206 National Accounts,mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction.
-base,unemployment,Unemployment rate (%),%,up,4.1,0.0,4.1,0.0,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
-mild,unemployment,Unemployment rate (%),%,up,4.1,1.2,5.3,0.3,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
-moderate,unemployment,Unemployment rate (%),%,up,4.1,2.5,6.6,0.625,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
-severe,unemployment,Unemployment rate (%),%,up,4.1,4.0,8.1,1.0,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
+base,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,2.5,0.0,2.5,0.0,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)","base is the live ABS through-the-year reading; mild applies a technical-recession-sized hit (growth stalls toward zero), severe a deep multi-quarter contraction."
+mild,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,2.5,-1.8,0.7,0.3396,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)","base is the live ABS through-the-year reading; mild applies a technical-recession-sized hit (growth stalls toward zero), severe a deep multi-quarter contraction."
+moderate,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,2.5,-3.3,-0.8,0.6226,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)","base is the live ABS through-the-year reading; mild applies a technical-recession-sized hit (growth stalls toward zero), severe a deep multi-quarter contraction."
+severe,gdp_growth,"GDP growth (real, YoY %)",% yoy,down,2.5,-5.3,-2.8,1.0,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)","base is the live ABS through-the-year reading; mild applies a technical-recession-sized hit (growth stalls toward zero), severe a deep multi-quarter contraction."
+base,unemployment,Unemployment rate (%),%,up,4.3,0.0,4.3,0.0,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)",rises ~1.2pp (mild) to ~4pp (severe).
+mild,unemployment,Unemployment rate (%),%,up,4.3,1.2,5.5,0.3,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)",rises ~1.2pp (mild) to ~4pp (severe).
+moderate,unemployment,Unemployment rate (%),%,up,4.3,2.5,6.8,0.625,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)",rises ~1.2pp (mild) to ~4pp (severe).
+severe,unemployment,Unemployment rate (%),%,up,4.3,4.0,8.3,1.0,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)",rises ~1.2pp (mild) to ~4pp (severe).
 base,cash_rate,Cash rate (%),%,up,4.35,0.0,4.35,0.0,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
 mild,cash_rate,Cash rate (%),%,up,4.35,0.25,4.6,0.3333,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
 moderate,cash_rate,Cash rate (%),%,up,4.35,0.5,4.85,0.6667,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
 severe,cash_rate,Cash rate (%),%,up,4.35,0.75,5.1,1.0,RBA F1 cash-rate table,illustrative higher-for-longer rate path; debt-servicing channel.
-base,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,0.0,3.2,0.0,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
-mild,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,0.8,4.0,0.32,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
-moderate,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,1.5,4.7,0.6,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
-severe,inflation,"Inflation (CPI, YoY %)",% yoy,up,3.2,2.5,5.7,1.0,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
-base,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.5,0.0,3.5,0.0,ABS 6345 Wage Price Index,real-income squeeze when paired with higher inflation.
-mild,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.5,-0.5,3.0,0.2778,ABS 6345 Wage Price Index,real-income squeeze when paired with higher inflation.
-moderate,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.5,-1.0,2.5,0.5556,ABS 6345 Wage Price Index,real-income squeeze when paired with higher inflation.
-severe,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.5,-1.8,1.7,1.0,ABS 6345 Wage Price Index,real-income squeeze when paired with higher inflation.
-base,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,0.0,4.0,0.0,ABS 6416 Residential Property Price Index,collateral channel for residential-secured lending.
-mild,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,-8.0,-4.0,0.32,ABS 6416 Residential Property Price Index,collateral channel for residential-secured lending.
-moderate,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,-15.0,-11.0,0.6,ABS 6416 Residential Property Price Index,collateral channel for residential-secured lending.
-severe,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,-25.0,-21.0,1.0,ABS 6416 Residential Property Price Index,collateral channel for residential-secured lending.
+base,inflation,"Inflation (CPI, YoY %)",% yoy,up,2.4,0.0,2.4,0.0,"ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year)",cost-of-living pressure on borrower cash flow.
+mild,inflation,"Inflation (CPI, YoY %)",% yoy,up,2.4,0.8,3.2,0.32,"ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year)",cost-of-living pressure on borrower cash flow.
+moderate,inflation,"Inflation (CPI, YoY %)",% yoy,up,2.4,1.5,3.9,0.6,"ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year)",cost-of-living pressure on borrower cash flow.
+severe,inflation,"Inflation (CPI, YoY %)",% yoy,up,2.4,2.5,4.9,1.0,"ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year)",cost-of-living pressure on borrower cash flow.
+base,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.3,0.0,3.3,0.0,"ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year)",real-income squeeze when paired with higher inflation.
+mild,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.3,-0.5,2.8,0.2778,"ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year)",real-income squeeze when paired with higher inflation.
+moderate,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.3,-1.0,2.3,0.5556,"ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year)",real-income squeeze when paired with higher inflation.
+severe,wage_growth,"Wage growth (WPI, YoY %)",% yoy,down,3.3,-1.8,1.5,1.0,"ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year)",real-income squeeze when paired with higher inflation.
+base,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,0.0,4.0,0.0,stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index),collateral channel for residential-secured lending; base is a stated reading pending a replacement public price index.
+mild,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,-8.0,-4.0,0.32,stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index),collateral channel for residential-secured lending; base is a stated reading pending a replacement public price index.
+moderate,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,-15.0,-11.0,0.6,stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index),collateral channel for residential-secured lending; base is a stated reading pending a replacement public price index.
+severe,house_price_growth,House-price growth (YoY %),% yoy,down,4.0,-25.0,-21.0,1.0,stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index),collateral channel for residential-secured lending; base is a stated reading pending a replacement public price index.
 base,exchange_rate_twi,"Exchange rate (TWI, % change)",% change,down,0.0,0.0,0.0,0.0,RBA F11 exchange rates,depreciation raises input costs for FX-exposed corporates.
 mild,exchange_rate_twi,"Exchange rate (TWI, % change)",% change,down,0.0,-5.0,-5.0,0.3333,RBA F11 exchange rates,depreciation raises input costs for FX-exposed corporates.
 moderate,exchange_rate_twi,"Exchange rate (TWI, % change)",% change,down,0.0,-10.0,-10.0,0.6667,RBA F11 exchange rates,depreciation raises input costs for FX-exposed corporates.

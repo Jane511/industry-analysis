@@ -1,10 +1,10 @@
 variable,label,unit,current_level,reading_type,source_or_assumption,macro_note
-gdp_growth,"GDP growth (real, YoY %)",% yoy,1.8,stated,ABS 5206 National Accounts,mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction.
-unemployment,Unemployment rate (%),%,4.1,stated,ABS 6202 Labour Force,rises ~1.2pp (mild) to ~4pp (severe).
+gdp_growth,"GDP growth (real, YoY %)",% yoy,2.5,observed,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)","base is the live ABS through-the-year reading; mild applies a technical-recession-sized hit (growth stalls toward zero), severe a deep multi-quarter contraction."
+unemployment,Unemployment rate (%),%,4.3,observed,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)",rises ~1.2pp (mild) to ~4pp (severe).
 cash_rate,Cash rate (%),%,4.35,live,RBA F1 cash-rate table (+0.50pp 1y),illustrative higher-for-longer rate path; debt-servicing channel.
-inflation,"Inflation (CPI, YoY %)",% yoy,3.2,stated,ABS 6401 CPI,cost-of-living pressure on borrower cash flow.
-wage_growth,"Wage growth (WPI, YoY %)",% yoy,3.5,stated,ABS 6345 Wage Price Index,real-income squeeze when paired with higher inflation.
-house_price_growth,House-price growth (YoY %),% yoy,4.0,stated,ABS 6416 Residential Property Price Index,collateral channel for residential-secured lending.
+inflation,"Inflation (CPI, YoY %)",% yoy,2.4,observed,"ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year)",cost-of-living pressure on borrower cash flow.
+wage_growth,"Wage growth (WPI, YoY %)",% yoy,3.3,observed,"ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year)",real-income squeeze when paired with higher inflation.
+house_price_growth,House-price growth (YoY %),% yoy,4.0,stated,stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index),collateral channel for residential-secured lending; base is a stated reading pending a replacement public price index.
 exchange_rate_twi,"Exchange rate (TWI, % change)",% change,0.0,stated,RBA F11 exchange rates,depreciation raises input costs for FX-exposed corporates.
 industry_output,Industry / sector output (YoY %),% yoy,2.0,stated,ABS 8155 Australian Industry + 5676 Business Indicators,sector-revenue channel for SME / corporate borrowers.
 commercial_property_prices,Commercial-property prices (% change),% change,0.0,assumption,assumption,ASSUMPTION — no clean free quarterly series; anchored to RBA FSR commentary.

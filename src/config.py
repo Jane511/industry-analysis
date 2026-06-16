@@ -108,12 +108,16 @@ PUBLIC_SOURCE_URLS = {
     "business_indicators_consumer_sales_xlsx": "https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/mar-2026/56760024.xlsx",
     "labour_force_industry_xlsx": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia-detailed/mar-2026/6291004.xlsx",
     "building_approvals_nonres_xlsx": "https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/mar-2026/87310051.xlsx",
+    # Economy-wide headline levels (live base for the macro-stress panel)
+    "national_accounts_gdp_xlsx": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/mar-2026/5206001_key_aggregates.xlsx",
+    "labour_force_headline_xlsx": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/mar-2026/6202001.xlsx",
+    "wpi_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia/mar-2026/634501.xlsx",
     "rba_cash_rate_csv": "https://www.rba.gov.au/statistics/tables/csv/f1-data.csv",
     "ptrs_cycle_8_pdf": "https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2025-07/reg-update-july-2025.pdf",
     "ptrs_cycle_9_pdf": "https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2026-01/regulators-update-202601.pdf",
     "ptrs_guidance": "https://paymenttimes.gov.au/sites/ptrs.gov.au/files/regulatory-resource/ptrs-guidance-materials-march2025.pdf",
     # Workstream A — ABS macro overlay catalogues
-    "cpi_all_groups_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640101.xlsx",
+    "cpi_all_groups_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/mar-2026/640101.xlsx",
     "cpi_subgroups_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640107.xlsx",
     "ppi_manufacturing_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642712.xlsx",
     "ppi_construction_xlsx": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642713.xlsx",

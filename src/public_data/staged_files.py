@@ -34,6 +34,10 @@ SOURCE_KEY_STAGED_LOCATIONS: dict[str, tuple[Path, str]] = {
     "labour_force_industry_xlsx": (RAW_PUBLIC_DIR_ABS, "6291004*.xlsx"),
     # ABS Building Approvals monthly workbook
     "building_approvals_nonres_xlsx": (RAW_PUBLIC_DIR_ABS, "87310051*.xlsx"),
+    # ABS economy-wide headline workbooks (live macro base levels)
+    "national_accounts_gdp_xlsx": (RAW_PUBLIC_DIR_ABS, "5206001*national_accounts*.xlsx"),
+    "labour_force_headline_xlsx": (RAW_PUBLIC_DIR_ABS, "6202001*labour_force*.xlsx"),
+    "wpi_xlsx": (RAW_PUBLIC_DIR_ABS, "63450001*.xlsx"),
     # ABS Macro overlay catalogues
     "cpi_all_groups_xlsx": (RAW_PUBLIC_DIR_ABS, "64010001*.xlsx"),
     "cpi_subgroups_xlsx": (RAW_PUBLIC_DIR_ABS, "64010007*.xlsx"),

@@ -1,34 +1,34 @@
 segment,parameter,driver,sensitivity_weight,driver_stress_direction,source_or_assumption
-residential_mortgages,PD,unemployment,0.45,up,ABS 6202 Labour Force
+residential_mortgages,PD,unemployment,0.45,up,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)"
 residential_mortgages,PD,cash_rate,0.25,up,RBA F1 cash-rate table
-residential_mortgages,PD,wage_growth,0.2,down,ABS 6345 Wage Price Index
-residential_mortgages,PD,inflation,0.1,up,ABS 6401 CPI
-residential_mortgages,LGD,house_price_growth,0.7,down,ABS 6416 Residential Property Price Index
-residential_mortgages,LGD,unemployment,0.2,up,ABS 6202 Labour Force
+residential_mortgages,PD,wage_growth,0.2,down,"ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year)"
+residential_mortgages,PD,inflation,0.1,up,"ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year)"
+residential_mortgages,LGD,house_price_growth,0.7,down,stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index)
+residential_mortgages,LGD,unemployment,0.2,up,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)"
 residential_mortgages,LGD,cash_rate,0.1,up,RBA F1 cash-rate table
 residential_mortgages,EAD,cash_rate,0.5,up,RBA F1 cash-rate table
-residential_mortgages,EAD,unemployment,0.3,up,ABS 6202 Labour Force
-residential_mortgages,EAD,gdp_growth,0.2,down,ABS 5206 National Accounts
-credit_cards,PD,unemployment,0.5,up,ABS 6202 Labour Force
-credit_cards,PD,wage_growth,0.3,down,ABS 6345 Wage Price Index
-credit_cards,PD,inflation,0.2,up,ABS 6401 CPI
-credit_cards,LGD,unemployment,0.5,up,ABS 6202 Labour Force
-credit_cards,LGD,inflation,0.3,up,ABS 6401 CPI
-credit_cards,LGD,wage_growth,0.2,down,ABS 6345 Wage Price Index
-credit_cards,EAD,gdp_growth,0.4,down,ABS 5206 National Accounts
+residential_mortgages,EAD,unemployment,0.3,up,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)"
+residential_mortgages,EAD,gdp_growth,0.2,down,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)"
+credit_cards,PD,unemployment,0.5,up,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)"
+credit_cards,PD,wage_growth,0.3,down,"ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year)"
+credit_cards,PD,inflation,0.2,up,"ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year)"
+credit_cards,LGD,unemployment,0.5,up,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)"
+credit_cards,LGD,inflation,0.3,up,"ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year)"
+credit_cards,LGD,wage_growth,0.2,down,"ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year)"
+credit_cards,EAD,gdp_growth,0.4,down,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)"
 credit_cards,EAD,cash_rate,0.35,up,RBA F1 cash-rate table
-credit_cards,EAD,unemployment,0.25,up,ABS 6202 Labour Force
-sme_lending,PD,gdp_growth,0.35,down,ABS 5206 National Accounts
-sme_lending,PD,unemployment,0.25,up,ABS 6202 Labour Force
+credit_cards,EAD,unemployment,0.25,up,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)"
+sme_lending,PD,gdp_growth,0.35,down,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)"
+sme_lending,PD,unemployment,0.25,up,"ABS 6202 Labour Force (Mar 2026, seasonally adjusted)"
 sme_lending,PD,cash_rate,0.2,up,RBA F1 cash-rate table
 sme_lending,PD,industry_output,0.2,down,ABS 8155 Australian Industry + 5676 Business Indicators
 sme_lending,LGD,commercial_property_prices,0.45,down,assumption
-sme_lending,LGD,house_price_growth,0.35,down,ABS 6416 Residential Property Price Index
+sme_lending,LGD,house_price_growth,0.35,down,stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index)
 sme_lending,LGD,industry_output,0.2,down,ABS 8155 Australian Industry + 5676 Business Indicators
 sme_lending,EAD,cash_rate,0.4,up,RBA F1 cash-rate table
-sme_lending,EAD,gdp_growth,0.35,down,ABS 5206 National Accounts
+sme_lending,EAD,gdp_growth,0.35,down,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)"
 sme_lending,EAD,industry_output,0.25,down,ABS 8155 Australian Industry + 5676 Business Indicators
-corporate_lending,PD,gdp_growth,0.4,down,ABS 5206 National Accounts
+corporate_lending,PD,gdp_growth,0.4,down,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)"
 corporate_lending,PD,industry_output,0.3,down,ABS 8155 Australian Industry + 5676 Business Indicators
 corporate_lending,PD,cash_rate,0.15,up,RBA F1 cash-rate table
 corporate_lending,PD,exchange_rate_twi,0.15,down,RBA F11 exchange rates
@@ -36,7 +36,7 @@ corporate_lending,LGD,industry_output,0.45,down,ABS 8155 Australian Industry + 5
 corporate_lending,LGD,commercial_property_prices,0.3,down,assumption
 corporate_lending,LGD,exchange_rate_twi,0.25,down,RBA F11 exchange rates
 corporate_lending,EAD,cash_rate,0.45,up,RBA F1 cash-rate table
-corporate_lending,EAD,gdp_growth,0.35,down,ABS 5206 National Accounts
+corporate_lending,EAD,gdp_growth,0.35,down,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)"
 corporate_lending,EAD,industry_output,0.2,down,ABS 8155 Australian Industry + 5676 Business Indicators
 commercial_property,PD,commercial_property_prices,0.3,down,assumption
 commercial_property,PD,vacancy_rate,0.3,up,assumption
@@ -49,7 +49,7 @@ commercial_property,EAD,cash_rate,0.5,up,RBA F1 cash-rate table
 commercial_property,EAD,vacancy_rate,0.3,up,assumption
 commercial_property,EAD,commercial_property_prices,0.2,down,assumption
 development_finance,PD,commercial_property_prices,0.35,down,assumption
-development_finance,PD,gdp_growth,0.25,down,ABS 5206 National Accounts
+development_finance,PD,gdp_growth,0.25,down,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)"
 development_finance,PD,vacancy_rate,0.2,up,assumption
 development_finance,PD,cash_rate,0.2,up,RBA F1 cash-rate table
 development_finance,LGD,commercial_property_prices,0.55,down,assumption
@@ -57,4 +57,4 @@ development_finance,LGD,cre_cap_rates,0.25,up,assumption
 development_finance,LGD,cre_rents,0.2,down,assumption
 development_finance,EAD,cash_rate,0.45,up,RBA F1 cash-rate table
 development_finance,EAD,commercial_property_prices,0.3,down,assumption
-development_finance,EAD,gdp_growth,0.25,down,ABS 5206 National Accounts
+development_finance,EAD,gdp_growth,0.25,down,"ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)"

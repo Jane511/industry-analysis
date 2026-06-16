@@ -42,6 +42,7 @@ from src.config import ALL_CONTRACT_EXPORTS, PUBLIC_SOURCE_URLS, RAW_DIR, RAW_PU
 from src.contract_exports import CONTRACT_EXPORT_SPECS, build_contract_export_summary_rows
 from src.csv_io import read_canonical_csv
 from src.overlays.macro_stress_core import (
+    apply_live_macro_levels,
     build_demo_portfolio_stress,
     build_demo_portfolio_summary,
     build_macro_scenario_paths,
@@ -438,6 +439,7 @@ def build_macro_stress_section() -> dict[str, Any]:
     report. Illustrative scenario design, not calibrated regulatory stress.
     """
     cfg = load_macro_config()
+    apply_live_macro_levels(cfg)  # live ABS base levels (GDP/unemp/CPI/WPI), as in the contracts
     paths = build_macro_scenario_paths(cfg)
     multipliers = compute_segment_multipliers(cfg, paths=paths)
     demo = build_demo_portfolio_stress(

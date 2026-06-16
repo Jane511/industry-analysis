@@ -40,7 +40,7 @@ variables:
     base_level: 1.8
     source_or_assumption: "ABS 5206 National Accounts"
     shocks: { base: 0.0, mild: -1.8, moderate: -3.3, severe: -5.3 }
-    macro_note: "mild brings growth to ~0 (two-quarters-near-zero); severe is a multi-quarter contraction."
+    macro_note: "base is the live ABS through-the-year reading; mild applies a technical-recession-sized hit (growth stalls toward zero), severe a deep multi-quarter contraction."
 
   unemployment:
     label: Unemployment rate (%)
@@ -83,9 +83,9 @@ variables:
     unit: "% yoy"
     stress_direction: down
     base_level: 4.0
-    source_or_assumption: "ABS 6416 Residential Property Price Index"
+    source_or_assumption: "stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index)"
     shocks: { base: 0.0, mild: -8.0, moderate: -15.0, severe: -25.0 }
-    macro_note: "collateral channel for residential-secured lending."
+    macro_note: "collateral channel for residential-secured lending; base is a stated reading pending a replacement public price index."
 
   exchange_rate_twi:
     label: Exchange rate (TWI, % change)

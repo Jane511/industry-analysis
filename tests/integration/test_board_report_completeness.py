@@ -105,16 +105,16 @@ def test_board_report_completeness_contract() -> None:
 def test_missing_source_fixture_is_visible_in_inventory_and_gap_section() -> None:
     """A registered source with neither a manifest entry nor an on-disk file
     must appear with status="missing" in the inventory and reappear in the
-    "Data not yet captured" section. ``cpi_all_groups_xlsx`` is a registered
+    "Data not yet captured" section. ``cpi_subgroups_xlsx`` is a registered
     public source that the engine does not currently stage, so it serves as a
     naturally-missing fixture without needing to manipulate test state."""
     manifest = load_public_manifest()
     report = build_report(manifest=manifest)
 
     inventory = _table(report, "data_sources_inventory", "Data Sources Inventory")
-    cpi_row = inventory[inventory["Source key"] == "cpi_all_groups_xlsx"].iloc[0]
-    assert cpi_row["Status"] == "missing"
+    missing_row = inventory[inventory["Source key"] == "cpi_subgroups_xlsx"].iloc[0]
+    assert missing_row["Status"] == "missing"
 
     not_captured = _table(report, "not_in_report", "Data not yet captured / out of scope")
-    row = not_captured[not_captured["Source key"] == "cpi_all_groups_xlsx"].iloc[0]
+    row = not_captured[not_captured["Source key"] == "cpi_subgroups_xlsx"].iloc[0]
     assert "Awaiting next release" in row["Required action"]

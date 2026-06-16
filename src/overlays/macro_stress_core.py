@@ -40,6 +40,34 @@ def load_macro_config(path: Optional[Path] = None) -> dict[str, Any]:
         return yaml.safe_load(fh) or {}
 
 
+def apply_live_macro_levels(cfg: dict) -> set[str]:
+    """Overlay live ABS headline levels onto the config base levels, in place.
+
+    Updates ``base_level`` + ``source_or_assumption`` for the macro variables
+    that have a clean public series (GDP growth, unemployment, CPI, WPI) using
+    :func:`download_macro_indicators.load_macro_indicators`. The scenario SHOCK
+    deltas are left untouched, so the stress multipliers — which depend on the
+    *relative* shock path (``shock_norm``), not the base level — are unchanged.
+    Returns the set of variable keys that were overlaid (empty if no staged or
+    cached file is available, in which case the committed config base levels
+    stand).
+    """
+    try:
+        from src.public_data.download_macro_indicators import load_macro_indicators
+
+        live = load_macro_indicators()
+    except Exception:
+        return set()
+    overlaid: set[str] = set()
+    variables = cfg.get("variables", {})
+    for key, info in live.items():
+        if key in variables:
+            variables[key]["base_level"] = float(info["value"])
+            variables[key]["source_or_assumption"] = info["source"]
+            overlaid.add(key)
+    return overlaid
+
+
 def _flatten(text: object) -> str:
     return " ".join(str(text or "").split())
 
@@ -223,12 +251,16 @@ def reverse_stress_scenario(
     )
 
 
-def build_macro_context(cfg: Optional[dict] = None) -> pd.DataFrame:
+def build_macro_context(
+    cfg: Optional[dict] = None, *, observed_keys: Optional[set[str]] = None,
+) -> pd.DataFrame:
     """Current macro-state snapshot: base-scenario readings + live cash rate.
 
     Replaces the legacy (orphaned, broken) macro_context_panel. One row per
     macro driver at its latest level, tagged by ``reading_type``:
       * ``live``       — fetched now (the RBA F1 cash rate),
+      * ``observed``   — live ABS headline level fetched this run (GDP,
+                         unemployment, CPI, WPI — see ``observed_keys``),
       * ``stated``     — current level cited from the named public series
                          (not auto-fetched in this reference layer),
       * ``assumption`` — no clean free public series.
@@ -245,6 +277,8 @@ def build_macro_context(cfg: Optional[dict] = None) -> pd.DataFrame:
     base["reading_type"] = base["source_or_assumption"].apply(
         lambda s: "assumption" if str(s).strip().lower() == "assumption" else "stated"
     )
+    if observed_keys:
+        base.loc[base["variable"].isin(observed_keys), "reading_type"] = "observed"
 
     # Overlay the live RBA F1 cash rate when the staged file is available;
     # otherwise keep the config base level (offline-safe).
@@ -283,6 +317,7 @@ def build_and_export_macro_stress(
     Technical report (Section 9), not a standalone file.
     """
     cfg = load_macro_config()
+    observed = apply_live_macro_levels(cfg)  # live ABS base levels (GDP/unemp/CPI/WPI)
     paths = build_macro_scenario_paths(cfg)
     sensitivity = build_portfolio_macro_sensitivity(cfg)
     multipliers = compute_segment_multipliers(cfg, paths=paths)
@@ -296,7 +331,7 @@ def build_and_export_macro_stress(
     # Downstream contracts.
     save_csv(paths, contracts_dir / "macro_scenario_paths.csv")
     save_csv(sensitivity, contracts_dir / "portfolio_macro_sensitivity.csv")
-    save_csv(build_macro_context(cfg), contracts_dir / "macro_context.csv")
+    save_csv(build_macro_context(cfg, observed_keys=observed), contracts_dir / "macro_context.csv")
     # Supporting demo artifacts (not core contracts).
     save_csv(multipliers, reports_dir / "macro_stress_segment_multipliers.csv")
     save_csv(facility, reports_dir / "macro_stress_demo_portfolio.csv")

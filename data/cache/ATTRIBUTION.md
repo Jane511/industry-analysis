@@ -21,6 +21,14 @@ proprietary data is included — every file below is an unmodified public releas
 | `56760023_mar2026_inventory_ratio.xlsx` | 5676.0 Business Indicators (inventories) | Mar 2026 |
 | `6291004_mar2026_labour_force_industry.xlsx` | 6291.0 Labour Force, Detailed | Mar 2026 |
 | `87310051_mar2026_building_approvals_nonres.xlsx` | 8731.0 Building Approvals (non-residential) | Mar 2026 |
+| `5206001_mar2026_national_accounts.xlsx` | 5206.0 National Accounts (real GDP) | Mar 2026 quarter |
+| `6202001_mar2026_labour_force.xlsx` | 6202.0 Labour Force (unemployment rate) | Mar 2026 |
+| `64010001_mar2026_cpi_all_groups.xlsx` | 6401.0 Consumer Price Index | Mar 2026 quarter |
+| `63450001_mar2026_wpi.xlsx` | 6345.0 Wage Price Index | Mar 2026 quarter |
+
+The last four supply the live economy-wide headline levels (GDP, unemployment,
+CPI, WPI) parsed by `src/public_data/download_macro_indicators.py`; the pipeline
+fetches them live each run and falls back to these committed copies offline.
 
 Source: <https://www.abs.gov.au/>
 

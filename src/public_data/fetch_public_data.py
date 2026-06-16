@@ -69,6 +69,21 @@ REQUIRED_SOURCES: tuple[SourceSpec, ...] = (
                RAW_PUBLIC_DIR, "rba_f1_data.csv", "rba/rba_f1_data.csv", True),
 )
 
+# Economy-wide macro headline workbooks (live base levels for the macro-stress
+# panel). Cache-backed and NOT required: if a fetch fails the macro overlay
+# degrades to the committed config base level (download_macro_indicators reads
+# the staged file, then the committed cache).
+MACRO_INDICATOR_SOURCES: tuple[SourceSpec, ...] = (
+    SourceSpec("national_accounts_gdp_xlsx", "ABS 5206.0 National Accounts (GDP)",
+               RAW_PUBLIC_DIR_ABS, "5206001_mar2026_national_accounts.xlsx", "abs/5206001_mar2026_national_accounts.xlsx", False),
+    SourceSpec("labour_force_headline_xlsx", "ABS 6202.0 Labour Force (unemployment)",
+               RAW_PUBLIC_DIR_ABS, "6202001_mar2026_labour_force.xlsx", "abs/6202001_mar2026_labour_force.xlsx", False),
+    SourceSpec("cpi_all_groups_xlsx", "ABS 6401.0 Consumer Price Index",
+               RAW_PUBLIC_DIR_ABS, "64010001_mar2026_cpi_all_groups.xlsx", "abs/64010001_mar2026_cpi_all_groups.xlsx", False),
+    SourceSpec("wpi_xlsx", "ABS 6345.0 Wage Price Index",
+               RAW_PUBLIC_DIR_ABS, "63450001_mar2026_wpi.xlsx", "abs/63450001_mar2026_wpi.xlsx", False),
+)
+
 # Best-effort sources: downloaded live when reachable, not required, not cached.
 OPTIONAL_SOURCES: tuple[SourceSpec, ...] = (
     SourceSpec("ptrs_cycle_8_pdf", "PTRS regulator update (Jul 2025)",
@@ -137,7 +152,11 @@ def fetch_source(spec: SourceSpec, *, prefer_cache: bool = False) -> tuple[str, 
 
 def fetch_all(*, prefer_cache: bool = False, include_optional: bool = True) -> dict[str, dict[str, str]]:
     """Fetch every source. Prints a per-source status line; returns the status map."""
-    specs = list(REQUIRED_SOURCES) + (list(OPTIONAL_SOURCES) if include_optional else [])
+    specs = (
+        list(REQUIRED_SOURCES)
+        + list(MACRO_INDICATOR_SOURCES)
+        + (list(OPTIONAL_SOURCES) if include_optional else [])
+    )
     results: dict[str, dict[str, str]] = {}
     icon = {"live": "  live ", "cache": " cache ", "skipped": " skip  "}
     for spec in specs:

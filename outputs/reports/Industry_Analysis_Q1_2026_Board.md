@@ -78,25 +78,27 @@ One row is shown for every item in the canonical source registry. Missing and ma
 | anzsic_classification_page | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/latest-release | landing page |  |  |  | missing |  |
 | anzsic_division_codes_page | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/2006-revision-2-0/numbering-system-and-titles/division-codes-and-titles | landing page |  |  |  | missing |  |
 | anzsic_division_subdivision_class_page | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/classifications/australian-and-new-zealand-standard-industrial-classification-anzsic/2006-revision-2-0/numbering-system-and-titles/division-subdivision-group-and-class-codes-and-titles | landing page |  |  |  | missing |  |
-| australian_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/industry-overview/australian-industry/2023-24/81550DO001_202324.xlsx | XLSX |  | 2026-06-16T05:31:56+00:00 | 597090 | manually staged |  |
-| building_approvals_nonres_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/mar-2026/87310051.xlsx | XLSX |  | 2026-06-16T05:31:58+00:00 | 186263 | manually staged |  |
+| australian_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/industry-overview/australian-industry/2023-24/81550DO001_202324.xlsx | XLSX |  | 2026-06-16T06:33:43+00:00 | 597090 | manually staged |  |
+| building_approvals_nonres_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/mar-2026/87310051.xlsx | XLSX |  | 2026-06-16T06:33:45+00:00 | 186263 | manually staged |  |
 | business_indicators_consumer_sales_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/mar-2026/56760024.xlsx | XLSX |  |  |  | missing |  |
-| business_indicators_inventory_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/mar-2026/56760023.xlsx | XLSX |  | 2026-06-16T05:31:57+00:00 | 51822 | manually staged |  |
-| business_indicators_profit_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/mar-2026/56760022.xlsx | XLSX |  | 2026-06-16T05:31:57+00:00 | 56316 | manually staged |  |
-| cpi_all_groups_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640101.xlsx | XLSX |  |  |  | missing |  |
+| business_indicators_inventory_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/mar-2026/56760023.xlsx | XLSX |  | 2026-06-16T06:33:44+00:00 | 51822 | manually staged |  |
+| business_indicators_profit_ratio_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/business-indicators/business-indicators-australia/mar-2026/56760022.xlsx | XLSX |  | 2026-06-16T06:33:43+00:00 | 56316 | manually staged |  |
+| cpi_all_groups_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/mar-2026/640101.xlsx | XLSX |  | 2026-06-16T06:33:47+00:00 | 53065 | manually staged |  |
 | cpi_subgroups_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/dec-2025/640107.xlsx | XLSX |  |  |  | missing |  |
 | dwelling_approvals_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/875206.xlsx | XLSX |  |  |  | missing |  |
 | dwelling_value_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/feb-2026/875211.xlsx | XLSX |  |  |  | missing |  |
-| labour_force_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia-detailed/mar-2026/6291004.xlsx | XLSX |  | 2026-06-16T05:31:57+00:00 | 160939 | manually staged |  |
+| labour_force_headline_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/mar-2026/6202001.xlsx | XLSX |  | 2026-06-16T06:33:47+00:00 | 766909 | manually staged |  |
+| labour_force_industry_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia-detailed/mar-2026/6291004.xlsx | XLSX |  | 2026-06-16T06:33:45+00:00 | 160939 | manually staged |  |
 | lending_indicators_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/finance/lending-indicators/feb-2026/560101.xlsx | XLSX |  |  |  | missing |  |
+| national_accounts_gdp_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/mar-2026/5206001_key_aggregates.xlsx | XLSX |  | 2026-06-16T06:33:46+00:00 | 267687 | manually staged |  |
 | ppi_construction_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642713.xlsx | XLSX |  |  |  | missing |  |
 | ppi_manufacturing_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/dec-2025/642712.xlsx | XLSX |  |  |  | missing |  |
 | property_price_capitals_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/residential-property-price-indexes-eight-capital-cities/dec-2025/641602.xlsx | XLSX |  |  |  | missing |  |
 | property_price_index_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/residential-property-price-indexes-eight-capital-cities/dec-2025/641601.xlsx | XLSX |  |  |  | missing |  |
-| ptrs_cycle_8_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2025-07/reg-update-july-2025.pdf | PDF |  | 2026-06-16T05:31:59+00:00 | 2055606 | manually staged |  |
-| ptrs_cycle_9_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2026-01/regulators-update-202601.pdf | PDF |  | 2026-06-16T05:32:00+00:00 | 3629142 | manually staged |  |
-| ptrs_guidance | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/regulatory-resource/ptrs-guidance-materials-march2025.pdf | PDF |  | 2026-06-16T05:32:00+00:00 | 947450 | manually staged |  |
-| rba_cash_rate_csv | Reserve Bank of Australia | https://www.rba.gov.au/statistics/tables/csv/f1-data.csv | CSV |  | 2026-06-16T05:31:58+00:00 | 302215 | manually staged |  |
+| ptrs_cycle_8_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2025-07/reg-update-july-2025.pdf | PDF |  | 2026-06-16T06:33:48+00:00 | 2055606 | manually staged |  |
+| ptrs_cycle_9_pdf | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/2026-01/regulators-update-202601.pdf | PDF |  | 2026-06-16T06:33:49+00:00 | 3629142 | manually staged |  |
+| ptrs_guidance | Payment Times Reporting Scheme | https://paymenttimes.gov.au/sites/ptrs.gov.au/files/regulatory-resource/ptrs-guidance-materials-march2025.pdf | PDF |  | 2026-06-16T06:33:49+00:00 | 947450 | manually staged |  |
+| rba_cash_rate_csv | Reserve Bank of Australia | https://www.rba.gov.au/statistics/tables/csv/f1-data.csv | CSV |  | 2026-06-16T06:33:46+00:00 | 302215 | manually staged |  |
 | rba_chart_pack_page | Reserve Bank of Australia | https://www.rba.gov.au/chart-pack/ | landing page |  |  |  | missing |  |
 | rba_chart_pack_pdf | Reserve Bank of Australia | https://www.rba.gov.au/chart-pack/ | PDF | March 2026 | 2026-04-28T08:01:43+00:00 | 5434746 | auto-downloaded | 66945f0e420217b86069e72880c20b4670f17a2ff52e6e0de9c9d13a174364d9 |
 | rba_fsr_page | Reserve Bank of Australia | https://www.rba.gov.au/publications/fsr/ | landing page |  |  |  | missing |  |
@@ -105,6 +107,7 @@ One row is shown for every item in the canonical source registry. Missing and ma
 | rba_smp_pdf | Reserve Bank of Australia | https://www.rba.gov.au/publications/smp/ | PDF | February 2026 | 2026-04-28T08:01:42+00:00 | 4201271 | auto-downloaded | db42f94329b6c229844fb8da8cbc4308d707af57b3d5ba90d0aaa9bd7e21ca89 |
 | rba_table_e2_xls | Reserve Bank of Australia | https://www.rba.gov.au/statistics/tables/xls/e02hist.xls | XLS |  |  |  | missing |  |
 | total_value_dwellings_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/finance/total-value-dwellings/dec-2025/643201.xlsx | XLSX |  |  |  | missing |  |
+| wpi_xlsx | Australian Bureau of Statistics | https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia/mar-2026/634501.xlsx | XLSX |  | 2026-06-16T06:33:47+00:00 | 66256 | manually staged |  |
 
 ## 4. Transformations Applied
 
@@ -114,14 +117,14 @@ Every canonical CSV export in outputs/contracts/ appears exactly once with its i
 
 | Output filename | Input source(s) | Transformation script | Row count of output | Last build timestamp | Validation status |
 | --- | --- | --- | --- | --- | --- |
-| industry_risk_scores.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/overlays/build_industry_risk_scores.py | 18 | 2026-06-16T15:32:03 | PASS: present_nonempty |
-| property_market_overlays.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 5 | 2026-06-16T15:32:03 | PASS: present_nonempty |
-| downturn_overlay_table.csv | property_cycle_panel; scenario multipliers (assumption); qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/overlays/build_downturn_overlay_tables.py | 4 | 2026-06-16T15:32:03 | PASS: present_nonempty |
-| macro_regime_flags.csv | rba_cash_rate_csv; qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/panels/build_macro_regime_flags.py | 1 | 2026-06-16T15:32:03 | PASS: present_nonempty |
-| industry_financial_benchmarks.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; labour_force_industry_xlsx | src/panels/build_industry_financial_benchmarks.py | 18 | 2026-06-16T15:32:03 | PASS: present_nonempty |
-| business_cycle_panel.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; business_indicators_consumer_sales_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/panels/build_business_cycle_panel.py | 18 | 2026-06-16T15:32:03 | PASS: present_nonempty |
-| property_cycle_panel.csv | building_approvals_nonres_xlsx | src/panels/build_property_cycle_panel.py | 11 | 2026-06-16T15:32:03 | PASS: present_nonempty |
-| property_market_overlays_by_building_type.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 11 | 2026-06-16T15:32:03 | PASS: present_nonempty |
+| industry_risk_scores.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/overlays/build_industry_risk_scores.py | 18 | 2026-06-16T16:33:52 | PASS: present_nonempty |
+| property_market_overlays.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 5 | 2026-06-16T16:33:52 | PASS: present_nonempty |
+| downturn_overlay_table.csv | property_cycle_panel; scenario multipliers (assumption); qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/overlays/build_downturn_overlay_tables.py | 4 | 2026-06-16T16:33:52 | PASS: present_nonempty |
+| macro_regime_flags.csv | rba_cash_rate_csv; qualitative arrears baseline (assumption, RBA FSR Mar-2026) | src/panels/build_macro_regime_flags.py | 1 | 2026-06-16T16:33:52 | PASS: present_nonempty |
+| industry_financial_benchmarks.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; labour_force_industry_xlsx | src/panels/build_industry_financial_benchmarks.py | 18 | 2026-06-16T16:33:52 | PASS: present_nonempty |
+| business_cycle_panel.csv | australian_industry_xlsx; business_indicators_profit_ratio_xlsx; business_indicators_inventory_ratio_xlsx; business_indicators_consumer_sales_xlsx; labour_force_industry_xlsx; rba_cash_rate_csv | src/panels/build_business_cycle_panel.py | 18 | 2026-06-16T16:33:52 | PASS: present_nonempty |
+| property_cycle_panel.csv | building_approvals_nonres_xlsx | src/panels/build_property_cycle_panel.py | 11 | 2026-06-16T16:33:52 | PASS: present_nonempty |
+| property_market_overlays_by_building_type.csv | building_approvals_nonres_xlsx; property_cycle_panel | src/overlays/build_property_market_overlays.py | 11 | 2026-06-16T16:33:52 | PASS: present_nonempty |
 
 ## 5. Detailed Analysis
 
@@ -299,12 +302,14 @@ This section lists registered sources that are manual, missing, outdated, gated,
 | business_indicators_consumer_sales_xlsx | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
 | business_indicators_inventory_ratio_xlsx | Paid, gated, or manually extracted source | Manual staging required - see data/raw/manual or source-specific raw-public directory | Next scheduled refresh cycle |
 | business_indicators_profit_ratio_xlsx | Paid, gated, or manually extracted source | Manual staging required - see data/raw/manual or source-specific raw-public directory | Next scheduled refresh cycle |
-| cpi_all_groups_xlsx | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
+| cpi_all_groups_xlsx | Paid, gated, or manually extracted source | Manual staging required - see data/raw/manual or source-specific raw-public directory | Next scheduled refresh cycle |
 | cpi_subgroups_xlsx | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
 | dwelling_approvals_xlsx | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
 | dwelling_value_xlsx | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
+| labour_force_headline_xlsx | Paid, gated, or manually extracted source | Manual staging required - see data/raw/manual or source-specific raw-public directory | Next scheduled refresh cycle |
 | labour_force_industry_xlsx | Paid, gated, or manually extracted source | Manual staging required - see data/raw/manual or source-specific raw-public directory | Next scheduled refresh cycle |
 | lending_indicators_xlsx | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
+| national_accounts_gdp_xlsx | Paid, gated, or manually extracted source | Manual staging required - see data/raw/manual or source-specific raw-public directory | Next scheduled refresh cycle |
 | ppi_construction_xlsx | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
 | ppi_manufacturing_xlsx | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
 | property_price_capitals_xlsx | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
@@ -318,6 +323,7 @@ This section lists registered sources that are manual, missing, outdated, gated,
 | rba_smp_page | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
 | rba_table_e2_xls | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
 | total_value_dwellings_xlsx | No successful manifest entry for this registry item | Awaiting next release or implement downloader/scraper | Next scheduled refresh cycle |
+| wpi_xlsx | Paid, gated, or manually extracted source | Manual staging required - see data/raw/manual or source-specific raw-public directory | Next scheduled refresh cycle |
 
 ## 8. Validation and Caveats
 
@@ -327,11 +333,11 @@ Completeness checks cover source inventory, transformations, detail rows, lineag
 
 | Check category | Items | Status |
 | --- | --- | --- |
-| Source registry inventory | 30 | PASS |
+| Source registry inventory | 33 | PASS |
 | Canonical export transformations | 8 | PASS |
 | Detailed analysis export tables | 8 | PASS |
 | Lineage mappings | 8 | PASS |
-| Manual/missing source disclosure | 27 | PASS |
+| Manual/missing source disclosure | 30 | PASS |
 
 No missing source is silently dropped. Sources without current data show as missing or manually staged in the inventory and reappear in the out-of-scope section with the required action.
 
@@ -348,13 +354,13 @@ A macro-driven stress layer turns macroeconomic scenario paths into PD / LGD / E
 | CRE cap rates (%) | % | assumption | 6.0 | 6.4 | 6.9 | 7.6 |
 | CRE rents (% change) | % change | assumption | 0.0 | -4.0 | -9.0 | -16.0 |
 | Exchange rate (TWI, % change) | % change | RBA F11 exchange rates | 0.0 | -5.0 | -10.0 | -15.0 |
-| GDP growth (real, YoY %) | % yoy | ABS 5206 National Accounts | 1.8 | 0.0 | -1.5 | -3.5 |
-| House-price growth (YoY %) | % yoy | ABS 6416 Residential Property Price Index | 4.0 | -4.0 | -11.0 | -21.0 |
+| GDP growth (real, YoY %) | % yoy | ABS 5206 National Accounts (Mar 2026, real SA, through-the-year) | 2.5 | 0.7 | -0.8 | -2.8 |
+| House-price growth (YoY %) | % yoy | stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index) | 4.0 | -4.0 | -11.0 | -21.0 |
 | Industry / sector output (YoY %) | % yoy | ABS 8155 Australian Industry + 5676 Business Indicators | 2.0 | 0.0 | -2.0 | -5.0 |
-| Inflation (CPI, YoY %) | % yoy | ABS 6401 CPI | 3.2 | 4.0 | 4.7 | 5.7 |
-| Unemployment rate (%) | % | ABS 6202 Labour Force | 4.1 | 5.3 | 6.6 | 8.1 |
+| Inflation (CPI, YoY %) | % yoy | ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year) | 2.4 | 3.2 | 3.9 | 4.9 |
+| Unemployment rate (%) | % | ABS 6202 Labour Force (Mar 2026, seasonally adjusted) | 4.3 | 5.5 | 6.8 | 8.3 |
 | Vacancy rate (office, %) | % | assumption | 12.0 | 14.0 | 16.0 | 19.0 |
-| Wage growth (WPI, YoY %) | % yoy | ABS 6345 Wage Price Index | 3.5 | 3.0 | 2.5 | 1.7 |
+| Wage growth (WPI, YoY %) | % yoy | ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year) | 3.3 | 2.8 | 2.3 | 1.5 |
 
 *Which macro drivers move which portfolio (illustrative)*
 
