@@ -17,6 +17,8 @@ the header and data dictionary in their own ingestion layer.
 | `property_market_overlays.csv` | One row per property segment | Core downstream contract | PD property-backed multiplier, LGD overlay, stress testing |
 | `property_market_detail.csv` | One row per region x property type x quarter | Core downstream contract | PD deal context, LGD collateral-region sensitivity, scenario builder |
 | `downturn_overlay_table.csv` | One row per scenario | Core downstream contract | PD/LGD/EAD stress, ICAAP |
+| `macro_scenario_paths.csv` | One row per scenario x macro variable | Core downstream contract | Macro stress paths for PD/LGD/EAD, ICAAP, scenario design |
+| `portfolio_macro_sensitivity.csv` | One row per segment x parameter x driver | Core downstream contract | Portfolio/facility macro-to-PD/LGD/EAD multiplier mapping |
 | `macro_context.csv` | One row per quarter | Core downstream contract | PD macro features, ECL FLI, stress testing, Board cycle commentary |
 | `macro_regime_flags.csv` | One row per quarter | Core downstream contract | ECL staging trigger, PIT PD overlay, scenario weighting |
 | `business_cycle_panel.csv` | Wide industry diagnostics | Optional explainability panel | PD explainability, validation diagnostics, challenger model analysis |
@@ -93,3 +95,42 @@ assumptions and macro paths are documented here and in
 reviewed/validated and refreshed on the documented schedule** (see the
 assumptions register / `docs/anchor_sources.md`). They are honestly labelled
 as illustrative, not calibrated regulatory stress parameters.
+
+## Macro stress contracts (facility + portfolio level)
+
+Two contracts translate macroeconomic scenarios into portfolio/facility stress
+(codename MACRO-STRESS; engine `src/overlays/macro_stress_core.py`, config
+`config/macro_scenarios.yaml`).
+
+**`macro_scenario_paths.csv`** — one row per `scenario x variable` for the 12
+macro variables (GDP growth, unemployment, cash rate, inflation, wage growth,
+house-price growth, exchange-rate TWI, industry output — ABS/RBA-anchored; plus
+commercial-property prices, vacancy, CRE rents, CRE cap rates — labelled
+assumptions). Columns: `scenario, variable, label, unit, stress_direction,
+base_level, shock, stressed_level, shock_norm, source_or_assumption,
+macro_note`. `shock_norm` is the sign-oriented shock normalised onto a common
+0..1 stress scale (severe = 1.0).
+
+**`portfolio_macro_sensitivity.csv`** — one row per `segment x parameter x
+driver` mapping each portfolio segment (residential mortgages, credit cards,
+SME, corporate, commercial property, development finance) to its material macro
+drivers per PD / LGD / EAD. Columns: `segment, parameter, driver,
+sensitivity_weight, driver_stress_direction, source_or_assumption`. Weights are
+the driver **mix** (sum to 1.0 per segment x parameter); a per-segment beta in
+the config scales overall magnitude. Illustrative elasticities, not estimated
+betas.
+
+**Consumption (facility -> portfolio).** A consuming PD/LGD model computes, per
+segment and scenario, `multiplier[s,p,k] = clamp(1 + intensity[p] * beta[s,p] *
+Σ_d weight[s,p,d] * shock_norm[d,k])`, then applies it to each facility:
+`stressed_PD_i = base_PD_i × multiplier(segment_i, PD, k)` (same for LGD/EAD) and
+sums `stressed_EL_i` with **no diversification benefit** for the portfolio total.
+The repo demonstrates this on `data/raw/demo_portfolio.csv`; the worked tables
+and a reverse-stress line are in `outputs/reports/Macro_Stress_Inputs.md` with
+supporting CSVs (`macro_stress_segment_multipliers.csv`,
+`macro_stress_demo_portfolio.csv`, `macro_stress_demo_summary.csv`).
+
+**Separate vs pooled models.** A bank normally develops separate models per
+material portfolio, or a pooled model with portfolio/sector effects; this layer
+supplies the macro-credit linkage either approach consumes. Independently
+validated annually; illustrative, not calibrated regulatory stress.

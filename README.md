@@ -70,6 +70,31 @@ validation function expects.
 
 ---
 
+## Macro stress inputs (facility + portfolio level)
+
+![Macro-derived PD stress multipliers by segment](reports/figures/macro_scenario_paths.png)
+
+A macro-driven stress layer turns a panel of macroeconomic scenario paths into **PD / LGD / EAD multipliers per portfolio segment**, then demonstrates facility-level and portfolio-level stressed expected loss on a committed demo book. Config in [config/macro_scenarios.yaml](config/macro_scenarios.yaml); engine in [src/overlays/macro_stress_core.py](src/overlays/macro_stress_core.py); full tables in [outputs/reports/Macro_Stress_Inputs.md](outputs/reports/Macro_Stress_Inputs.md).
+
+> Illustrative scenario design — **not** calibrated regulatory stress. Base levels are current values from the named public series; the per-scenario shocks and the portfolio elasticities are illustrative assumptions. Four CRE variables (commercial-property prices, vacancy, rents, cap rates) are labelled assumptions — no clean free quarterly public series.
+
+**Macro variables (12).** GDP growth, unemployment, cash rate, inflation, wage growth, house-price growth, exchange rate (TWI) and industry output — anchored to ABS/RBA series; commercial-property prices, vacancy, CRE rents and CRE cap rates — labelled assumptions. Scenarios: **base / mild / moderate / severe** (mild = two consecutive quarters of ~zero GDP growth).
+
+**Which macro drivers move which portfolio** (illustrative weights, not estimated betas):
+
+| Portfolio | Material macro drivers |
+|---|---|
+| Residential mortgages | unemployment, interest (cash) rate, wage growth, house prices |
+| Credit cards | unemployment, wage growth, inflation |
+| SME lending | GDP, unemployment, interest rate, sector output |
+| Corporate lending | GDP, sector output / revenue, interest rate, exchange rate |
+| Commercial property | property values, vacancy, rents, cap rates, interest rate |
+| Development finance | property prices, GDP, vacancy, interest rate |
+
+**Two new downstream contracts** (`outputs/contracts/`): `macro_scenario_paths.csv` (scenario × variable) and `portfolio_macro_sensitivity.csv` (segment × parameter × driver). A consuming PD/LGD model applies the segment multipliers to its own facilities; here the roll-up is demonstrated on `data/raw/demo_portfolio.csv` (illustrative portfolio EL ≈ **1.9× mild, 3.2× moderate, 5.6× severe**, exposure-weighted with no diversification benefit). A bank normally builds **separate models per material portfolio** or a **pooled model with portfolio / sector effects**; this layer supplies the macro-credit linkage either approach consumes.
+
+---
+
 ## What this produces
 
 **Eight CSV "contracts"** in [`outputs/contracts/`](outputs/contracts/) — the

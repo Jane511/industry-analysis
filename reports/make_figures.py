@@ -84,4 +84,25 @@ ax.set_title("Commercial property softness by segment (ABS approvals)")
 ax.grid(axis="y", alpha=0)
 save(fig, "property_market_softness.png")
 
+# 4. Macro-derived segment PD multipliers by scenario ------------------------
+mult = pd.read_csv(ROOT / "outputs" / "reports" / "macro_stress_segment_multipliers.csv")
+scen_order = ["mild", "moderate", "severe"]
+scen_color = {"mild": "#fee08b", "moderate": "#fdae61", "severe": "#d73027"}
+segments = list(mult[mult.scenario == "severe"].sort_values("pd_multiplier").segment)
+fig, ax = plt.subplots(figsize=(9.4, 5.4))
+n = len(scen_order)
+width = 0.8 / n
+for i, scen in enumerate(scen_order):
+    sub = mult[mult.scenario == scen].set_index("segment").reindex(segments)
+    xs = [j + (i - (n - 1) / 2) * width for j in range(len(segments))]
+    ax.bar(xs, sub.pd_multiplier, width=width, label=scen, color=scen_color[scen], edgecolor="white")
+ax.set_xticks(range(len(segments)))
+ax.set_xticklabels([s.replace("_", "\n") for s in segments], fontsize=9.5)
+ax.axhline(1.0, color="#444", lw=1, ls="--")
+ax.set_ylabel("PD multiplier (x base)")
+ax.set_title("Macro-derived PD stress multipliers by portfolio segment")
+ax.legend(title="scenario", frameon=False)
+ax.grid(axis="x", alpha=0)
+save(fig, "macro_scenario_paths.png")
+
 print("\nAll figures written to", FIG)
