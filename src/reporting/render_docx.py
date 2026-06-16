@@ -135,9 +135,7 @@ def _render_title_page(doc, report: dict[str, Any], variant: str) -> None:
     if variant == "board":
         prepared_for = (
             "This is a summary view for non-technical reviewers. Every table in this "
-            "document traces back to the canonical CSV contracts in outputs/contracts/. "
-            "For full per-column detail, methodology references, and the audit-log "
-            "appendix, see the Technical variant."
+            "document traces back to the canonical CSV contracts in outputs/contracts/."
         )
     else:
         prepared_for = (
@@ -252,7 +250,7 @@ def write_docx_variants(report: dict[str, Any], output_base: str) -> dict[str, s
     parent.mkdir(parents=True, exist_ok=True)
 
     results = {}
-    for variant, suffix in [("board", "_Board"), ("technical", "_Technical")]:
+    for variant, suffix in [("board", "")]:
         path = parent / f"{stem}{suffix}.docx"
         render(report, variant, path)
         results[variant] = str(path)

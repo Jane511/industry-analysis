@@ -12,15 +12,13 @@ PD overlay per ANZSIC division.**
 > clearly-labelled methodology *assumptions* (stress shocks, scoring weights, and four CRE
 > variables with no clean free public series).
 
-## Full detail is in the reports — this README is the summary
+## The board report — the same three sections, formatted for download
 
-The README explains the *method* and the headline numbers. Every figure, source row,
-transformation and the full per-industry / per-scenario detail live in the two reports:
-
-| Report | For | Open |
-| --- | --- | --- |
-| **Board** | Plain-English executive summary, headline findings | [md](outputs/reports/Industry_Analysis_Q1_2026_Board.md) · [html](outputs/reports/Industry_Analysis_Q1_2026_Board.html) · [docx](outputs/reports/Industry_Analysis_Q1_2026_Board.docx) |
-| **Technical** | Full source inventory, transformations, validation, all per-industry detail | [md](outputs/reports/Industry_Analysis_Q1_2026_Technical.md) · [html](outputs/reports/Industry_Analysis_Q1_2026_Technical.html) · [docx](outputs/reports/Industry_Analysis_Q1_2026_Technical.docx) |
+The three sections below are also rendered to a single **board report** (Markdown / HTML / Word)
+straight from the live contracts on every pipeline run, for HR or a credit committee to open:
+[md](outputs/reports/Industry_Analysis_Q1_2026.md) ·
+[html](outputs/reports/Industry_Analysis_Q1_2026.html) ·
+[docx](outputs/reports/Industry_Analysis_Q1_2026.docx).
 
 The model-ready data sits in eight CSV "contracts" in [`outputs/contracts/`](outputs/contracts/)
 — the stable interface any downstream PD / LGD / ECL model reads.
@@ -293,8 +291,8 @@ and feed the per-industry PD overlay in Section 3. Source:
 A sector with falling employment and thin margins is exactly where the sector-output shock bites
 hardest, so a downstream SME / corporate model can scale its sector-output sensitivity by the
 industry's score. Demand growth is a volatile approvals/indicator proxy (base effects), so it is
-read alongside employment and margins, not alone. Full per-industry detail for all 18 divisions is
-**Section 5** of the [Technical report](outputs/reports/Industry_Analysis_Q1_2026_Technical.md).
+read alongside employment and margins, not alone. The full per-industry panel (all components and
+source rows) is the [`business_cycle_panel.csv`](outputs/contracts/business_cycle_panel.csv) contract.
 
 ---
 
@@ -378,8 +376,8 @@ currently sits in the Low or High band.
 | Health Care and Social Assistance | 1.50 | 2.80 | 2.08 | Medium | 1.00× |
 | Professional, Scientific and Technical Services | 1.75 | 2.00 | 1.86 | Moderate-low | 0.95× |
 
-*Per-industry component detail and the source rows behind every number are in **Section 5** of
-the [Technical report](outputs/reports/Industry_Analysis_Q1_2026_Technical.md).*
+*Per-industry component detail and the source rows behind every number are the
+[`business_cycle_panel.csv`](outputs/contracts/business_cycle_panel.csv) contract.*
 
 ---
 
@@ -392,8 +390,9 @@ any downstream PD / LGD / ECL model reads: `industry_risk_scores`, `downturn_ove
 plus the explainability panels (`business_cycle_panel`, `property_cycle_panel`,
 `property_market_overlays_by_building_type`).
 
-**A two-variant report** in [`outputs/reports/`](outputs/reports/) — Board and Technical, each in
-`.md` / `.html` / `.docx` (links at the top of this README).
+**A board report** in [`outputs/reports/`](outputs/reports/) — `Industry_Analysis_Q1_2026` in
+`.md` / `.html` / `.docx`, rendering these three sections from the live contracts (links at the top
+of this README).
 
 ### What this demonstrates (for a credit-risk role)
 
@@ -404,7 +403,7 @@ plus the explainability panels (`business_cycle_panel`, `property_cycle_panel`,
 | **LGD / collateral** | Property-market overlays (cycle stage, softness, region risk) feeding LGD and collateral assumptions. |
 | **APRA APG 220 grounding** | Per-industry medians of the financial ratios APG 220 §64 names as standard credit-assessment benchmarks. |
 | **Australian regulatory landscape** | Works directly with ABS industry / building-approval / labour releases, the RBA cash-rate table and FSR, and the Payment Times Reporting Scheme. |
-| **Data engineering & governance** | ETL from XLSX / CSV / PDF into validated CSV contracts; source inventory + lineage in every report; reproducible outputs; pytest suite; real-data-only discipline with assumptions labelled, never presented as data. |
+| **Data engineering & governance** | ETL from XLSX / CSV / PDF into validated CSV contracts; live ABS/RBA fetch with committed-cache fallback; reproducible outputs; pytest suite; real-data-only discipline with assumptions labelled, never presented as data. |
 
 Written in **Python** (pandas, openpyxl, pdfplumber, python-docx, matplotlib). The skills transfer
 directly to SAS / SQL / R model-development and validation work.
@@ -423,7 +422,7 @@ python run_pipeline.py
 `run_pipeline.py` auto-downloads the real public data (ABS / RBA / PTRS); if any source is
 unreachable it falls back to a committed real-data cache, so it always produces the reports —
 online or offline. The flow runs end to end: **fetch → build panels + overlays → export the 8 CSV
-contracts → validate → render the Board + Technical report**. The data vintage is pinned
+contracts → validate → render the board report**. The data vintage is pinned
 (`DATA_AS_OF = 2026-06-16`); the committed cache and its source attribution live in
 [`data/cache/`](data/cache/). Methodology notes:
 [cash-flow lending](docs/methodology_cash_flow_lending.md) and

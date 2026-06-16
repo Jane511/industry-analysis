@@ -516,6 +516,155 @@ def build_macro_stress_section() -> dict[str, Any]:
     }
 
 
+def build_three_section_report(data: dict[str, Any]) -> dict[str, Any]:
+    """Structured report mirroring README sections 1-3: macro conditions,
+    stress drivers (per product/industry), and the industry credit-risk score.
+    Consumed by the md/html/docx renderers (board variant)."""
+    stats = data["stats"]
+    industry = data["industry"]              # sorted desc by base score
+    property_panel = data["property_panel"]
+    business = data["business_panel"]
+    macro_ctx = pd.read_csv(CONTRACTS_DIR / "macro_context.csv")
+
+    def _para(text: str) -> tuple[str, dict[str, str]]:
+        return ("paragraph", {"board": text, "technical": text})
+
+    def _pct(value: Any, spec: str) -> str:
+        return "" if pd.isna(value) else format(value, spec)
+
+    sections: list[dict[str, Any]] = []
+
+    # ---- Section 1 — Macro conditions ----
+    conditions = pd.DataFrame({
+        "Condition": macro_ctx["label"],
+        "Current level": [f"{v:g}" for v in macro_ctx["current_level"]],
+        "Reading": macro_ctx["reading_type"],
+        "Source": macro_ctx["source_or_assumption"],
+    })
+    bld = property_panel.sort_values("market_softness_score", ascending=False)
+    building_types = pd.DataFrame({
+        "Building type": bld["property_segment"],
+        "Cycle stage": bld["cycle_stage"],
+        "Softness (1 firm - 5 soft)": [f"{v:.2f}" for v in bld["market_softness_score"]],
+        "Approvals YoY %": [_pct(v, "+.1f") for v in bld["approvals_change_pct"]],
+        "Region-risk band": bld["region_risk_band"],
+    })
+    s1_intro = (
+        "Before scoring any industry or deal, the engine reads where the economy and property "
+        "markets currently sit - the conditions a credit team assesses against, and the base of every "
+        "stress scenario in Section 2. The economy-wide headline rates (GDP, unemployment, CPI, WPI) "
+        "are fetched live from the latest ABS releases (reading 'observed'), joining the live cash "
+        "rate; a few series with no clean current public index are stated and flagged."
+    )
+    prop_note = (
+        "Property-secured lending splits into residential and commercial. Residential house-price "
+        "growth is a stated reading (the ABS RPPI was discontinued after Dec-2021). Commercial-"
+        "property risk is read from real ABS non-residential building approvals - currently softest "
+        "for offices, firmest for warehouses."
+    )
+    regime = (
+        f"Macro regime (as of {stats['macro_as_of_date']}): cash-rate regime "
+        f"'{stats['cash_rate_regime']}', arrears {stats['arrears_environment_level']} / "
+        f"{stats['arrears_trend']}, overall flag '{stats['macro_regime_flag']}'. The cash rate is "
+        f"{stats['cash_rate_pct']:.2f}% ({stats['cash_rate_change_pctpts']:+.2f}pp over the year). A "
+        f"'base' regime applies no recession overlay at current readings; Section 2 pre-computes the "
+        f"downturn impact."
+    )
+    sections.append({
+        "id": "macro_conditions",
+        "title": "1. Macro conditions for credit assessment & risk management",
+        "lead": (s1_intro, s1_intro),
+        "elements": [
+            _table_payload("Current macro & property conditions (live where a clean public series exists)", conditions),
+            _para(prop_note),
+            _table_payload("Commercial property cycle by building type (ABS 8731 non-residential approvals)", building_types),
+            _para(regime),
+        ],
+    })
+
+    # ---- Section 2 — Stress drivers (per product and per industry) ----
+    mss = build_macro_stress_section()
+    s2_intro = (
+        "Stress testing answers one question: if the economy turns bad, how much more does the bank "
+        "lose? A scenario hurts borrowers and collateral, which shows up as higher PD (chance of "
+        "default), LGD (loss if they default) and EAD (amount owed). This layer turns one scenario "
+        "into ready-to-apply PD / LGD / EAD multipliers per portfolio segment and per industry - the "
+        "input a downstream monitoring model multiplies onto its own facilities. It uses the simplest "
+        "standard method (a multiplier map); a data-rich bank would use a statistical satellite model. "
+        "Mild ~ two quarters of zero growth (Basel CRE36.51); severe is GFC-like but plausible "
+        "(APS 220 s72); the roll-up takes no diversification benefit (APG 113 s92); figures are "
+        "illustrative, to be validated in production (APS 220 s76)."
+    )
+    ind_drivers = pd.DataFrame({
+        "Industry": business["industry"],
+        "Employment YoY %": [_pct(v, "+.1f") for v in business["employment_yoy_growth_pct"]],
+        "EBITDA margin %": [_pct(v, ".1f") for v in business["ebitda_margin_pct_latest"]],
+        "Demand YoY %": [_pct(v, "+.0f") for v in business["demand_yoy_growth_pct"]],
+        "Macro score (1-5)": [f"{v:.2f}" for v in business["macro_risk_score"]],
+    })
+    s2_elements = [_para(s2_intro)] + list(mss["elements"]) + [
+        _table_payload("Per-industry current-conditions drivers (feed the sector-output channel)", ind_drivers),
+    ]
+    sections.append({
+        "id": "stress_drivers",
+        "title": "2. Macro drivers for stress testing - per product and per industry",
+        "lead": mss["lead"],
+        "elements": s2_elements,
+    })
+
+    # ---- Section 3 — Industry credit-risk score ----
+    top = industry.iloc[0]
+    method = (
+        "Each ANZSIC division gets a single 1 (low) - 5 (high) score that blends a structural view "
+        "with a current-conditions view, then maps to a level and a PD overlay. Step 1 - macro score: "
+        "mean of five 1-5 components from ABS business indicators (employment, margin level, margin "
+        "trend, inventory, demand). Step 2 - blend: industry_base_risk_score = 0.55 x "
+        "classification_risk_score + 0.45 x macro_risk_score. Step 3 - map to a five-band ladder "
+        "(Low / Moderate-low / Medium / Moderate-high / Elevated) and a PD multiplier (0.90x - 1.15x)."
+    )
+    worked = (
+        f"Worked example - {top['industry']}: classification {top['classification_risk_score']:.2f}, "
+        f"macro {top['macro_risk_score']:.2f} -> 0.55 x {top['classification_risk_score']:.2f} + 0.45 x "
+        f"{top['macro_risk_score']:.2f} = {top['industry_base_risk_score']:.2f} -> "
+        f"{top['industry_base_risk_level']} -> {top['pd_multiplier']:.2f}x PD overlay. These are "
+        f"point-in-time, illustrative overlays - not calibrated PD estimates."
+    )
+    headline = (
+        f"Headline: {stats['elevated_industry_count']} of {stats['industry_count']} industries score "
+        f"Elevated (as of {stats['macro_as_of_date']})."
+    )
+    scores = pd.DataFrame({
+        "Industry": industry["industry"],
+        "Classification": [f"{v:.2f}" for v in industry["classification_risk_score"]],
+        "Macro": [f"{v:.2f}" for v in industry["macro_risk_score"]],
+        "Base score": [f"{v:.2f}" for v in industry["industry_base_risk_score"]],
+        "Level": industry["industry_base_risk_level"],
+        "PD overlay": [f"{v:.2f}x" for v in industry["pd_multiplier"]],
+    })
+    sections.append({
+        "id": "industry_score",
+        "title": "3. How the industry credit-risk score is calculated",
+        "lead": (method, method),
+        "elements": [
+            _para(worked),
+            _para(headline),
+            _table_payload("Industry credit-risk scores (all ANZSIC divisions)", scores),
+        ],
+    })
+
+    return {
+        "metadata": {
+            "period_label": stats["period_label"],
+            "generation_date": stats["generation_date"],
+            "macro_as_of_date": stats["macro_as_of_date"],
+            "property_cycle_as_of_date": stats["property_cycle_as_of_date"],
+            "downturn_as_of_date": stats["downturn_as_of_date"],
+        },
+        "stats": stats,
+        "sections": sections,
+    }
+
+
 def build_completeness_report(data: dict[str, Any], manifest: dict[str, dict[str, Any]]) -> dict[str, Any]:
     stats = data["stats"]
     inventory_df = build_source_inventory(manifest)
@@ -821,10 +970,8 @@ def build_report(manifest: dict[str, dict[str, Any]] | None = None) -> dict[str,
     """Return a structured content tree. Renderers consume this; do not call
     `load_report_data` directly from renderers."""
     data = load_report_data()
-    if manifest is None:
-        manifest = {}
-    return build_completeness_report(data, manifest)
-    stats = data["stats"]
+    return build_three_section_report(data)
+    stats = data["stats"]  # noqa: legacy 8-section builder below is unreachable (kept for reference)
 
     property_sorted = _property_overlays_sorted(data["property_overlays"])
 

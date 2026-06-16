@@ -32,11 +32,7 @@ from src.public_data.fetch_public_data import DATA_AS_OF, fetch_all
 from src.overlays.export_contracts import export_contracts
 from src.overlays.macro_stress_core import build_and_export_macro_stress
 from src.validate_upstream import validate_upstream
-from src.reporting.industry_analysis_report import (
-    MANIFEST_PATH,
-    build_report,
-    load_public_manifest,
-)
+from src.reporting.industry_analysis_report import build_report
 from src.reporting.render_docx import write_docx_variants
 from src.reporting.render_html import write_html_variants
 from src.reporting.render_markdown import write_markdown_variants
@@ -80,16 +76,15 @@ def main() -> int:
     else:
         print("WARNING: upstream validation reported issues (see above).", file=sys.stderr)
 
-    print("\n[4/4] Rendering Board + Technical report (markdown / html / docx)")
+    print("\n[4/4] Rendering the report (markdown / html / docx)")
     print("-" * 68)
-    manifest = load_public_manifest(MANIFEST_PATH) if MANIFEST_PATH.exists() else {}
-    report = build_report(manifest=manifest)
+    report = build_report()
     for writer in (write_markdown_variants, write_docx_variants, write_html_variants):
         for variant, path in writer(report, REPORT_STEM).items():
             size_kb = Path(path).stat().st_size / 1024
             print(f"  wrote {variant:<10} -> {path} ({size_kb:.1f} KB)")
 
-    _banner("Done. Open outputs/reports/Industry_Analysis_Q1_2026_Board.md (or .docx / .html).")
+    _banner("Done. Open outputs/reports/Industry_Analysis_Q1_2026.md (or .docx / .html).")
     return 0
 
 

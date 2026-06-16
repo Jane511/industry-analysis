@@ -329,9 +329,7 @@ def render(report: dict[str, Any], variant: str) -> str:
     if variant == "board":
         intro = (
             "This is a summary view for non-technical reviewers. Every table traces "
-            "back to the canonical CSV contracts in <code>outputs/contracts/</code>. "
-            "For full per-column detail, methodology references, and the audit-log "
-            "appendix, see the Technical variant."
+            "back to the canonical CSV contracts in <code>outputs/contracts/</code>."
         )
     else:
         intro = (
@@ -381,7 +379,7 @@ def write_html_variants(report: dict[str, Any], output_base: str) -> dict[str, s
     parent.mkdir(parents=True, exist_ok=True)
 
     results = {}
-    for variant, suffix in [("board", "_Board"), ("technical", "_Technical")]:
+    for variant, suffix in [("board", "")]:
         path = parent / f"{stem}{suffix}.html"
         path.write_text(render(report, variant), encoding="utf-8")
         results[variant] = str(path)

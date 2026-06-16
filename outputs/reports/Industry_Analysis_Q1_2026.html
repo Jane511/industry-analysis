@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Industry Analysis Report — Q1 2026 (Board Summary)</title>
+<style>
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        max-width: 1000px;
+        margin: 2em auto;
+        padding: 0 1.5em;
+        color: #222;
+        line-height: 1.5;
+        background: #ffffff;
+    }
+    h1 {
+        color: #1F4E79;
+        border-bottom: 2px solid #1F4E79;
+        padding-bottom: 0.3em;
+        margin-top: 1.4em;
+    }
+    h2 {
+        color: #2E75B6;
+        border-bottom: 1px solid #BDD7EE;
+        padding-bottom: 0.2em;
+        margin-top: 1.6em;
+    }
+    h3 { color: #2E75B6; margin-top: 1.2em; }
+    p { margin: 0.6em 0; }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1em 0;
+        font-size: 0.95em;
+    }
+    th {
+        background: #1F4E79;
+        color: #ffffff;
+        text-align: left;
+        padding: 8px 10px;
+        font-weight: 600;
+    }
+    td {
+        padding: 7px 10px;
+        border-bottom: 1px solid #E7E7E7;
+    }
+    tbody tr:nth-child(even) { background: #F2F2F2; }
+    tbody tr:hover { background: #E8F1FB; }
+    .caption {
+        font-style: italic;
+        color: #7F7F7F;
+        font-size: 0.9em;
+        margin: 0.4em 0 0.2em;
+    }
+    .summary-box {
+        background: #DEEBF7;
+        border-left: 4px solid #2E75B6;
+        padding: 12px 16px;
+        margin: 1.2em 0;
+        border-radius: 3px;
+    }
+    .flag {
+        padding: 12px 16px;
+        margin: 1.2em 0;
+        border-radius: 3px;
+        border-left: 4px solid;
+    }
+    .flag-orange { background: #FCE8D6; border-color: #D97B29; }
+    .flag-red    { background: #FADBD8; border-color: #C0392B; }
+    .flag-blue   { background: #DEEBF7; border-color: #2E75B6; }
+    .flag .flag-title { font-weight: 700; margin-bottom: 0.3em; }
+    .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.85em;
+        font-weight: 600;
+    }
+    .status-green  { background: #D4EFDF; color: #1E8449; }
+    .status-amber  { background: #FCE8B2; color: #9A6B00; }
+    .status-red    { background: #FADBD8; color: #C0392B; }
+    ul { margin: 0.4em 0 0.6em 1.2em; }
+    footer {
+        margin-top: 3em;
+        padding-top: 1em;
+        border-top: 1px solid #DDD;
+        color: #7F7F7F;
+        font-size: 0.85em;
+        text-align: center;
+    }
+
+</style>
+</head>
+<body>
+<h1>Industry Analysis Report — Q1 2026</h1>
+<p><em>Board Summary variant. Generated 2026-06-16.</em></p>
+<div class="summary-box">
+<p>Macro and downturn overlays as of 2026-06-15. Property cycle data as of 2026-03-01.</p>
+<p>This is a summary view for non-technical reviewers. Every table traces back to the canonical CSV contracts in <code>outputs/contracts/</code>.</p>
+</div>
+<h2>1. Macro conditions for credit assessment &amp; risk management</h2>
+<p>Before scoring any industry or deal, the engine reads where the economy and property markets currently sit - the conditions a credit team assesses against, and the base of every stress scenario in Section 2. The economy-wide headline rates (GDP, unemployment, CPI, WPI) are fetched live from the latest ABS releases (reading &#x27;observed&#x27;), joining the live cash rate; a few series with no clean current public index are stated and flagged.</p>
+<p class="caption">Current macro &amp; property conditions (live where a clean public series exists)</p>
+<table>
+<thead><tr>
+<th>Condition</th>
+<th>Current level</th>
+<th>Reading</th>
+<th>Source</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>GDP growth (real, YoY %)</td>
+<td>2.5</td>
+<td>observed</td>
+<td>ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)</td>
+</tr>
+<tr>
+<td>Unemployment rate (%)</td>
+<td>4.3</td>
+<td>observed</td>
+<td>ABS 6202 Labour Force (Mar 2026, seasonally adjusted)</td>
+</tr>
+<tr>
+<td>Cash rate (%)</td>
+<td>4.35</td>
+<td>live</td>
+<td>RBA F1 cash-rate table (+0.50pp 1y)</td>
+</tr>
+<tr>
+<td>Inflation (CPI, YoY %)</td>
+<td>2.4</td>
+<td>observed</td>
+<td>ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year)</td>
+</tr>
+<tr>
+<td>Wage growth (WPI, YoY %)</td>
+<td>3.3</td>
+<td>observed</td>
+<td>ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year)</td>
+</tr>
+<tr>
+<td>House-price growth (YoY %)</td>
+<td>4</td>
+<td>stated</td>
+<td>stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index)</td>
+</tr>
+<tr>
+<td>Exchange rate (TWI, % change)</td>
+<td>0</td>
+<td>stated</td>
+<td>RBA F11 exchange rates</td>
+</tr>
+<tr>
+<td>Industry / sector output (YoY %)</td>
+<td>2</td>
+<td>stated</td>
+<td>ABS 8155 Australian Industry + 5676 Business Indicators</td>
+</tr>
+<tr>
+<td>Commercial-property prices (% change)</td>
+<td>0</td>
+<td>assumption</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td>Vacancy rate (office, %)</td>
+<td>12</td>
+<td>assumption</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td>CRE rents (% change)</td>
+<td>0</td>
+<td>assumption</td>
+<td>assumption</td>
+</tr>
+<tr>
+<td>CRE cap rates (%)</td>
+<td>6</td>
+<td>assumption</td>
+<td>assumption</td>
+</tr>
+</tbody></table>
+<p>Property-secured lending splits into residential and commercial. Residential house-price growth is a stated reading (the ABS RPPI was discontinued after Dec-2021). Commercial-property risk is read from real ABS non-residential building approvals - currently softest for offices, firmest for warehouses.</p>
+<p class="caption">Commercial property cycle by building type (ABS 8731 non-residential approvals)</p>
+<table>
+<thead><tr>
+<th>Building type</th>
+<th>Cycle stage</th>
+<th>Softness (1 firm - 5 soft)</th>
+<th>Approvals YoY %</th>
+<th>Region-risk band</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Offices</td>
+<td>downturn</td>
+<td>4.30</td>
+<td>-19.8</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Agricultural and aquacultural buildings</td>
+<td>downturn</td>
+<td>3.90</td>
+<td>-27.0</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Commercial Buildings - Total</td>
+<td>slowing</td>
+<td>3.80</td>
+<td>-49.7</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>Retail and wholesale trade buildings</td>
+<td>slowing</td>
+<td>3.40</td>
+<td>+6.5</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>Total Non-residential</td>
+<td>slowing</td>
+<td>3.35</td>
+<td>-15.9</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>Education buildings</td>
+<td>slowing</td>
+<td>3.25</td>
+<td>-31.3</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>Aged care facilities</td>
+<td>slowing</td>
+<td>3.20</td>
+<td>-22.0</td>
+<td>Elevated</td>
+</tr>
+<tr>
+<td>Short term accommodation buildings</td>
+<td>neutral</td>
+<td>3.10</td>
+<td>+112.0</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Health buildings</td>
+<td>neutral</td>
+<td>2.40</td>
+<td>-36.0</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Industrial Buildings - Total</td>
+<td>growth</td>
+<td>2.15</td>
+<td>+94.8</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Warehouses</td>
+<td>growth</td>
+<td>1.70</td>
+<td>+108.5</td>
+<td>Medium</td>
+</tr>
+</tbody></table>
+<p>Macro regime (as of 2026-06-15): cash-rate regime &#x27;restrictive_rising&#x27;, arrears Low / Improving, overall flag &#x27;base&#x27;. The cash rate is 4.35% (+0.50pp over the year). A &#x27;base&#x27; regime applies no recession overlay at current readings; Section 2 pre-computes the downturn impact.</p>
+<h2>2. Macro drivers for stress testing - per product and per industry</h2>
+<p>A macro-driven stress layer turns macroeconomic scenario paths into PD / LGD / EAD multipliers per portfolio segment, then rolls facility-level stress up to a portfolio expected-loss total — answering &#x27;if the economy turns, how much worse do losses get, and for which portfolios?&#x27;.</p>
+<p>Stress testing answers one question: if the economy turns bad, how much more does the bank lose? A scenario hurts borrowers and collateral, which shows up as higher PD (chance of default), LGD (loss if they default) and EAD (amount owed). This layer turns one scenario into ready-to-apply PD / LGD / EAD multipliers per portfolio segment and per industry - the input a downstream monitoring model multiplies onto its own facilities. It uses the simplest standard method (a multiplier map); a data-rich bank would use a statistical satellite model. Mild ~ two quarters of zero growth (Basel CRE36.51); severe is GFC-like but plausible (APS 220 s72); the roll-up takes no diversification benefit (APG 113 s92); figures are illustrative, to be validated in production (APS 220 s76).</p>
+<p class="caption">Macro scenario paths - stressed level by scenario</p>
+<table>
+<thead><tr>
+<th>Variable</th>
+<th>Unit</th>
+<th>Source</th>
+<th>base</th>
+<th>mild</th>
+<th>moderate</th>
+<th>severe</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Cash rate (%)</td>
+<td>%</td>
+<td>RBA F1 cash-rate table</td>
+<td>4.35</td>
+<td>4.6</td>
+<td>4.85</td>
+<td>5.1</td>
+</tr>
+<tr>
+<td>Commercial-property prices (% change)</td>
+<td>% change</td>
+<td>assumption</td>
+<td>0.0</td>
+<td>-7.0</td>
+<td>-15.0</td>
+<td>-28.0</td>
+</tr>
+<tr>
+<td>CRE cap rates (%)</td>
+<td>%</td>
+<td>assumption</td>
+<td>6.0</td>
+<td>6.4</td>
+<td>6.9</td>
+<td>7.6</td>
+</tr>
+<tr>
+<td>CRE rents (% change)</td>
+<td>% change</td>
+<td>assumption</td>
+<td>0.0</td>
+<td>-4.0</td>
+<td>-9.0</td>
+<td>-16.0</td>
+</tr>
+<tr>
+<td>Exchange rate (TWI, % change)</td>
+<td>% change</td>
+<td>RBA F11 exchange rates</td>
+<td>0.0</td>
+<td>-5.0</td>
+<td>-10.0</td>
+<td>-15.0</td>
+</tr>
+<tr>
+<td>GDP growth (real, YoY %)</td>
+<td>% yoy</td>
+<td>ABS 5206 National Accounts (Mar 2026, real SA, through-the-year)</td>
+<td>2.5</td>
+<td>0.7</td>
+<td>-0.8</td>
+<td>-2.8</td>
+</tr>
+<tr>
+<td>House-price growth (YoY %)</td>
+<td>% yoy</td>
+<td>stated (ABS 6416 RPPI discontinued after Dec-2021; no current free public index)</td>
+<td>4.0</td>
+<td>-4.0</td>
+<td>-11.0</td>
+<td>-21.0</td>
+</tr>
+<tr>
+<td>Industry / sector output (YoY %)</td>
+<td>% yoy</td>
+<td>ABS 8155 Australian Industry + 5676 Business Indicators</td>
+<td>2.0</td>
+<td>0.0</td>
+<td>-2.0</td>
+<td>-5.0</td>
+</tr>
+<tr>
+<td>Inflation (CPI, YoY %)</td>
+<td>% yoy</td>
+<td>ABS 6401 CPI (Mar 2026 quarter, all groups, through-the-year)</td>
+<td>2.4</td>
+<td>3.2</td>
+<td>3.9</td>
+<td>4.9</td>
+</tr>
+<tr>
+<td>Unemployment rate (%)</td>
+<td>%</td>
+<td>ABS 6202 Labour Force (Mar 2026, seasonally adjusted)</td>
+<td>4.3</td>
+<td>5.5</td>
+<td>6.8</td>
+<td>8.3</td>
+</tr>
+<tr>
+<td>Vacancy rate (office, %)</td>
+<td>%</td>
+<td>assumption</td>
+<td>12.0</td>
+<td>14.0</td>
+<td>16.0</td>
+<td>19.0</td>
+</tr>
+<tr>
+<td>Wage growth (WPI, YoY %)</td>
+<td>% yoy</td>
+<td>ABS 6345 Wage Price Index (Mar 2026 quarter, through-the-year)</td>
+<td>3.3</td>
+<td>2.8</td>
+<td>2.3</td>
+<td>1.5</td>
+</tr>
+</tbody></table>
+<p class="caption">Which macro drivers move which portfolio (illustrative)</p>
+<table>
+<thead><tr>
+<th>Portfolio</th>
+<th>Material macro drivers</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Residential mortgages</td>
+<td>unemployment, cash rate, wage growth, house prices</td>
+</tr>
+<tr>
+<td>Credit cards</td>
+<td>unemployment, wage growth, inflation</td>
+</tr>
+<tr>
+<td>SME lending</td>
+<td>GDP, unemployment, cash rate, sector output</td>
+</tr>
+<tr>
+<td>Corporate lending</td>
+<td>GDP, sector output, cash rate, exchange rate</td>
+</tr>
+<tr>
+<td>Commercial property</td>
+<td>property prices, vacancy, rents, cap rates, cash rate</td>
+</tr>
+<tr>
+<td>Development finance</td>
+<td>property prices, GDP, vacancy, cash rate</td>
+</tr>
+</tbody></table>
+<p class="caption">Macro-derived segment multipliers (PD / LGD / EAD)</p>
+<table>
+<thead><tr>
+<th>Segment</th>
+<th>Scenario</th>
+<th>PD x</th>
+<th>LGD x</th>
+<th>EAD x</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>residential_mortgages</td>
+<td>base</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>residential_mortgages</td>
+<td>mild</td>
+<td>1.4129</td>
+<td>1.1523</td>
+<td>1.0649</td>
+</tr>
+<tr>
+<td>residential_mortgages</td>
+<td>moderate</td>
+<td>1.8357</td>
+<td>1.2936</td>
+<td>1.1291</td>
+</tr>
+<tr>
+<td>residential_mortgages</td>
+<td>severe</td>
+<td>2.35</td>
+<td>1.48</td>
+<td>1.2</td>
+</tr>
+<tr>
+<td>credit_cards</td>
+<td>base</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>credit_cards</td>
+<td>mild</td>
+<td>1.4906</td>
+<td>1.1267</td>
+<td>1.0786</td>
+</tr>
+<tr>
+<td>credit_cards</td>
+<td>moderate</td>
+<td>1.9886</td>
+<td>1.2535</td>
+<td>1.1533</td>
+</tr>
+<tr>
+<td>credit_cards</td>
+<td>severe</td>
+<td>2.65</td>
+<td>1.42</td>
+<td>1.24</td>
+</tr>
+<tr>
+<td>sme_lending</td>
+<td>base</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>sme_lending</td>
+<td>mild</td>
+<td>1.5241</td>
+<td>1.1521</td>
+<td>1.0906</td>
+</tr>
+<tr>
+<td>sme_lending</td>
+<td>moderate</td>
+<td>2.0259</td>
+<td>1.3053</td>
+<td>1.1757</td>
+</tr>
+<tr>
+<td>sme_lending</td>
+<td>severe</td>
+<td>2.65</td>
+<td>1.54</td>
+<td>1.28</td>
+</tr>
+<tr>
+<td>corporate_lending</td>
+<td>base</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>corporate_lending</td>
+<td>mild</td>
+<td>1.4823</td>
+<td>1.1549</td>
+<td>1.0913</td>
+</tr>
+<tr>
+<td>corporate_lending</td>
+<td>moderate</td>
+<td>1.9307</td>
+<td>1.3156</td>
+<td>1.177</td>
+</tr>
+<tr>
+<td>corporate_lending</td>
+<td>severe</td>
+<td>2.5</td>
+<td>1.54</td>
+<td>1.28</td>
+</tr>
+<tr>
+<td>commercial_property</td>
+<td>base</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>commercial_property</td>
+<td>mild</td>
+<td>1.5409</td>
+<td>1.18</td>
+<td>1.0968</td>
+</tr>
+<tr>
+<td>commercial_property</td>
+<td>moderate</td>
+<td>2.127</td>
+<td>1.3973</td>
+<td>1.1958</td>
+</tr>
+<tr>
+<td>commercial_property</td>
+<td>severe</td>
+<td>2.95</td>
+<td>1.72</td>
+<td>1.32</td>
+</tr>
+<tr>
+<td>development_finance</td>
+<td>base</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>development_finance</td>
+<td>mild</td>
+<td>1.6664</td>
+<td>1.195</td>
+<td>1.1116</td>
+</tr>
+<tr>
+<td>development_finance</td>
+<td>moderate</td>
+<td>2.3292</td>
+<td>1.4273</td>
+<td>1.2219</td>
+</tr>
+<tr>
+<td>development_finance</td>
+<td>severe</td>
+<td>3.25</td>
+<td>1.78</td>
+<td>1.36</td>
+</tr>
+</tbody></table>
+<p class="caption">Demonstration - facility roll-up to portfolio EL (illustrative demo book)</p>
+<table>
+<thead><tr>
+<th>Scenario</th>
+<th>Facilities</th>
+<th>Base EL ($)</th>
+<th>Stressed EL ($)</th>
+<th>EL uplift x</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>base</td>
+<td>6</td>
+<td>79293.72</td>
+<td>79293.72</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>mild</td>
+<td>6</td>
+<td>79293.72</td>
+<td>153321.21</td>
+<td>1.934</td>
+</tr>
+<tr>
+<td>moderate</td>
+<td>6</td>
+<td>79293.72</td>
+<td>256331.65</td>
+<td>3.233</td>
+</tr>
+<tr>
+<td>severe</td>
+<td>6</td>
+<td>79293.72</td>
+<td>447755.57</td>
+<td>5.647</td>
+</tr>
+</tbody></table>
+<div class="flag flag-orange"><div class="flag-title">Macro stress - scope and governance</div><p>Illustrative scenario design — not calibrated regulatory stress. Base levels are current values from the named ABS/RBA series; the four CRE variables (commercial-property prices, vacancy, rents, cap rates) and all elasticities are labelled assumptions. The portfolio roll-up is exposure-weighted with no diversification benefit. Reverse stress: the moderate scenario (EL uplift 3.23x) first breaches a 2.0x illustrative appetite ceiling. A bank normally builds separate models per material portfolio or a pooled model with portfolio/sector effects; this layer supplies the macro-credit linkage either consumes.</p></div>
+<p class="caption">Per-industry current-conditions drivers (feed the sector-output channel)</p>
+<table>
+<thead><tr>
+<th>Industry</th>
+<th>Employment YoY %</th>
+<th>EBITDA margin %</th>
+<th>Demand YoY %</th>
+<th>Macro score (1-5)</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Accommodation and Food Services</td>
+<td>+0.7</td>
+<td>11.4</td>
+<td>+112</td>
+<td>2.60</td>
+</tr>
+<tr>
+<td>Administrative and Support Services</td>
+<td>+3.1</td>
+<td>9.3</td>
+<td></td>
+<td>2.80</td>
+</tr>
+<tr>
+<td>Agriculture, Forestry and Fishing</td>
+<td>-5.1</td>
+<td>14.6</td>
+<td>-27</td>
+<td>4.20</td>
+</tr>
+<tr>
+<td>Arts and Recreation Services</td>
+<td>-5.8</td>
+<td>13.5</td>
+<td>-46</td>
+<td>3.60</td>
+</tr>
+<tr>
+<td>Construction</td>
+<td>+1.5</td>
+<td>10.2</td>
+<td>-16</td>
+<td>3.20</td>
+</tr>
+<tr>
+<td>Education and Training</td>
+<td>+5.6</td>
+<td>11.7</td>
+<td>-31</td>
+<td>3.40</td>
+</tr>
+<tr>
+<td>Electricity, Gas, Water and Waste Services</td>
+<td>+12.3</td>
+<td>21.0</td>
+<td></td>
+<td>2.00</td>
+</tr>
+<tr>
+<td>Health Care and Social Assistance</td>
+<td>+3.7</td>
+<td>16.7</td>
+<td></td>
+<td>2.80</td>
+</tr>
+<tr>
+<td>Information Media and Telecommunications</td>
+<td>-4.8</td>
+<td>20.0</td>
+<td></td>
+<td>2.60</td>
+</tr>
+<tr>
+<td>Manufacturing</td>
+<td>-0.9</td>
+<td>9.2</td>
+<td>+95</td>
+<td>3.40</td>
+</tr>
+<tr>
+<td>Mining</td>
+<td>-5.1</td>
+<td>47.3</td>
+<td></td>
+<td>3.20</td>
+</tr>
+<tr>
+<td>Other Services</td>
+<td>+7.1</td>
+<td>5.3</td>
+<td></td>
+<td>2.20</td>
+</tr>
+<tr>
+<td>Professional, Scientific and Technical Services</td>
+<td>+5.5</td>
+<td>13.0</td>
+<td></td>
+<td>2.00</td>
+</tr>
+<tr>
+<td>Public Administration and Safety</td>
+<td>-1.2</td>
+<td>9.6</td>
+<td></td>
+<td>3.60</td>
+</tr>
+<tr>
+<td>Rental, Hiring and Real Estate Services</td>
+<td>-15.1</td>
+<td>40.9</td>
+<td></td>
+<td>2.60</td>
+</tr>
+<tr>
+<td>Retail Trade</td>
+<td>-0.5</td>
+<td>7.8</td>
+<td>+6</td>
+<td>3.40</td>
+</tr>
+<tr>
+<td>Transport, Postal and Warehousing</td>
+<td>+2.8</td>
+<td>17.7</td>
+<td>-6</td>
+<td>2.40</td>
+</tr>
+<tr>
+<td>Wholesale Trade</td>
+<td>-8.7</td>
+<td>6.1</td>
+<td>+108</td>
+<td>3.40</td>
+</tr>
+</tbody></table>
+<h2>3. How the industry credit-risk score is calculated</h2>
+<p>Each ANZSIC division gets a single 1 (low) - 5 (high) score that blends a structural view with a current-conditions view, then maps to a level and a PD overlay. Step 1 - macro score: mean of five 1-5 components from ABS business indicators (employment, margin level, margin trend, inventory, demand). Step 2 - blend: industry_base_risk_score = 0.55 x classification_risk_score + 0.45 x macro_risk_score. Step 3 - map to a five-band ladder (Low / Moderate-low / Medium / Moderate-high / Elevated) and a PD multiplier (0.90x - 1.15x).</p>
+<p>Worked example - Agriculture, Forestry and Fishing: classification 4.12, macro 4.20 -&gt; 0.55 x 4.12 + 0.45 x 4.20 = 4.16 -&gt; Elevated -&gt; 1.15x PD overlay. These are point-in-time, illustrative overlays - not calibrated PD estimates.</p>
+<p>Headline: 5 of 18 industries score Elevated (as of 2026-06-15).</p>
+<p class="caption">Industry credit-risk scores (all ANZSIC divisions)</p>
+<table>
+<thead><tr>
+<th>Industry</th>
+<th>Classification</th>
+<th>Macro</th>
+<th>Base score</th>
+<th>Level</th>
+<th>PD overlay</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Agriculture, Forestry and Fishing</td>
+<td>4.12</td>
+<td>4.20</td>
+<td>4.16</td>
+<td>Elevated</td>
+<td>1.15x</td>
+</tr>
+<tr>
+<td>Mining</td>
+<td>3.88</td>
+<td>3.20</td>
+<td>3.57</td>
+<td>Elevated</td>
+<td>1.15x</td>
+</tr>
+<tr>
+<td>Manufacturing</td>
+<td>3.50</td>
+<td>3.40</td>
+<td>3.46</td>
+<td>Elevated</td>
+<td>1.15x</td>
+</tr>
+<tr>
+<td>Retail Trade</td>
+<td>3.25</td>
+<td>3.40</td>
+<td>3.32</td>
+<td>Elevated</td>
+<td>1.15x</td>
+</tr>
+<tr>
+<td>Wholesale Trade</td>
+<td>3.12</td>
+<td>3.40</td>
+<td>3.25</td>
+<td>Elevated</td>
+<td>1.15x</td>
+</tr>
+<tr>
+<td>Construction</td>
+<td>2.75</td>
+<td>3.20</td>
+<td>2.95</td>
+<td>Moderate-high</td>
+<td>1.10x</td>
+</tr>
+<tr>
+<td>Arts and Recreation Services</td>
+<td>2.38</td>
+<td>3.60</td>
+<td>2.93</td>
+<td>Moderate-high</td>
+<td>1.10x</td>
+</tr>
+<tr>
+<td>Accommodation and Food Services</td>
+<td>2.75</td>
+<td>2.60</td>
+<td>2.68</td>
+<td>Medium</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Public Administration and Safety</td>
+<td>1.62</td>
+<td>3.60</td>
+<td>2.51</td>
+<td>Medium</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Education and Training</td>
+<td>1.75</td>
+<td>3.40</td>
+<td>2.49</td>
+<td>Medium</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Rental, Hiring and Real Estate Services</td>
+<td>2.38</td>
+<td>2.60</td>
+<td>2.48</td>
+<td>Medium</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Transport, Postal and Warehousing</td>
+<td>2.50</td>
+<td>2.40</td>
+<td>2.46</td>
+<td>Medium</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Administrative and Support Services</td>
+<td>2.12</td>
+<td>2.80</td>
+<td>2.43</td>
+<td>Medium</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Information Media and Telecommunications</td>
+<td>2.12</td>
+<td>2.60</td>
+<td>2.34</td>
+<td>Medium</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Other Services</td>
+<td>2.38</td>
+<td>2.20</td>
+<td>2.30</td>
+<td>Medium</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Electricity, Gas, Water and Waste Services</td>
+<td>2.25</td>
+<td>2.00</td>
+<td>2.14</td>
+<td>Medium</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Health Care and Social Assistance</td>
+<td>1.50</td>
+<td>2.80</td>
+<td>2.08</td>
+<td>Medium</td>
+<td>1.00x</td>
+</tr>
+<tr>
+<td>Professional, Scientific and Technical Services</td>
+<td>1.75</td>
+<td>2.00</td>
+<td>1.86</td>
+<td>Moderate-low</td>
+<td>0.95x</td>
+</tr>
+</tbody></table>
+<footer>END OF REPORT</footer>
+</body>
+</html>

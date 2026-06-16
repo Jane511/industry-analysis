@@ -125,8 +125,7 @@ def render(report: dict[str, Any], variant: str) -> str:
         header_lines.append(
             "This is a summary view for non-technical reviewers. Every table and chart "
             "in this document traces back to the canonical CSV contracts in "
-            "`outputs/contracts/`. For full per-column detail, methodology references, "
-            "and the audit-log appendix, see the Technical variant."
+            "`outputs/contracts/`."
         )
     else:
         header_lines.append(
@@ -198,7 +197,7 @@ def write_markdown_variants(report: dict[str, Any], output_base: str) -> dict[st
     parent.mkdir(parents=True, exist_ok=True)
 
     results = {}
-    for variant, suffix in [("board", "_Board"), ("technical", "_Technical")]:
+    for variant, suffix in [("board", "")]:
         path = parent / f"{stem}{suffix}.md"
         path.write_text(render(report, variant), encoding="utf-8")
         results[variant] = str(path)
